@@ -1,0 +1,130 @@
+@use "variables";
+
+.contactPage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: black;
+  padding: 20px;
+}
+
+.container {
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 3.5rem;
+  font-weight: 300;
+  margin-bottom: 3rem;
+  letter-spacing: 0.15em;
+  color: white;
+  position: relative;
+  display: inline-block;
+}
+
+.title::after {
+  content: '';
+  position: absolute;
+  width: 40px;
+  height: 3px;
+  background: linear-gradient(90deg, #ff0000, #00ff00, #0000ff);
+  bottom: -10px;
+  left: 0;
+}
+
+.contactLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.contactItem:hover {
+  padding-left: 10px;
+}
+
+.contactItem::before {
+  content: '';
+  position: absolute;
+  left: -100%;
+  width: 100%;
+  height: 1px;
+  bottom: 0;
+  transition: all 0.4s ease;
+}
+
+.contactItem:nth-child(1)::before {
+  background-color: rgba(255, 0, 0, 0.5);
+}
+
+.contactItem:nth-child(2)::before {
+  background-color: rgba(0, 255, 0, 0.5);
+}
+
+.contactItem:nth-child(3)::before {
+  background-color: rgba(0, 0, 255, 0.5);
+}
+
+.contactItem:hover::before {
+  left: 0;
+}
+
+.logoContainer {
+  margin-top: 4rem;
+  text-align: center;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.logoContainer:hover {
+  opacity: 1;
+}
+
+.logo {
+  max-width: 120px;
+  height: auto;
+  filter: grayscale(70%);
+  transition: filter 0.3s ease;
+}
+
+.logo:hover {
+  filter: grayscale(0%);
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2.5rem;
+  }
+  
+  .contactItem {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 2rem;
+  }
+  
+  .contactItem {
+    font-size: 1rem;
+    gap: 1rem;
+  }
+}

@@ -1,0 +1,16 @@
+@use "variables";
+
+.layout_section {
+    // margin: 0 8%;
+    color: variables.$text_default_color;
+    height: 100%;
+    width: 100%;
+    // padding-bottom: 60px;
+}
+
+@media (max-width: variables.$sm) {
+    .layout_section {
+        margin: 0 5px;
+        padding-bottom: 7px;
+    }
+}

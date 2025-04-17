@@ -1,0 +1,112 @@
+@use 'variables';
+
+.works_container {
+    width: 100%;
+    min-width: 100vw;
+    padding: 100px 5%;
+    // background-color: red;
+    box-sizing: border-box;
+    margin: 0;
+
+    .about {
+        // background-color: aquamarine;
+        border: 2px dashed #CDE9C1 ;
+        border-radius: 20px;
+        width: 100%;
+        padding: 60px 5%;
+        text-align: center;
+
+        h1 {
+            font-size: 2.3rem;
+            color: variables.$primary_green_text;
+        }
+
+        .about_text {
+            
+            font-size: 1.5rem;
+            font-weight: 100;
+            margin: 20px 0;
+        }
+    }
+}
+
+// Responsive Grid Layout
+.Grim {
+    // background-color: beige;
+    // padding: 20px;
+    display: grid;
+    gap: 1em;
+    justify-content: center;
+    padding: 40px 0;
+    width: 100%;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 1024px) {
+    .Grim {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .works_container {
+        padding: 60px 3%;
+    }
+
+    .about {
+        padding: 40px 3%;
+        
+        .about_text {
+            font-size: 1.3rem;
+            margin: 20px 0;
+        }
+    }
+}
+
+
+
+// 💡 WorksBox Styling with Animated Border & Hover Effects
+.worksBox {
+    padding: 20px;
+    text-align: center;
+    border-radius: 30px;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s ease-in-out;
+    // background: white;
+    // box-shadow: -10px 4px 10px rgb(234, 5, 5);
+     border: 2px solid red;
+    cursor: pointer;
+
+    &:hover {
+        transform: scale(0.95);
+    }
+}
+
+.worksBox:nth-child(2){
+    // box-shadow: 0px 4px 10px rgb(205,293,193);
+    border: 2px solid rgb(205,293,193);
+
+}
+.worksBox:nth-child(3){
+    // box-shadow: 10px 4px 10px #6E89D7;
+    border: 2px solid #6E89D7;
+
+
+}
+
+@media (max-width:480px) {
+    .worksBox{
+        // background-color: darkslategrey;
+        width: auto;
+        padding: 0.1px;
+        padding-bottom: -200px;
+    }
+    .description{
+        background-color: cornflowerblue;
+    }
+}

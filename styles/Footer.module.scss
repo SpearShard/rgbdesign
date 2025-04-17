@@ -1,0 +1,24 @@
+@use "variables";
+
+.footer_section {
+    position: fixed;
+    bottom: 0px;
+    padding-bottom: 6px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    background-color: #000000;
+    small {
+        display: block;
+        padding: 1px 0;
+    }
+}
+
+@media (max-width: variables.$sm) {
+    .footer_section {
+        padding: 0 0px;
+        padding-top: 5px;
+        font-size: 0.7rem;
+        // position: relative;
+    }
+}

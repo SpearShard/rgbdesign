@@ -1,0 +1,12 @@
+@use "variables";
+
+.projects_container {
+    padding: 0 60px;
+    padding-bottom: 40px;
+}
+
+// @media (max-width: variables.$sm) {
+//     .projects_container {
+//         padding-top: 50px;
+//     }
+// }

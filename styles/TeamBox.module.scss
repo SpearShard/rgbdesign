@@ -1,0 +1,31 @@
+@use "variables";
+
+.team_box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    .profile_image {
+        border-radius: 6px;
+        width: 200px;
+        height: 200px;
+        filter: grayscale(100%);
+        transition: all 0.5s ease;
+    }
+    .profile_image:hover {
+        filter: grayscale(30%);
+    }
+    h2 {
+        font-size: 2rem;
+        margin-top: 10px;
+    }
+    .social_profile_image {
+        width: 28px;
+        height: 28px;
+        margin-top: 10px;
+        border-radius: 3px;
+    }
+}
+
+@media (max-width: variables.$sm) {
+    
+}

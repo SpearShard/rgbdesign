@@ -1,0 +1,707 @@
+.work_details_container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #0a0a0a;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+// Hero Section
+.heroSection {
+  position: relative;
+  height: 90vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.heroBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.heroBackgroundImage {
+  object-fit: cover;
+  object-position: center;
+}
+
+.heroOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(10, 10, 10, 0.7), rgba(10, 10, 10, 0.9));
+  z-index: 2;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  max-width: 900px;
+  padding: 0 2rem;
+}
+
+.projectCategory {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.projectTitle {
+  font-size: 4rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+  background: linear-gradient(to right, #ffffff, #aaaaaa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.2;
+}
+
+.projectSubtitle {
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin: 0 0 2rem;
+  opacity: 0.8;
+}
+
+.projectMeta {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.metaItem {
+  opacity: 0.7;
+}
+
+.scrollIndicator {
+  position: absolute;
+  bottom: 3rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.9rem;
+  opacity: 0.6;
+  display: none; /* Hide the entire scroll indicator */
+}
+
+.scrollLine {
+  width: 2px;
+  height: 50px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+  animation: none; /* Remove the animation */
+}
+
+@keyframes scrollAnimation {
+  0% { transform: translateY(-20px); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(20px); opacity: 0; }
+}
+
+// Content Wrapper
+.contentWrapper {
+  background-color: #0a0a0a;
+  position: relative;
+  z-index: 2;
+}
+
+// Main Content
+.description_container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
+}
+
+// Tags
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.tagChip {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+  border-radius: 30px !important;
+  padding: 0.5rem 1rem !important;
+  transition: all 0.3s ease !important;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    transform: translateY(-3px);
+  }
+}
+
+// Description
+.descriptionSection {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.description {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+// Stats
+.statsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  padding: 3rem;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.statValue {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(90deg, #ffffff, #aaaaaa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.statLabel {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.7;
+}
+
+// Video
+.videoSection {
+  margin: 3rem 0;
+  width: 100%;
+}
+
+.videoTitle {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.videoWrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; // 16:9 aspect ratio
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.projectVideo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  border: none;
+}
+
+// Images
+.imagesSection {
+  margin: 2rem 0;
+}
+
+.imageWrapper {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+
+  &:hover .imageOverlay {
+    opacity: 1;
+  }
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.projectImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.5s ease;
+
+  &:hover {
+    transform: scale(1.03);
+  }
+}
+
+.imageOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.fullscreenButton {
+  color: white !important;
+  background-color: rgba(255, 255, 255, 0.2) !important;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+  }
+}
+
+// Project Links
+.projectLinks {
+  margin: 2rem 0;
+}
+
+.linksTitle {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  display: inline-block;
+
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+}
+
+.linksContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.projectLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.5rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 30px;
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-3px);
+  }
+}
+
+// Project Navigation
+.projectNavigation {
+  margin: 5rem 0 3rem;
+  padding-top: 3rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.navButtons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.prevProject, .nextProject {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.03);
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  max-width: 250px;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.prevProject {
+  padding-left: 1.5rem;
+
+  &:hover {
+    transform: translateX(-5px);
+  }
+}
+
+.nextProject {
+  padding-right: 1.5rem;
+  text-align: right;
+
+  &:hover {
+    transform: translateX(5px);
+  }
+}
+
+.navProjectInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.navLabel {
+  font-size: 0.8rem;
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.navTitle {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+.allProjects {
+  padding: 0.8rem 1.5rem;
+  border-radius: 30px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+  }
+}
+
+// Related Projects
+.relatedProjects {
+    margin-top: 5rem;
+    padding-top: 3rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .relatedTitle {
+    font-size: 2rem;
+    margin-bottom: 2.5rem;
+    text-align: center;
+    position: relative;
+
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(to right, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
+    }
+  }
+
+  .relatedCard {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.03);
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+
+      .relatedImage {
+        transform: scale(1.05);
+      }
+
+      .relatedOverlay {
+        opacity: 0.4;
+      }
+    }
+  }
+
+  .relatedImageContainer {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+  }
+
+  .relatedImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .relatedOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7));
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+  }
+
+  .relatedInfo {
+    padding: 1.5rem;
+
+    h4 {
+      margin: 0 0 0.5rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    span {
+      font-size: 0.9rem;
+      opacity: 0.7;
+      color: #ffffff;
+    }
+  }
+
+  // Lightbox
+  .lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightboxContent {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightboxControls {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    z-index: 1010;
+  }
+
+  .lightboxClose {
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.2) !important;
+    }
+  }
+
+  .lightboxCounter {
+    color: white;
+    font-size: 1rem;
+  }
+
+  .lightboxImageContainer {
+    width: 90%;
+    height: 80%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightboxImageWrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightboxImage {
+    object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .lightboxNavigation {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+    z-index: 1010;
+  }
+
+  .lightboxNavButton {
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+
+    &:hover:not(:disabled) {
+      background-color: rgba(255, 255, 255, 0.2) !important;
+    }
+
+    &:disabled {
+      color: rgba(255, 255, 255, 0.3) !important;
+    }
+  }
+
+  // Responsive Styles
+  @media (max-width: 1200px) {
+    .projectTitle {
+      font-size: 3.5rem;
+    }
+
+    .description_container {
+      padding: 4rem 2rem;
+    }
+  }
+
+  @media (max-width: 992px) {
+    .projectTitle {
+      font-size: 3rem;
+    }
+
+    .projectMeta {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .navButtons {
+      flex-direction: column;
+      gap: 1.5rem;
+      align-items: stretch;
+    }
+
+    .prevProject, .nextProject, .allProjects {
+      max-width: 100%;
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .heroSection {
+      height: 80vh;
+    }
+
+    .projectTitle {
+      font-size: 2.5rem;
+    }
+
+    .projectSubtitle {
+      font-size: 1.2rem;
+    }
+
+    .description_container {
+      padding: 3rem 1.5rem;
+      gap: 3rem;
+    }
+
+    .statsContainer {
+      grid-template-columns: 1fr;
+      padding: 2rem;
+    }
+
+    .statValue {
+      font-size: 2.5rem;
+    }
+
+    .relatedTitle {
+      font-size: 1.8rem;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .heroSection {
+      height: 70vh;
+    }
+
+    .projectTitle {
+      font-size: 2rem;
+    }
+
+    .description_container {
+      padding: 2rem 1rem;
+      gap: 2.5rem;
+    }
+
+    .description {
+      font-size: 1rem;
+    }
+
+    .lightboxImageContainer {
+      width: 95%;
+      height: 70%;
+    }
+
+    .lightboxControls {
+      top: 10px;
+      right: 10px;
+    }
+
+    .lightboxNavigation {
+      bottom: 20px;
+    }
+
+    /* Hide scrollbar for mobile devices */
+    .work_details_container {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+
+      &::-webkit-scrollbar {
+        display: none;  /* Chrome, Safari, Opera */
+      }
+    }  }

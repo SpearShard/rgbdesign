@@ -1,0 +1,138 @@
+@use "variables";
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+@font-face {
+  font-family: Quicksand;
+  src: url("./fonts/Quicksand-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: Quicksand;
+  src: url("./fonts/Quicksand-Medium.ttf") format("truetype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: Quicksand;
+  src: url("./fonts/Quicksand-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: Teko;
+  src: url("./fonts/teko/Teko-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: Teko;
+  src: url("./fonts/teko/Teko-Medium.ttf") format("truetype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: Teko;
+  src: url("./fonts/teko/Teko-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: Teko;
+  src: url("./fonts/teko/Teko-Light.ttf") format("truetype");
+  font-weight: 300;  // Fixed incorrect weight
+}
+
+@font-face {
+  font-family: Raleway;
+  src: url("./fonts/raleway/Raleway-Light.ttf") format("truetype");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: Satoshi;
+  src: url("./fonts/satoshi/Satoshi-Light.otf") format("opentype");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: Satoshi;
+  src: url("./fonts/satoshi/Satoshi-Regular.otf") format("opentype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: Satoshi;
+  src: url("./fonts/satoshi/Satoshi-Medium.otf") format("opentype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: Satoshi;
+  src: url("./fonts/satoshi/Satoshi-Bold.otf") format("opentype");
+  font-weight: 700;
+}
+
+html, body {
+  font-family: 'Satoshi';
+  background-color: variables.$primary_background;
+  color: variables.$text_default_color;
+  height: 100%;
+  width: 100%;
+}
+
+#__next {
+  height: 100%;
+  width: 100%;
+}
+
+
+button {
+  padding: 7px 35px;
+  background-color: #111111;
+  color: #ffffff;
+  box-shadow: none;
+  font-family: 'Teko';
+  font-size: 1.4rem;
+  width: fit-content;
+  border: none;
+  margin: 20px 0;
+  cursor: pointer;
+}
+
+.highlight_red {
+  background-color: variables.$primary_red_bg;
+  color: variables.$black;
+}
+
+.highlight_green {
+  background-color: variables.$primary_green_bg;
+  color: variables.$primary_green_text;
+  padding: 0 5px;
+}
+
+.highlight_blue {
+  background-color: variables.$primary_blue_bg;
+  color: variables.$white;
+}
+
+/* Make scrollbar subtle instead of removing it */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar:horizontal {
+  height: 0px;
+}
+
+
+::-webkit-scrollbar-thumb {
+  background-image: linear-gradient(45deg, red, green, blue);
+  border-radius: 3px;
+}
+
