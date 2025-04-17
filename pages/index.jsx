@@ -36,31 +36,34 @@ export default function Home() {
     }, []);
 
     function renderProjectGrid() {
-        // Only show first 4 projects in a 2x2 grid
-        const displayProjects = projects.slice(0, 4);
-        
+        // Show first 6 projects in a 3x2 grid
+        const displayProjects = projects.slice(0, 6);
+
         return displayProjects.map((p, idx) => {
-            const originalSrc = `/images/projects/${p.img_src}`;
+            // Check if the image source is a URL or a local path
+            const originalSrc = p.img_src.startsWith('http') ? p.img_src : `/images/projects/${p.img_src}`;
             const isHovered = hoveredIndex === idx;
-            
+
+            // Get color based on index
+            const getColor = () => {
+                if (idx % 3 === 0) return '#ff5252'; // Red
+                if (idx % 3 === 1) return '#6E89D7'; // Blue
+                return '#CDE9C1'; // Green
+            };
+
             // Apply color filter on hover with animation
             const imageStyle = {
-                filter: isHovered ? 
-                    `grayscale(100%) sepia(100%) hue-rotate(${
-                        idx % 3 === 0 ? '0deg' :  // Red
-                        idx % 3 === 1 ? '180deg' : // Blue
-                        '90deg'                   // Green
-                    }) saturate(3)` : 
+                filter: isHovered ?
+                    `brightness(1.1) contrast(1.1)` :
                     'none',
-                transition: 'filter 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-                transform: isHovered ? 'scale(1.05)' : 'scale(1)',
+                transition: 'all 0.4s ease',
                 width: '100%',
                 height: 'auto',
                 objectFit: 'cover',
                 aspectRatio: '16/9',
                 borderRadius: '8px',
             };
-    
+
             // Overlay animation styles
             const overlayStyle = {
                 position: 'absolute',
@@ -69,51 +72,82 @@ export default function Home() {
                 width: '100%',
                 height: '100%',
                 display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                flexDirection: 'column',
+                justifyContent: 'flex-end',
+                alignItems: 'flex-start',
+                background: isHovered ?
+                    `linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0) 100%)` :
+                    'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0) 100%)',
                 color: 'white',
-                fontSize: '1.5rem',
+                transition: 'all 0.4s ease',
+                padding: '20px',
+            };
+
+            // Title style
+            const titleStyle = {
+                fontSize: '1.2rem',
                 fontWeight: 'bold',
                 textTransform: 'uppercase',
                 letterSpacing: '1px',
-                opacity: isHovered ? 1 : 0,
-                transition: 'opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
+                marginBottom: '8px',
+                position: 'relative',
+                paddingBottom: '8px',
+                transition: 'all 0.4s ease',
+                transform: isHovered ? 'translateY(-5px)' : 'translateY(0)',
             };
-    
+
+            // Underline style
+            const underlineStyle = {
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                width: isHovered ? '100%' : '40px',
+                height: '2px',
+                backgroundColor: getColor(),
+                transition: 'all 0.4s ease',
+            };
+
+            // Card container style
+            const cardStyle = {
+                position: 'relative',
+                height: '100%',
+                overflow: 'hidden',
+                borderRadius: '8px',
+                boxShadow: isHovered ?
+                    `0 15px 30px rgba(0,0,0,0.2)` :
+                    '0 8px 20px rgba(0,0,0,0.15)',
+                transition: 'all 0.4s ease',
+                transform: isHovered ? 'translateY(-5px)' : 'translateY(0)',
+            };
+
             return (
-                <Grid key={idx} item xs={12} sm={6} md={6} className={styles.info_container}>
+                <Grid key={idx} item xs={12} sm={6} md={4}>
                     <Link href="/works" style={{ textDecoration: 'none' }}>
-                        <div 
-                            data-aos="fade-up"
+                        <div
                             onMouseEnter={() => setHoveredIndex(idx)}
                             onMouseLeave={() => setHoveredIndex(null)}
-                            style={{ 
+                            style={{
                                 cursor: 'pointer',
                                 height: '100%',
                                 padding: '12px',
                                 boxSizing: 'border-box',
-                                transition: 'transform 0.3s ease'
                             }}
                         >
-                            <div style={{ 
-                                position: 'relative',
-                                height: '100%',
-                                overflow: 'hidden',
-                                boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
-                                borderRadius: '8px',
-                            }}>
-                                <Image 
+                            <div style={cardStyle}>
+                                <Image
                                     src={originalSrc}
-                                    alt={`Project ${idx + 1}`}
+                                    alt={p.title || `Project ${idx + 1}`}
                                     width={500}
                                     height={300}
-                                    priority={true}
-                                    loading="eager"
+                                    priority={idx < 3}
+                                    loading={idx < 3 ? "eager" : "lazy"}
                                     style={imageStyle}
                                 />
                                 <div style={overlayStyle}>
-                                    View Project
+                                    <div style={titleStyle}>
+                                        {p.title}
+                                        <div style={underlineStyle}></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -130,15 +164,15 @@ export default function Home() {
             ) : (
                 <section className={styles.home_section}>
                     <section className={styles.hero_section}>
-                        <SDFAnimation className={`${styles.sdf_animation} sdf_animation`} data-aos="fade-up" />
+                        <SDFAnimation className={`${styles.sdf_animation} sdf_animation`} />
                         <div className={styles.hero_overlay}>
-                            <h1 className={styles.big_title} data-aos="fade-up">
+                            <h1 className={styles.big_title}>
                                 INNOVATION.
                             </h1>
-                            <h1 className={styles.big_title} data-aos="fade-up">
+                            <h1 className={styles.big_title}>
                                 RESEARCH.
                             </h1>
-                            <h1 className={styles.big_title} data-aos="fade-up">
+                            <h1 className={styles.big_title}>
                                 DESIGN.
                             </h1>
                         </div>

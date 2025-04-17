@@ -22,7 +22,7 @@ export default function WorksShowcase(props) {
             if (p.cover && p.cover.startsWith('http')) {
                 return p.cover;
             }
-            
+
             // Otherwise, use the local path
             if (props.data[props.theme].title === "Monks of Method") {
                 return `${public_url}/images/projects/Monks of Method/${p.cover}`;
@@ -75,63 +75,63 @@ export default function WorksShowcase(props) {
             "Computational Design": "Leveraging algorithms and digital tools to discover new design possibilities.",
             "Monks of Method": "Exploring the intersection of traditional craftsmanship and contemporary design methodologies."
         };
-        
+
         return descriptions[categoryTitle] || `Explore our collection of ${categoryTitle} projects.`;
     };
 
     const projectItems = useMemo(() => {
         let projects = [...props.data[props.theme].projects];
-        
+
         // For Computational Design, only show the first two projects
         if (props.data[props.theme].title === "Computational Design") {
             return projects.slice(0, 2);
         }
-        
+
         // For Material Experiments, only show the first three projects
         if (props.data[props.theme].title === "Material Experiments") {
             return projects.slice(0, 3);
         }
-        
+
         // For Interiors, only show the first two projects
         if (props.data[props.theme].title === "Interiors") {
             return projects;
         }
-        
+
         // For Furniture, only show the first two projects
         if (props.data[props.theme].title === "Furniture") {
             return projects.slice(0, 2);
         }
-        
+
         // For Furniture Design, show all projects
         if (props.data[props.theme].title === "Furniture Design") {
             return projects;
         }
-        
+
         // For Installation Design, show all projects
         if (props.data[props.theme].title === "Installation Design") {
             return projects;
         }
-        
+
         // For Interiors & Furniture Design, only show the first two projects
         if (props.data[props.theme].title === "Interiors & Furniture Design") {
             return projects.slice(0, 2);
         }
-        
+
         // For Competitions, show all projects
         if (props.data[props.theme].title === "Competitions") {
             return projects;
         }
-        
+
         // For Monks of Method, show all projects
         if (props.data[props.theme].title === "Monks of Method") {
             return projects;
         }
-        
+
         // For other categories, maintain the original logic
         while (projects.length < 6) {
             projects.push(...props.data[props.theme].projects);
         }
-        
+
         return projects.slice(0, 6);
     }, [props.data, props.theme]);
 
@@ -144,18 +144,18 @@ export default function WorksShowcase(props) {
 
     const getParallaxOffset = (index) => {
         if (!containerRef.current) return { x: 0, y: 0 };
-        
+
         const rect = containerRef.current.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
-        
+
         // Reduce divisor for smoother, more subtle movement
         const offsetX = (mousePosition.x - centerX) / 100;
         const offsetY = (mousePosition.y - centerY) / 100;
-        
+
         // Different offset for each item to create depth
         const depth = (index % 3 + 1) * 0.5;
-        
+
         return {
             x: offsetX * depth,
             y: offsetY * depth
@@ -163,7 +163,7 @@ export default function WorksShowcase(props) {
     };
 
     return (
-        <motion.div 
+        <motion.div
             className={styles.dynamicShowcase}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -171,22 +171,22 @@ export default function WorksShowcase(props) {
             ref={containerRef}
         >
             <div  className={styles.categoryHeader} style={{ borderColor: getCategoryColor() }}>
-                <motion.div 
+                <motion.div
                     className={styles.categoryPulse}
                     style={{ backgroundColor: getCategoryColor() }}
-                    animate={{ 
+                    animate={{
                         scale: [1, 1.2, 1],
                         opacity: [0.7, 0.9, 0.7]
                     }}
-                    transition={{ 
+                    transition={{
                         duration: 2,
                         repeat: Infinity,
                         repeatType: "reverse"
                     }}
                 />
-                
+
                 <div className={styles.categoryContent}>
-                    <motion.h1 
+                    <motion.h1
                         className={styles.categoryHeading}
                         initial={{ y: -30, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
@@ -194,8 +194,8 @@ export default function WorksShowcase(props) {
                     >
                         {props.data[props.theme].title}
                     </motion.h1>
-                    
-                    <motion.p 
+
+                    <motion.p
                         className={styles.categorySubheading}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -204,12 +204,13 @@ export default function WorksShowcase(props) {
                         {getCategoryDescription()}
                     </motion.p>
                 </div>
-                
-                <motion.button 
+
+                <motion.button
                     className={styles.viewModeToggle}
                     onClick={cycleViewMode}
-                    whileHover={{ scale: 1.1 }}
+                    whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.2)" }}
                     whileTap={{ scale: 0.95 }}
+                    transition={{ duration: 0.15, ease: "easeOut" }}
                 >
                     <span className={styles.toggleIcon}>⟳</span>
                     <span className={styles.toggleText}>Change View</span>
@@ -218,38 +219,40 @@ export default function WorksShowcase(props) {
 
             <AnimatePresence mode="wait">
                 {viewMode === "staggered" && (
-                    <motion.div 
+                    <motion.div
                         key="staggered"
                         className={styles.staggeredGrid}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.5 }}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3, ease: "easeOut" }}
                     >
                         {projectItems.map((project, index) => {
                             const parallax = getParallaxOffset(index);
                             return (
-                                <motion.div 
+                                <motion.div
                                     className={styles.staggeredItem}
                                     key={index}
                                     ref={el => projectsRef.current[index] = el}
-                                    initial={{ opacity: 0, y: 50 }}
-                                    animate={{ 
-                                        opacity: 1, 
+                                    initial={{ opacity: 0, y: 30 }}
+                                    animate={{
+                                        opacity: 1,
                                         y: 0,
                                     }}
                                     style={{
                                         x: parallax.x,
                                         y: parallax.y
                                     }}
-                                    transition={{ 
-                                        delay: index * 0.15, 
-                                        duration: 0.5,
-                                        // Remove the x and y transitions to use the style prop instead
+                                    transition={{
+                                        delay: index * 0.08, // Reduced delay between items
+                                        duration: 0.3, // Faster animation
+                                        ease: "easeOut"
                                     }}
-                                    whileHover={{ 
-                                        scale: 1.05, 
-                                        boxShadow: `0 20px 40px rgba(0,0,0,0.3), 0 0 30px ${getCategoryColor()}40`
+                                    whileHover={{
+                                        scale: 1.03, // Subtle scale
+                                        y: -5, // Slight lift effect
+                                        boxShadow: `0 20px 40px rgba(0,0,0,0.3), 0 0 30px ${getCategoryColor()}40`,
+                                        transition: { duration: 0.2, ease: "easeOut" } // Quick hover transition
                                     }}
                                 >
                                     <Link href={`/works/${project.title}`} passHref>
@@ -264,11 +267,12 @@ export default function WorksShowcase(props) {
                                                         className={styles.staggeredImage}
                                                         priority={index < 2}
                                                     />
-                                                    <motion.div 
+                                                    <motion.div
                                                         className={styles.staggeredOverlay}
                                                         style={{ backgroundColor: getCategoryColor() }}
                                                         initial={{ opacity: 0 }}
                                                         whileHover={{ opacity: 0.2 }}
+                                                        transition={{ duration: 0.15, ease: "easeOut" }}
                                                     />
                                                 </div>
                                             )}
@@ -282,13 +286,14 @@ export default function WorksShowcase(props) {
                                             </div>
                                             <div className={styles.staggeredAction}>
                                                 <span className={styles.staggeredView}>View</span>
-                                                <motion.span 
+                                                <motion.span
                                                     className={styles.staggeredArrow}
                                                     animate={{ x: [0, 5, 0] }}
-                                                    transition={{ 
-                                                        duration: 1.5,
+                                                    transition={{
+                                                        duration: 1.0, // Faster animation
                                                         repeat: Infinity,
-                                                        repeatType: "loop"
+                                                        repeatType: "loop",
+                                                        ease: "easeInOut"
                                                     }}
                                                 >→</motion.span>
                                             </div>
@@ -301,43 +306,45 @@ export default function WorksShowcase(props) {
                 )}
 
                 {viewMode === "list" && (
-                    <motion.div 
+                    <motion.div
                         key="list"
                         className={styles.listContainer}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.5 }}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3, ease: "easeOut" }}
                     >
                         {projectItems.map((project, index) => (
-                            <motion.div 
+                            <motion.div
                                 className={styles.listItem}
                                 key={index}
-                                initial={{ opacity: 0, x: -30 }}
+                                initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
-                                transition={{ 
-                                    delay: index * 0.1, 
-                                    duration: 0.5,
-                                    ease: [0.25, 0.1, 0.25, 1]
+                                transition={{
+                                    delay: index * 0.05, // Reduced delay
+                                    duration: 0.25, // Faster animation
+                                    ease: "easeOut"
                                 }}
-                                whileHover={{ 
-                                    x: 10,
+                                whileHover={{
+                                    x: 5, // Subtle movement
                                     backgroundColor: `rgba(255,255,255,0.05)`,
-                                    boxShadow: `0 10px 30px rgba(0,0,0,0.15), 0 0 0 1px ${getCategoryColor()}30`
+                                    boxShadow: `0 10px 30px rgba(0,0,0,0.15), 0 0 0 1px ${getCategoryColor()}30`,
+                                    transition: { duration: 0.15 } // Quick hover transition
                                 }}
                             >
                                 <Link href={`/works/${project.title}`} passHref>
                                     <div className={styles.listContent}>
                                         <div className={styles.listNumber}>
                                             <span>{(index + 1).toString().padStart(2, '0')}</span>
-                                            <motion.div 
+                                            <motion.div
                                                 className={styles.listLine}
                                                 style={{ backgroundColor: getCategoryColor() }}
                                                 initial={{ width: 0 }}
                                                 whileHover={{ width: '100%' }}
+                                                transition={{ duration: 0.2, ease: "easeOut" }}
                                             />
                                         </div>
-                                        
+
                                         {project.cover && (
                                             <div className={styles.listImageWrapper}>
                                                 <Image
@@ -347,15 +354,16 @@ export default function WorksShowcase(props) {
                                                     sizes="(max-width: 768px) 120px, 180px"
                                                     className={styles.listImage}
                                                 />
-                                                <motion.div 
+                                                <motion.div
                                                     className={styles.listImageOverlay}
                                                     initial={{ opacity: 0 }}
                                                     whileHover={{ opacity: 0.3 }}
+                                                    transition={{ duration: 0.15, ease: "easeOut" }}
                                                     style={{ backgroundColor: getCategoryColor() }}
                                                 />
                                             </div>
                                         )}
-                                        
+
                                         <div className={styles.listInfo}>
                                             <h3 className={styles.listTitle}>{project.title}</h3>
                                             <p className={styles.listDescription}>
@@ -367,19 +375,20 @@ export default function WorksShowcase(props) {
                                                 <span className={styles.listCategory}>{props.data[props.theme].title.split(' ')[0]}</span>
                                             </div>
                                         </div>
-                                        
-                                        <motion.div 
+
+                                        <motion.div
                                             className={styles.listAction}
                                             whileHover={{ x: 5 }}
                                             whileTap={{ scale: 0.95 }}
                                         >
-                                            <motion.span 
+                                            <motion.span
                                                 className={styles.listArrow}
                                                 animate={{ x: [0, 5, 0] }}
-                                                transition={{ 
-                                                    duration: 1.5,
+                                                transition={{
+                                                    duration: 1.0, // Faster animation
                                                     repeat: Infinity,
-                                                    repeatType: "loop"
+                                                    repeatType: "loop",
+                                                    ease: "easeInOut"
                                                 }}
                                             >→</motion.span>
                                         </motion.div>
@@ -391,24 +400,35 @@ export default function WorksShowcase(props) {
                 )}
 
                 {viewMode === "mosaic" && (
-                    <motion.div 
+                    <motion.div
                         key="mosaic"
-                        className={styles.mosaicGrid}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.5 }}
+                        className={`${styles.mosaicGrid} ${styles[`mosaicGrid${Math.min(projectItems.length, 6)}`]}`}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3, ease: "easeOut" }}
                     >
                         {projectItems.map((project, index) => (
-                            <motion.div 
-                                className={`${styles.mosaicItem} ${styles[`mosaicItem${index + 1}`]}`}
+                            <motion.div
+                                className={`${styles.mosaicItem} ${styles[`mosaicItem${index + 1}_${Math.min(projectItems.length, 6)}`]}`}
                                 key={index}
-                                initial={{ opacity: 0, scale: 0.9 }}
+                                initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: index * 0.1, duration: 0.5 }}
-                                whileHover={{ 
-                                    scale: 1.03,
-                                    zIndex: 5
+                                transition={{
+                                    delay: index * 0.05, // Reduced delay
+                                    duration: 0.25, // Faster animation
+                                    ease: "easeOut"
+                                }}
+                                whileHover={{
+                                    scale: 1.03, // Subtle scale
+                                    y: -5, // Slight lift effect
+                                    transition: {
+                                        type: "spring",
+                                        stiffness: 500, // Stiffer spring
+                                        damping: 25, // More damping for quicker settling
+                                        mass: 0.5, // Lighter mass for faster movement
+                                        duration: 0.2 // Faster overall
+                                    }
                                 }}
                             >
                                 <Link href={`/works/${project.title}`} passHref>
@@ -422,11 +442,15 @@ export default function WorksShowcase(props) {
                                                     sizes="(max-width: 768px) 100vw, 50vw"
                                                     className={styles.mosaicImage}
                                                 />
-                                                <motion.div 
+                                                <motion.div
                                                     className={styles.mosaicOverlay}
                                                     initial={{ opacity: 0.3 }}
                                                     whileHover={{ opacity: 0.1 }}
-                                                    style={{ 
+                                                    transition={{
+                                                        duration: 0.15, // Faster transition
+                                                        ease: "easeOut"
+                                                    }}
+                                                    style={{
                                                         background: `linear-gradient(to bottom, transparent, ${getCategoryColor()}99)`
                                                     }}
                                                 />
@@ -448,7 +472,7 @@ export default function WorksShowcase(props) {
                 )}
             </AnimatePresence>
 
-            <motion.div 
+            <motion.div
                 className={styles.showcaseFooter}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
