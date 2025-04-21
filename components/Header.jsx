@@ -150,6 +150,17 @@ export default function Header() {
     }, 2000); // Adjust time based on your loader duration
   }, []);
 
+  // Cleanup effect to restore scrolling if component unmounts while menu is open
+  useEffect(() => {
+    // Cleanup function to restore scrolling when component unmounts
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.height = '';
+      document.documentElement.style.overflow = '';
+      document.documentElement.style.height = '';
+    };
+  }, []);
+
   const navLinks = [
     { name: "home", path: "/" },
     { name: "ABOUT", path: "/about" },
@@ -189,7 +200,26 @@ export default function Header() {
     })
   };
 
-  const toggleMenu = () => setIsOpen(!isOpen);
+  // Toggle menu and control body scroll
+  const toggleMenu = () => {
+    const newState = !isOpen;
+    setIsOpen(newState);
+
+    // Prevent body scrolling when menu is open
+    if (newState) {
+      // Lock scrolling
+      document.body.style.overflow = 'hidden';
+      document.body.style.height = '100%';
+      document.documentElement.style.overflow = 'hidden';
+      document.documentElement.style.height = '100%';
+    } else {
+      // Restore scrolling
+      document.body.style.overflow = '';
+      document.body.style.height = '';
+      document.documentElement.style.overflow = '';
+      document.documentElement.style.height = '';
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -254,13 +284,24 @@ export default function Header() {
           {/* Mobile Menu */}
           <AnimatePresence>
             {isOpen && (
-              <motion.div
-                className={styles.mobileMenu}
-                initial="closed"
-                animate="open"
-                exit="closed"
-                variants={menuVariants}
-              >
+              <>
+                {/* Overlay behind the menu */}
+                <motion.div
+                  className={styles.menuOverlay}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  onClick={toggleMenu}
+                />
+
+                <motion.div
+                  className={styles.mobileMenu}
+                  initial="closed"
+                  animate="open"
+                  exit="closed"
+                  variants={menuVariants}
+                >
                 <div className={styles.closeButton} onClick={toggleMenu}>
                   <div className={styles.closeIcon} />
                 </div>
@@ -300,6 +341,7 @@ export default function Header() {
                   </motion.div>
                 </nav>
               </motion.div>
+              </>
             )}
           </AnimatePresence>
         </motion.header>

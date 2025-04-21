@@ -11,26 +11,26 @@ export default function Loader({ onFinish = () => {} }) {
   useEffect(() => {
     // Play the video when component mounts
     if (videoRef.current) {
-      // Set playback rate to make the video faster (1.5x speed)
-      videoRef.current.playbackRate = 1.5;
-      
+      // Set playback rate to make the video faster (2.5x speed for quicker loading)
+      videoRef.current.playbackRate = 2.5;
+
       // Add event listener for when video ends
       videoRef.current.addEventListener('ended', () => {
         // First mark the video as ended
         setVideoEnded(true);
-        
-        // Then fade out the loader after a delay
+
+        // Then fade out the loader quickly
         setTimeout(() => {
           setLoading(false);
           Cookies.set("hasLoaded", "true");
-          
-          // Add a slight delay before triggering home page animations
+
+          // Minimal delay before triggering home page animations
           setTimeout(() => {
             onFinish();
-          }, 300);
-        }, 1500); // Longer delay for smoother transition
+          }, 100);
+        }, 500); // Shorter delay for faster transition
       });
-      
+
       // Start playing the video
       videoRef.current.play().catch(error => {
         console.error("Video playback failed:", error);
@@ -41,11 +41,11 @@ export default function Loader({ onFinish = () => {} }) {
             setLoading(false);
             Cookies.set("hasLoaded", "true");
             onFinish();
-          }, 1500);
-        }, 3000);
+          }, 500);
+        }, 1000);
       });
     }
-    
+
     return () => {
       // Clean up event listener
       if (videoRef.current) {
@@ -61,10 +61,10 @@ export default function Loader({ onFinish = () => {} }) {
           className={styles.loaderContainer}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          exit={{ 
+          exit={{
             opacity: 0,
-            transition: { 
-              duration: 1.5,
+            transition: {
+              duration: 0.5,
               ease: "easeInOut"
             }
           }}
@@ -77,14 +77,14 @@ export default function Loader({ onFinish = () => {} }) {
               muted
               playsInline
             />
-            
+
             {videoEnded && (
-              <motion.div 
+              <motion.div
                 className={styles.fadeOverlay}
                 initial={{ opacity: 0 }}
-                animate={{ 
+                animate={{
                   opacity: 1,
-                  transition: { duration: 1.2 }
+                  transition: { duration: 0.5 }
                 }}
               />
             )}

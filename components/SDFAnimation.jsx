@@ -81,7 +81,24 @@ export default function SDFAnimation(props) {
 
     useEffect(() => {
         init();
-        animate();
+        // animate() is now called by the renderer's animation loop
+
+        // Clean up function
+        return () => {
+            if (renderer) {
+                renderer.setAnimationLoop(null); // Stop the animation loop
+                renderer.dispose(); // Dispose of the renderer
+            }
+
+            if (meshFromSDF) {
+                if (meshFromSDF.geometry) meshFromSDF.geometry.dispose();
+                if (meshFromSDF.material) meshFromSDF.material.dispose();
+            }
+
+            if (scene) {
+                scene.clear(); // Clear all objects from the scene
+            }
+        };
     }, [])
 
     function init() {
@@ -95,10 +112,30 @@ export default function SDFAnimation(props) {
         scene.background = new Color('#000');
         clock = new Clock();
 
-        renderer = new WebGLRenderer({antialias: true});
-        renderer.setPixelRatio( window.devicePixelRatio );
-        renderer.setSize( window.innerWidth, window.innerHeight );
-        containerRef.current.appendChild(renderer.domElement);
+        renderer = new WebGLRenderer({
+            antialias: true,
+            powerPreference: 'high-performance',
+            alpha: true
+        });
+
+        // Use a lower pixel ratio during scrolling for better performance
+        const pixelRatio = Math.min(window.devicePixelRatio, 2); // Cap at 2x for performance
+        renderer.setPixelRatio(pixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        // Enable optimizations
+        renderer.setAnimationLoop(animate); // More efficient than requestAnimationFrame
+
+        // Add the canvas to the DOM
+        if (containerRef.current) {
+            containerRef.current.appendChild(renderer.domElement);
+
+            // Add hardware acceleration styles to the canvas
+            const canvas = renderer.domElement;
+            canvas.style.willChange = 'transform';
+            canvas.style.transform = 'translateZ(0)';
+            canvas.style.backfaceVisibility = 'hidden';
+        }
 
         controls = new OrbitControls( camera, renderer.domElement );
         controls.enableDamping = true;
@@ -177,13 +214,45 @@ export default function SDFAnimation(props) {
         renderer.render( scene, camera );
     }
 
+    // Track if the page is being scrolled
+    const [isScrolling, setIsScrolling] = useState(false);
+    const scrollTimeout = useRef(null);
+
+    // Add scroll detection
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolling(true);
+
+            // Clear previous timeout
+            if (scrollTimeout.current) {
+                clearTimeout(scrollTimeout.current);
+            }
+
+            // Set a timeout to detect when scrolling stops
+            scrollTimeout.current = setTimeout(() => {
+                setIsScrolling(false);
+            }, 100);
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            if (scrollTimeout.current) {
+                clearTimeout(scrollTimeout.current);
+            }
+        };
+    }, []);
+
     function animate() {
-        requestAnimationFrame( animate );
+        // No need for requestAnimationFrame as we're using setAnimationLoop
 
         controls.update();
 
-        if ( settings.autoRotate ) {
-            meshFromSDF.rotation.y += Math.PI * 0.05 * clock.getDelta();
+        // Reduce animation complexity during scrolling
+        if (settings.autoRotate && meshFromSDF) {
+            // If scrolling, use a smaller rotation increment
+            const rotationSpeed = isScrolling ? Math.PI * 0.01 : Math.PI * 0.05;
+            meshFromSDF.rotation.y += rotationSpeed * clock.getDelta();
         }
 
         render();
@@ -197,6 +266,8 @@ export default function SDFAnimation(props) {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
+            willChange: 'transform', // Hint to browser to optimize
+            transform: 'translateZ(0)', // Force GPU acceleration
         }}>
             {/* Background element for the fractal */}
             <div style={{
@@ -211,6 +282,8 @@ export default function SDFAnimation(props) {
                 animation: 'pulse 8s ease-in-out infinite alternate',
                 top: isMobile ? '-20%' : '0', // Match the fractal position
                 transform: isMobile ? 'translateY(0)' : 'none',
+                willChange: 'transform, opacity', // Hint to browser to optimize
+                backfaceVisibility: 'hidden', // Force GPU acceleration
             }}></div>
 
             {/* Fractal container */}
@@ -224,6 +297,9 @@ export default function SDFAnimation(props) {
                 touchAction: 'none', // Important for touch devices
                 zIndex: 1,
                 top: isMobile ? '-20%' : '0', // Position higher on mobile
+                willChange: 'transform', // Hint to browser to optimize
+                transform: 'translateZ(0)', // Force GPU acceleration
+                backfaceVisibility: 'hidden', // Force GPU acceleration
             }}></div>
         </div>
     )

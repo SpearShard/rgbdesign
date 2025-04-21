@@ -5,6 +5,10 @@
     padding-bottom: 80px; /* Increased bottom padding */
     overflow-x: hidden; /* Prevent horizontal scrolling */
     overflow-y: auto; /* Allow vertical scrolling */
+
+    /* Ensure smooth scrolling */
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
 }
 
 @media (max-width: variables.$sm) {

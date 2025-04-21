@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { Grid, Box } from "@mui/material";
@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import IconButton from "@mui/material/IconButton";
 import EastIcon from "@mui/icons-material/East";
+import { motion } from "framer-motion";
 
 import SDFAnimation from "@/components/SDFAnimation";
 import styles from "@/styles/Home.module.scss";
@@ -35,6 +36,59 @@ export default function Home() {
         });
     }, []);
 
+    // Animation variants for project cards
+    const projectCardVariants = {
+        hidden: {
+            opacity: 0,
+            y: 50,
+            scale: 0.9,
+        },
+        visible: (idx) => ({
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            transition: {
+                duration: 0.6,
+                delay: idx * 0.15, // Staggered delay based on index
+                ease: [0.22, 1, 0.36, 1], // Custom cubic-bezier for smooth reveal
+            }
+        }),
+        hover: {
+            y: -10,
+            scale: 1.02,
+            transition: {
+                duration: 0.3,
+                ease: [0.43, 0.13, 0.23, 0.96], // Custom cubic-bezier for hover
+            }
+        }
+    };
+
+    // Animation variants for project content
+    const projectContentVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: { duration: 0.3 }
+        },
+        hover: {
+            transition: { duration: 0.3 }
+        }
+    };
+
+    // Animation variants for title
+    const titleVariants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: { y: 0, opacity: 1, transition: { duration: 0.3 } },
+        hover: { y: -5, transition: { duration: 0.3 } }
+    };
+
+    // Animation variants for underline
+    const underlineVariants = {
+        hidden: { width: '40px', opacity: 0.7 },
+        visible: { width: '40px', opacity: 1, transition: { duration: 0.3 } },
+        hover: { width: '100%', transition: { duration: 0.3 } }
+    };
+
     function renderProjectGrid() {
         // Show first 6 projects in a 3x2 grid
         const displayProjects = projects.slice(0, 6);
@@ -51,79 +105,16 @@ export default function Home() {
                 return '#CDE9C1'; // Green
             };
 
-            // Apply color filter on hover with animation
-            const imageStyle = {
-                filter: isHovered ?
-                    `brightness(1.1) contrast(1.1)` :
-                    'none',
-                transition: 'all 0.4s ease',
-                width: '100%',
-                height: 'auto',
-                objectFit: 'cover',
-                aspectRatio: '16/9',
-                borderRadius: '8px',
-            };
-
-            // Overlay animation styles
-            const overlayStyle = {
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'flex-end',
-                alignItems: 'flex-start',
-                background: isHovered ?
-                    `linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0) 100%)` :
-                    'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0) 100%)',
-                color: 'white',
-                transition: 'all 0.4s ease',
-                padding: '20px',
-            };
-
-            // Title style
-            const titleStyle = {
-                fontSize: '1.2rem',
-                fontWeight: 'bold',
-                textTransform: 'uppercase',
-                letterSpacing: '1px',
-                marginBottom: '8px',
-                position: 'relative',
-                paddingBottom: '8px',
-                transition: 'all 0.4s ease',
-                transform: isHovered ? 'translateY(-5px)' : 'translateY(0)',
-            };
-
-            // Underline style
-            const underlineStyle = {
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                width: isHovered ? '100%' : '40px',
-                height: '2px',
-                backgroundColor: getColor(),
-                transition: 'all 0.4s ease',
-            };
-
-            // Card container style
-            const cardStyle = {
-                position: 'relative',
-                height: '100%',
-                overflow: 'hidden',
-                borderRadius: '8px',
-                boxShadow: isHovered ?
-                    `0 15px 30px rgba(0,0,0,0.2)` :
-                    '0 8px 20px rgba(0,0,0,0.15)',
-                transition: 'all 0.4s ease',
-                transform: isHovered ? 'translateY(-5px)' : 'translateY(0)',
-            };
-
             return (
                 <Grid key={idx} item xs={12} sm={6} md={4}>
                     <Link href="/works" style={{ textDecoration: 'none' }}>
-                        <div
+                        <motion.div
+                            custom={idx}
+                            initial="hidden"
+                            whileInView="visible"
+                            whileHover="hover"
+                            variants={projectCardVariants}
+                            viewport={{ once: true, margin: "-50px" }}
                             onMouseEnter={() => setHoveredIndex(idx)}
                             onMouseLeave={() => setHoveredIndex(null)}
                             style={{
@@ -133,7 +124,17 @@ export default function Home() {
                                 boxSizing: 'border-box',
                             }}
                         >
-                            <div style={cardStyle}>
+                            <motion.div
+                                className={styles.projectCard}
+                                variants={projectContentVariants}
+                                style={{
+                                    position: 'relative',
+                                    height: '100%',
+                                    overflow: 'hidden',
+                                    borderRadius: '8px',
+                                    boxShadow: '0 8px 20px rgba(0,0,0,0.15)',
+                                }}
+                            >
                                 <Image
                                     src={originalSrc}
                                     alt={p.title || `Project ${idx + 1}`}
@@ -141,16 +142,58 @@ export default function Home() {
                                     height={300}
                                     priority={idx < 3}
                                     loading={idx < 3 ? "eager" : "lazy"}
-                                    style={imageStyle}
+                                    style={{
+                                        width: '100%',
+                                        height: 'auto',
+                                        objectFit: 'cover',
+                                        aspectRatio: '16/9',
+                                        borderRadius: '8px',
+                                    }}
                                 />
-                                <div style={overlayStyle}>
-                                    <div style={titleStyle}>
+                                <motion.div
+                                    variants={projectContentVariants}
+                                    style={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        width: '100%',
+                                        height: '100%',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        justifyContent: 'flex-end',
+                                        alignItems: 'flex-start',
+                                        background: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0) 100%)',
+                                        color: 'white',
+                                        padding: '20px',
+                                    }}
+                                >
+                                    <motion.div
+                                        variants={titleVariants}
+                                        style={{
+                                            fontSize: '1.2rem',
+                                            fontWeight: 'bold',
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '1px',
+                                            marginBottom: '8px',
+                                            position: 'relative',
+                                            paddingBottom: '8px',
+                                        }}
+                                    >
                                         {p.title}
-                                        <div style={underlineStyle}></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                        <motion.div
+                                            variants={underlineVariants}
+                                            style={{
+                                                position: 'absolute',
+                                                bottom: 0,
+                                                left: 0,
+                                                height: '2px',
+                                                backgroundColor: getColor(),
+                                            }}
+                                        />
+                                    </motion.div>
+                                </motion.div>
+                            </motion.div>
+                        </motion.div>
                     </Link>
                 </Grid>
             );

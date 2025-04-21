@@ -71,6 +71,17 @@ import SmoothScroll from "@/components/SmoothScroll";
 import Loader from "@/components/Loader";
 import Cookies from "js-cookie";
 import "@/styles/globals.scss";
+import dynamic from "next/dynamic";
+
+// Dynamically import the index page as the home page to avoid SSR issues with animations
+const HomePage = dynamic(() => import('./index'), { ssr: false, loading: () => null });
+
+// Disable Next.js page transition delay
+if (typeof window !== 'undefined') {
+  // Force instant page transitions
+  window.__NEXT_DATA__.gssp = true;
+  window.__NEXT_DATA__.ssr = false;
+}
 
 export default function App({ Component, pageProps }) {
   const [hasLoaded, setHasLoaded] = useState(true); // Default to true (no loader)
@@ -104,12 +115,29 @@ export default function App({ Component, pageProps }) {
       }
     };
 
+    // Optimize page transitions
+    const handleRouteChangeStart = () => {
+      // Preload the next page content
+      document.body.style.cursor = 'wait';
+    };
+
+    const handleRouteChangeComplete = () => {
+      // Reset cursor when page load is complete
+      document.body.style.cursor = '';
+    };
+
+    // Add event listeners
     window.addEventListener("beforeunload", handleBeforeUnload);
+    router.events.on('routeChangeStart', handleRouteChangeStart);
+    router.events.on('routeChangeComplete', handleRouteChangeComplete);
 
     return () => {
+      // Clean up all event listeners
       window.removeEventListener("beforeunload", handleBeforeUnload);
+      router.events.off('routeChangeStart', handleRouteChangeStart);
+      router.events.off('routeChangeComplete', handleRouteChangeComplete);
     };
-  }, [router.pathname]);
+  }, [router.pathname, router.events]);
 
   if (!isMounted) return null; // Prevents hydration issues
 
@@ -125,7 +153,13 @@ export default function App({ Component, pageProps }) {
             }}
           />
         ) : (
-          <Component {...pageProps} />
+          <>
+            {router.pathname === "/" ? (
+              <HomePage />
+            ) : (
+              <Component {...pageProps} />
+            )}
+          </>
         )}
       </Layout>
     </SmoothScroll>
