@@ -136,3 +136,15 @@ button {
   border-radius: 3px;
 }
 
+/* Animation keyframes */
+@keyframes pulse {
+  0% {
+    opacity: 0.5;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+

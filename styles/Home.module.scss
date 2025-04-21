@@ -26,6 +26,7 @@
 
   .hero_section {
     width: 100%;
+    // background-color: red;
     height: 100vh;
     position: relative;
     display: flex;
@@ -36,7 +37,7 @@
 
     &::after {
       content: '';
-      position: absolute;
+      position: relative;
       bottom: 0;
       left: 0;
       width: 100%;
@@ -46,12 +47,37 @@
     }
 
     .sdf_animation {
-      position: absolute;
+      position: relative;
       animation: zoomIn 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
       transform: scale(3);
       opacity: 0;
       bottom: 0;
       filter: contrast(1.1) brightness(1.1);
+      will-change: transform; // Optimize for animations
+      transform-style: preserve-3d; // Force GPU acceleration
+      backface-visibility: hidden; // Prevent flickering
+      perspective: 1000px; // Enhance 3D effect
+
+      &::before {
+        content: '';
+        position: absolute;
+        width: 80vmin;
+        height: 80vmin;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(variables.$primary_blue_text, 0.15) 0%,
+          rgba(variables.$primary_green_text, 0.1) 50%,
+          rgba(variables.$primary_red_text, 0.05) 100%
+        );
+        filter: blur(20px);
+        opacity: 0.8;
+        z-index: -1;
+        animation: pulse 8s ease-in-out infinite alternate;
+      }
     }
 
     @keyframes zoomIn {
@@ -65,8 +91,20 @@
       }
     }
 
+    @keyframes pulse {
+      0% {
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(0.95);
+      }
+      100% {
+        opacity: 0.8;
+        transform: translate(-50%, -50%) scale(1.05);
+      }
+    }
+
     .hero_overlay {
       position: absolute;
+      // background-color: turquoise;
       padding: 0px 5%;
       padding-bottom: 100px;
       text-align: left;
@@ -316,7 +354,17 @@
       }
 
       .sdf_animation {
-        bottom: 100px;
+        bottom: auto;
+        top: 40%; // Position higher on mobile
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        &::before {
+          width: 90vmin;
+          height: 90vmin;
+          opacity: 0.9;
+          filter: blur(30px);
+        }
       }
     }
 
@@ -386,7 +434,10 @@
 
 @media (max-width: 480px) {
   .sdf_container {
-    bottom: 130px;
+    bottom: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 }
 
@@ -394,7 +445,17 @@
   .home_section {
     .hero_section {
       .sdf_animation {
-        bottom: 120px;
+        bottom: auto;
+        top: 35%; // Position even higher on very small screens
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        &::before {
+          width: 95vmin;
+          height: 95vmin;
+          opacity: 1;
+          filter: blur(35px);
+        }
       }
     }
   }

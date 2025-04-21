@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import * as THREE from 'three';
 import {SDFGeometryGenerator} from 'three/examples/jsm/geometries/SDFGeometryGenerator';
 import {
     OrthographicCamera,
@@ -16,8 +17,20 @@ import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import gsap from 'gsap';
 
 export default function SDFAnimation(props) {
-
+    const [isMobile, setIsMobile] = useState(false);
     const containerRef = useRef(null);
+
+    // Check if mobile on client side
+    useEffect(() => {
+        setIsMobile(window.innerWidth <= 480);
+
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 480);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     let renderer, stats, meshFromSDF, scene, camera, clock, controls;
 
@@ -39,7 +52,7 @@ export default function SDFAnimation(props) {
             float power = 8.0;
             float r, theta, phi;
             float dr = 1.0;
-            
+
             float t0 = 1.0;
             for(int i = 0; i < 7; ++i) {
                 r = length(z);
@@ -50,15 +63,15 @@ export default function SDFAnimation(props) {
                 #else
                 phi = asin(z.z / r);
                 #endif
-                
+
                 dr = pow(r, power - 1.0) * dr * power + 1.0;
-            
+
                 r = pow(r, power);
                 theta = theta * power;
                 phi = phi * power;
-                
+
                 z = r * vec3(cos(theta)*cos(phi), sin(theta)*cos(phi), sin(phi)) + p;
-                
+
                 t0 = min(t0, r);
             }
 
@@ -90,6 +103,11 @@ export default function SDFAnimation(props) {
         controls = new OrbitControls( camera, renderer.domElement );
         controls.enableDamping = true;
         controls.enableZoom = false;
+        controls.enablePan = false;
+        controls.enableRotate = true;
+        controls.rotateSpeed = 0.5; // Make rotation more sensitive
+
+        // Don't add any event listeners that might interfere with touch/mouse events
 
         window.addEventListener( 'resize', onWindowResize );
 
@@ -110,7 +128,7 @@ export default function SDFAnimation(props) {
 
             const scale = Math.min( window.innerWidth, window.innerHeight ) / 2 * 1.06;
             meshFromSDF.scale.set( scale, scale, scale );
-    
+
             setMaterial();
 
             // if (window.innerWidth <= 480) {
@@ -172,6 +190,41 @@ export default function SDFAnimation(props) {
     }
 
     return (
-        <div ref={containerRef} style={{position: 'absolute'}}></div>
+        <div style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+        }}>
+            {/* Background element for the fractal */}
+            <div style={{
+                position: 'absolute',
+                width: '80vmin',
+                height: '80vmin',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(110,137,215,0.15) 0%, rgba(205,233,193,0.1) 50%, rgba(255,82,82,0.05) 100%)',
+                filter: 'blur(20px)',
+                opacity: 0.8,
+                zIndex: 0,
+                animation: 'pulse 8s ease-in-out infinite alternate',
+                top: isMobile ? '-20%' : '0', // Match the fractal position
+                transform: isMobile ? 'translateY(0)' : 'none',
+            }}></div>
+
+            {/* Fractal container */}
+            <div ref={containerRef} style={{
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                touchAction: 'none', // Important for touch devices
+                zIndex: 1,
+                top: isMobile ? '-20%' : '0', // Position higher on mobile
+            }}></div>
+        </div>
     )
 }
