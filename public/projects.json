@@ -6,6 +6,7 @@
                 "title": "Orb[i]s",
                 "subtitle": "The Future Culture",
                 "dir": "Orbis",
+                "video" : "https://vimeo.com/400959787?fl=pl&fe=sh",
                 "cover": "https://drive.google.com/uc?export=view&id=1BP2MlzI9wXjtf5Vt-Gsg0r0MdImJguJg",
                 "images": [
                     "https://drive.google.com/uc?export=view&id=1mzQk0XyAuHG5UoLw4VclAbAm_v-Ork9s",
@@ -64,6 +65,7 @@
             {
                 "title": "An Outdoor Swing",
                 "subtitle": "Using perceived ‘waste’ as a resource",
+                "video" : "https://ik.imagekit.io/0s6dxbeae/_%20an%20outdoor%20swing%20_%20Material%20-%20WoWboards%20by%20@trashconlabs%20An%20inspiring%20initiative%20seeded%20by%20the.mp4?updatedAt=1759265785030",
                 "dir": "An Outdoor Swing",
                 "cover": "https://drive.google.com/uc?export=view&id=12rq560HJLU8FkmyLtHO5BTJe3ncl0Wek",
                 "images": [
@@ -80,7 +82,7 @@
         "title": "Furniture Design",
         "projects": [
             {
-                "title": "Custom Show Stands at Head Start Educational Academy",
+                "title": "Custom Shoe Stands",
                 "subtitle": "",
                 "dir": "High School Shoe Stands_VB",
                 "cover": "https://drive.google.com/uc?export=view&id=1wV6C7XudGwdQCmgsCqHXvWJ3PiReqMOZ",
@@ -145,29 +147,28 @@
                 ]
             },
             {
-                "title": "Circle Packing - Shoe Storage at Head Start Educational Academy",
+                "title": "Circle Packing",
                 "subtitle": "Shoe storage that encourages interaction and play",
                 "dir": "Middle School Shoe Stands_VB",
                 "cover": "https://drive.google.com/uc?export=view&id=15IVPVc5TifH1Pgc-qmCYqF6VJZQCghUF",
-                "video": "https://drive.google.com/file/d/1AKy2DEHwiOKk3CwSqw9kEpB3py-Dn39W/preview",
+                "video": "https://ik.imagekit.io/0s6dxbeae/240502_Reel.mp4?updatedAt=1759259711549",
                 "images": [
                     "https://drive.google.com/uc?export=view&id=13aNIRWZOkT-NMlO9ZMTfcYp9QTZmsSYI",
                     "https://drive.google.com/uc?export=view&id=1-NxBM66LCXBhQ1Zs5cssAnF1tPMPQ54-",
-                    "https://drive.google.com/uc?export=view&id=1Dg-xn2SK1w9YQT_vL_k_ysdUr9UKMikV",
+                    
                     "https://drive.google.com/uc?export=view&id=1PLNw8mOy-kK6pXnml8Br4_ZRaZu_2l2s",
                     "https://drive.google.com/uc?export=view&id=1CAsrqG1WM7dSGtFuoa5Z_GEuQWUvs8HS",
                     "https://drive.google.com/uc?export=view&id=1ckiOQuPNmeQfK-Av-_KsymUFcda62y_9",
                     "https://drive.google.com/uc?export=view&id=1bGbgO_0YLJiNpZo0FV7_bXb-FEX0cpMw",
-                    "https://drive.google.com/uc?export=view&id=1rqMjYbsU7PS-zQBqJD3E7cx0oHBMJ5XO",
+                    
                     "https://drive.google.com/uc?export=view&id=15yuTejL9DaWJu70dagcv4C5rTvd9wNG0",
                     "https://drive.google.com/uc?export=view&id=1aDmsGbpFQpJDf0paCrkfZWdUFj4x-w59",
-                    "https://drive.google.com/uc?export=view&id=1rAgEhxCffTx4WQskT0DIKBCFr7hRVUMb",
+            
                     "https://drive.google.com/uc?export=view&id=1bewGFNLkOaSYNgTsT8-Ftkc1Fj0KaGwI",
                     "https://drive.google.com/uc?export=view&id=1sP7Ci2ZRcPu8RlZR6xm8XLexdgiwxqYS",
                     "https://drive.google.com/uc?export=view&id=1QbvfYkvFbHCrbODKNP5gPiBSR_WfCEYa",
                     "https://drive.google.com/uc?export=view&id=119HphbNDWr8b2vgY3bTJ7aUrE6wmklj6",
                     "https://drive.google.com/uc?export=view&id=1vOlIDLKGGEGu9tMo63gqaRs0ktmYPDLD",
-                    "https://drive.google.com/uc?export=view&id=1ON03HTydGXO1g_6We7-qOvvJa7Rs471A",
                     "https://drive.google.com/uc?export=view&id=1SV0cAgznINTZRVTTj4TLnX8TEslOUlsq",
                     "https://drive.google.com/uc?export=view&id=1kPGAMMqzq-GfQp5M7XbFdSBwBqvuihnl"
                 ],
@@ -258,14 +259,14 @@
         "title": "Interiors",
         "projects": [
             {
-                "title": "Conference Room at HSEA",
-                "subtitle": "School Name : Head Start Educational Academy, Bangalore",
+                "title": "Conference Room",
+                "subtitle": "",
                 "dir": "Conference Room",
                 "cover": "https://drive.google.com/uc?export=view&id=1vYlNh0-_6SK9ezupI1sF6E96RhAXLYCG",
                 "images": [
                     "https://drive.google.com/uc?export=view&id=1IKxeV4U3ag8fL4YZiFwTjB2G8bPQe5mi",
                     "https://drive.google.com/uc?export=view&id=16kjUrQgMjpgdyqXwqD4zzpYL8t1LCGlX",
-                    "https://drive.google.com/uc?export=view&id=1REIOhjXombQSI2xNLd2t7bCQnNtK1WBz",
+                    
                     "https://drive.google.com/uc?export=view&id=1hq3YB5c9KjrBEHMJdWKhR31gfcOmd5eT",
                     "https://drive.google.com/uc?export=view&id=1BldEVa3uxG6Hgv_WNjtgzQsRlMoBaC5H",
                     "https://drive.google.com/uc?export=view&id=1BYhk5uSyfBfeApfqS4dt9uegxXiJsENP",
@@ -286,7 +287,7 @@
             },
             
             {
-                "title": "Dining Hall at Head Start Educational Academy",
+                "title": "Dining Hall",
                 "subtitle": "A space where meals become a ritual of care, culture and community",
                 "dir": "Dining Hall_Middle School Block_AJ",
                 "cover": "https://drive.google.com/uc?export=view&id=1zAMlO07ZviFrootqWrfSIelOYxMCBTnD",
@@ -299,7 +300,7 @@
                 ],
                 "video": "https://www.youtube.com/embed/UGupcufBz8I?autoplay=1&mute=1&loop=1&playlist=UGupcufBz8I",
                 "description": [
-                    "Spanning 2,500 sq.ft., the dining hall at Head Start Educational Academy was reimagined to serve more than food, it serves values. Every day, 250-300 middle school students move through the space with ease: walking in lines, serving themselves, sitting on the floor with teachers, eating mindfully, washing their plates and leaving behind zero food waste.The design of the space quietly supports this daily rhythm. Sound reverberation was reduced by introducing a mildly textured flooring, while neutral white panel lights make the hall brighter and more grounded, playfulness is brought in through terrazzo counters, whose curves and forms were directly informed by mapping student movement patterns. To ensure efficiency, the wet area was cordoned off with a different colour and texture, clearly separating wet and dry zones. Together, these interventions absorb sound, guide flow, and spark interaction, transforming lunchtime into a shared ritual of responsibility, equality and mindfulness.",
+                    "Spanning 2,500 sqft., the dining hall at Head Start Educational Academy was reimagined to serve more than food, it serves values. Every day, 250-300 middle school students move through the space with ease: walking in lines, serving themselves, sitting on the floor with teachers, eating mindfully, washing their plates and leaving behind zero food waste.The design of the space quietly supports this daily rhythm. Sound reverberation was reduced by introducing a mildly textured flooring, while neutral white panel lights make the hall brighter and more grounded, playfulness is brought in through terrazzo counters, whose curves and forms were directly informed by mapping student movement patterns. To ensure efficiency, the wet area was cordoned off with a different colour and texture, clearly separating wet and dry zones. Together, these interventions absorb sound, guide flow, and spark interaction, transforming lunchtime into a shared ritual of responsibility, equality and mindfulness.",
                     "Design Team : Stavya Architects and RGB design",
                     "Photography and Videography : Anand Jaju",
                     "Location : Bangalore, India"
@@ -309,6 +310,7 @@
                 "title": "Prestige Oakwood Kitchen",
                 "subtitle": "Minimalist Kitchen with a Contemporary-Classical Twist",
                 "dir": "Prestige Oakwood_Kitchen",
+                "video":"https://ik.imagekit.io/0s6dxbeae/kitchen.mp4?updatedAt=1759266653071",
                 "cover": "https://drive.google.com/uc?export=view&id=1x0UBksOsFPeapCPFa9e42-Wtx7q3A8z4",
                 "images": [
                     "https://drive.google.com/uc?export=view&id=10r7NQ8oDrDoePC1njKq3PKtrYc17XsG3",

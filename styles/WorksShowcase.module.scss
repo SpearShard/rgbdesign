@@ -1,5 +1,16 @@
 @use "variables";
 
+.dynamicShowcase a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.dynamicShowcase a:hover,
+.dynamicShowcase a:focus,
+.dynamicShowcase a:active {
+  text-decoration: none;
+}
+
 .con {
     display: flex;
     flex-direction: column;
@@ -45,7 +56,7 @@
     font-size: 1.8rem;
     font-weight: bold;
     margin-bottom: 0.5rem;
-    color: #fff;
+    color: #ffffff;
 }
 
 .description {
@@ -246,11 +257,12 @@
 
 /* Add these new styles for Material Experiments */
 .dynamicShowcase {
+  // text-decoration: none;
   position: relative;
   width: 100%;
   min-height: auto; /* Changed from 100vh to auto */
   padding: 2rem;
-  background-color: #0a0a0a;
+  background-color: #000000;
   overflow: visible; /* Changed from hidden to visible */
   margin-bottom: 2rem; /* Added margin to separate sections */
   padding-bottom: 3rem; /* Extra padding at bottom to prevent cut-off */
@@ -272,7 +284,7 @@
   margin-bottom: 3rem;
   padding: 1.5rem;
   border-radius: 15px;
-  background-color: rgba(20, 20, 20, 0.7);
+  background-color: rgba(40, 38, 38, 0.7);
   backdrop-filter: blur(10px);
   border-left: 4px solid;
   position: relative;
@@ -359,8 +371,10 @@
 
 .staggeredContent {
   display: flex;
+  background-color: rgba(39, 36, 36, 0.2);
   flex-direction: column;
   height: 100%;
+  
 }
 
 .staggeredImageWrapper {
@@ -394,7 +408,8 @@
   font-size: 1.4rem;
   font-weight: 600;
   margin: 0 0 0.8rem;
-  color: white;
+  color: rgb(255, 255, 255);
+  text-decoration: none;
 }
 
 .staggeredMeta {

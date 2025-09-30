@@ -197,7 +197,7 @@ export default function WorksShowcase(props) {
                     </motion.p>
                 </div>
 
-                <motion.button
+                {/**<motion.button
                     className={styles.viewModeToggle}
                     onClick={cycleViewMode}
                     whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.2)" }}
@@ -206,7 +206,7 @@ export default function WorksShowcase(props) {
                 >
                     <span className={styles.toggleIcon}>⟳</span>
                     <span className={styles.toggleText}>Change View</span>
-                </motion.button>
+                </motion.button>**/}
             </div>
 
             <AnimatePresence mode="wait">

@@ -265,7 +265,21 @@ export default function WorksDetails() {
                             >
                                 <h3 className={styles.videoTitle}>Project Video</h3>
                                 <div className={styles.videoWrapper}>
-                                    {project.video.includes('youtube.com') || project.video.includes('youtu.be') ? (
+                                    {project.title === "Orb[i]s" && project.video.includes('vimeo.com') ? (
+                                        // Special orbis view for Vimeo videos
+                                        <iframe 
+                                            title="vimeo-player" 
+                                            src="https://player.vimeo.com/video/400959787?h=3d0a824e3c" 
+                                            width="640" 
+                                            height="360" 
+                                            frameBorder="0" 
+                                            referrerPolicy="strict-origin-when-cross-origin" 
+                                            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"   
+                                            allowFullScreen
+                                            className={styles.projectVideo}
+                                            style={{ width: '100%', height: '100%', minHeight: '500px' }}
+                                        />
+                                    ) : project.video.includes('youtube.com') || project.video.includes('youtu.be') ? (
                                         // For YouTube videos
                                         <iframe
                                             className={styles.projectVideo}
@@ -289,6 +303,9 @@ export default function WorksDetails() {
                                             controls
                                             className={styles.projectVideo}
                                             src={isUrl(project.video) ? project.video : `/images/projects/${theme}/${project.dir ? project.dir + '/' : ''}${project.video}`}
+                                            style={{
+                                                objectFit: 'contain'
+                                            }}
                                         />
                                     )}
                                 </div>
