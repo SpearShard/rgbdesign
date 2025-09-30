@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Instagram, Mail, Phone } from "lucide-react";
 import { motion } from "framer-motion";
 import styles from "@/styles/Contact.module.scss";
+import { LinkedIn } from "@mui/icons-material";
 
 export default function Contact() {
     return (
@@ -38,27 +39,29 @@ export default function Contact() {
                         </Link>
                     </motion.div>
                     
-                    <motion.div
-                        initial={{ x: -20, opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        transition={{ duration: 0.5, delay: 0.7 }}
-                    >
-                        <Link href="tel:+1234567890" className={styles.contactItem}>
-                            <Phone size={22} strokeWidth={1.5} />
-                            <span>+1 (234) 567-890</span>
-                        </Link>
-                    </motion.div>
                     
                     <motion.div
                         initial={{ x: -20, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         transition={{ duration: 0.5, delay: 0.9 }}
-                    >
+                        >
                         <Link href="https://www.instagram.com/rgb.designresearch" className={styles.contactItem}>
                             <Instagram size={22} strokeWidth={1.5} />
                             <span>@rgb.designresearch</span>
                         </Link>
                     </motion.div>
+
+                        <motion.div
+                            initial={{ x: -20, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
+                            transition={{ duration: 0.5, delay: 0.7 }}
+                        >
+                            <Link href="https://www.linkedin.com/company/rgbdesignresearch/" className={styles.contactItem}>
+                                <LinkedIn size={22} strokeWidth={1.5} />
+                                <span>rgbdesignresearch</span>
+                            </Link>
+                        </motion.div>
+
                 </motion.div>
                 
                 <motion.div 
