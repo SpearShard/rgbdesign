@@ -284,27 +284,7 @@
                     "Photography : Anand Jaju"
                 ]
             },
-            {
-                "title": "Dining Hall",
-                "subtitle": "",
-                "dir": "Dining Hall",
-                "cover": "https://drive.google.com/uc?export=view&id=1YmwCUhLZUIZYDVyL0-zFWv8Scr2xQgSN",
-                "images": [
-                    "https://drive.google.com/uc?export=view&id=1SmDIYZFVsGQMvYk_mAV2juE-2g0tDdf-",
-                    "https://drive.google.com/uc?export=view&id=17QCvcJoHltTy4IotY2cXqZ8CMhug8sX9",
-                    "https://drive.google.com/uc?export=view&id=1UCzv_xWrmFrfFYbbDM06lANuzGIlRitr",
-                    "https://drive.google.com/uc?export=view&id=1BsX-x_5v18KwA15EwelTwhiS82iH1YiJ",
-                    "https://drive.google.com/uc?export=view&id=1Ilfgm4zN2bDcynj64nbo5jp8Rhp6CPjl",
-                    "https://drive.google.com/uc?export=view&id=1U78ByvVcJ8pJ3tJ6_5iDSUc_2YmMDWZk",
-                    "https://drive.google.com/uc?export=view&id=1d77CB0Gh-OuU0NU08o-K6Eh7CkYnQ0JI",
-                    "https://drive.google.com/uc?export=view&id=1Rhk_B-ymaiPuqpGIeNh0Xq_Dvj7spJ-R"
-                ],
-                "description": [
-                    "The HSEA Conference Room Renovation project revitalized a 12-year-old space, prioritizing functionality, aesthetics, and virtual meeting capabilities. A standout feature is the custom-fabricated central false ceiling, meticulously designed to optimize weight of the structure whilst being coherence with the wall panels, adding a focal point and enhancing the overall ambiance of the space for meetings and collaboration.",
-                    "Project done in collaboration with Stavya Architects",
-                    "School name : Head Start Educational Academy, Bangalore"
-                ]
-            },
+            
             {
                 "title": "Dining Hall at Head Start Educational Academy",
                 "subtitle": "A space where meals become a ritual of care, culture and community",
@@ -399,31 +379,6 @@
             }
         ]
     },
-    "Monks_of_Method": {
-        "title": "Monks of Method",
-        "projects": [
-            {
-                "title": "Monks of Method",
-                "subtitle": "",
-                "dir": "",
-                "cover": "https://drive.google.com/uc?export=view&id=1xDTtXxM7SDsZnPnmDP_jmNfl7N_oDEb_",
-                "images": [
-                    "https://drive.google.com/uc?export=view&id=1xDTtXxM7SDsZnPnmDP_jmNfl7N_oDEb_",
-                    "https://drive.google.com/uc?export=view&id=16tNfb7nEhGj1aIUARPJUON0piST2EKGE",
-                    "https://drive.google.com/uc?export=view&id=1PEYo-vAIZrQ7itEw8q_Nm2vHMhiIE0od",
-                    "https://drive.google.com/uc?export=view&id=1yN2WsLQd2P6HEsr3-B4dBnk8KCvOziqh",
-                    "https://drive.google.com/uc?export=view&id=1clrB8D9HO-1cgmsOP-tcCqGNSpiM6LOu",
-                    "https://drive.google.com/uc?export=view&id=1zKJwYZl_JKTlGKnrsRpGbEBz10teQWM7",
-                    "https://drive.google.com/uc?export=view&id=1_rY0FdOQmEeF2uwabOv63LsdYtPasPfa",
-                    "https://drive.google.com/uc?export=view&id=1mux8pglll9fksbbrhyf-YuY0wxAlzxOf",
-                    "https://drive.google.com/uc?export=view&id=13JLkegN-uEByRpBtTMTMGpPOqP0XVM7l"
-                ],
-                "description": [
-                    "The design of the installation encapsulates the cultural mosaic of India through a geometric rangoli-inspired base and ascending steel curves, symbolising the nation's robust diversity and continual ascent. Alternating panels of corten steel reflect the rich tapestry of Indian heritage, while open spaces invite periodic cultural expressions, embodying India's adaptability. Culminating in flames that represent the eternal spirit of hope and resilience, this sculpture is a timeless tribute to India's shared history and democratic ethos, a beacon of unity and progress."
-                ]
-            }
-        ]
-    },
     "projects_list": [
         {
             "title": "Computational Design",
@@ -459,11 +414,7 @@
             "title": "SEA Pavilion",
             "img_src": "https://drive.google.com/uc?export=view&id=1e2AuqQ8jXiC_hHHusUFsn13vYfvVriTt",
             "theme": "competitions"
-        },
-        {
-            "title": "Monks of Method",
-            "img_src": "https://drive.google.com/uc?export=view&id=1xDTtXxM7SDsZnPnmDP_jmNfl7N_oDEb_",
-            "theme": "Monks_of_Method"
         }
+        
     ]
 }

@@ -24,16 +24,13 @@ export default function WorksShowcase(props) {
             }
 
             // Otherwise, use the local path
-            if (props.data[props.theme].title === "Monks of Method") {
-                return `${public_url}/images/projects/Monks of Method/${p.cover}`;
-            }
             return `${public_url}/images/projects/${props.data[props.theme].title}/${p.dir}/${p.cover}`;
         };
     }, [props.data, props.theme]);
 
     useEffect(() => {
         if (!preloaded) {
-            props.data[props.theme].projects.slice(0, 6).forEach((p) => {
+            props.data[props.theme].projects.slice(0, 5).forEach((p) => {
                 if (p.cover) {
                     const img = new window.Image();
                     img.src = getImageSrc(p);
@@ -60,7 +57,6 @@ export default function WorksShowcase(props) {
         if (categoryTitle === "Furniture Design") return "#9966cc";
         if (categoryTitle === "Installation Design") return "#33cccc"; // Added color for Installation Design
         if (categoryTitle === "Computational Design") return "#33ff33";
-        if (categoryTitle === "Monks of Method") return "#ffcc00";
         return "#ffffff";
     };
 
@@ -73,7 +69,7 @@ export default function WorksShowcase(props) {
             "Furniture Design": "Crafting unique furniture that balances form, function, and sustainability.",
             "Installation Design": "Creating immersive spatial experiences through interactive and responsive installations.", // Added description
             "Computational Design": "Leveraging algorithms and digital tools to discover new design possibilities.",
-            "Monks of Method": "Exploring the intersection of traditional craftsmanship and contemporary design methodologies."
+            
         };
 
         return descriptions[categoryTitle] || `Explore our collection of ${categoryTitle} projects.`;
@@ -122,10 +118,6 @@ export default function WorksShowcase(props) {
             return projects;
         }
 
-        // For Monks of Method, show all projects
-        if (props.data[props.theme].title === "Monks of Method") {
-            return projects;
-        }
 
         // For other categories, maintain the original logic
         while (projects.length < 6) {
@@ -279,7 +271,7 @@ export default function WorksShowcase(props) {
                                             <div className={styles.staggeredInfo}>
                                                 <h3 className={styles.staggeredTitle}>{project.title}</h3>
                                                 <div className={styles.staggeredMeta}>
-                                                    <span className={styles.staggeredYear}>{project.year || "2023"}</span>
+                                                    {/* <span className={styles.staggeredYear}>{project.year || "2023"}</span> */}
                                                     <span className={styles.staggeredDot} style={{ backgroundColor: getCategoryColor() }}></span>
                                                     <span className={styles.staggeredType}>{props.data[props.theme].title.split(' ')[0]}</span>
                                                 </div>
@@ -370,7 +362,7 @@ export default function WorksShowcase(props) {
                                                 {project.description || `A project exploring innovative design solutions in ${props.data[props.theme].title.toLowerCase()}.`}
                                             </p>
                                             <div className={styles.listMeta}>
-                                                <span className={styles.listYear}>{project.year || "2023"}</span>
+                                                {/* <span className={styles.listYear}>{project.year || "2023"}</span> */}
                                                 <span className={styles.listDot} style={{ backgroundColor: getCategoryColor() }}></span>
                                                 <span className={styles.listCategory}>{props.data[props.theme].title.split(' ')[0]}</span>
                                             </div>

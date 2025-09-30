@@ -51,7 +51,6 @@ export default function Works() {
             <WorksShowcase data={projectsData} theme={"furniture_design"}/>
             <WorksShowcase data={projectsData} theme={"installation_design"}/>
             <WorksShowcase data={projectsData} theme={"competitions"}/>
-            <WorksShowcase data={projectsData} theme={"Monks_of_Method"}/>
         </section>
     )
 }
