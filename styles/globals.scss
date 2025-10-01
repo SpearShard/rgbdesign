@@ -82,12 +82,14 @@ html, body {
   font-family: 'Satoshi';
   background-color: variables.$primary_background;
   color: variables.$text_default_color;
-  height: 100%;
+  min-height: 100%;
   width: 100%;
+  overflow-x: hidden; // Prevent horizontal scroll
+  overflow-y: auto; // Ensure vertical scroll is always available
 }
 
 #__next {
-  height: 100%;
+  min-height: 100%;
   width: 100%;
 }
 

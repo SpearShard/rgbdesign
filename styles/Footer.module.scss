@@ -1,13 +1,14 @@
 @use "variables";
 
 .footer_section {
-    position: fixed;
-    bottom: 0px;
-    padding-bottom: 6px;
+    position: relative;
+    bottom: auto;
+    padding: 20px 0;
     left: 0;
     width: 100%;
     text-align: center;
     background-color: #000000;
+    margin-top: 50px;
     small {
         display: block;
         padding: 1px 0;
@@ -16,9 +17,8 @@
 
 @media (max-width: variables.$sm) {
     .footer_section {
-        padding: 0 0px;
-        padding-top: 5px;
+        padding: 15px 0;
         font-size: 0.7rem;
-        // position: relative;
+        margin-top: 30px;
     }
 }

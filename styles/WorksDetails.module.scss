@@ -4,6 +4,7 @@
   background-color: #0a0a0a;
   color: #fff;
   overflow-x: hidden;
+  position: relative;
 }
 
 // Hero Section
@@ -121,6 +122,8 @@
   background-color: #0a0a0a;
   position: relative;
   z-index: 2;
+  padding-bottom: 100px; // Increased padding to ensure footer is visible
+  min-height: calc(100vh - 200px); // Ensure minimum height for content
 }
 
 // Main Content
