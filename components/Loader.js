@@ -73,7 +73,7 @@ export default function Loader({ onFinish = () => {} }) {
             <video
               ref={videoRef}
               className={styles.loaderVideo}
-              src="/255.mp4"
+              src="/0921.mp4"
               muted
               playsInline
             />
