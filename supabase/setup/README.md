@@ -10,7 +10,7 @@ Copy `.env.example` to `.env.local` and fill in:
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: project publishable key (or legacy anon key).
 - `NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY`: ImageKit public key.
 - `IMAGEKIT_PRIVATE_KEY`: ImageKit private key; server-side only.
-- `SUPABASE_SECRET_KEY`: only needed for the one-time import script; server/terminal only.
+- `SUPABASE_SERVICE_ROLE_KEY`: only needed for the one-time import script; server/terminal only.
 
 Never commit `.env.local`, a Supabase secret/service-role key, or the ImageKit private key.
 
@@ -31,7 +31,7 @@ After the schema is ready, run:
 
 ```powershell
 $env:NEXT_PUBLIC_SUPABASE_URL="https://njodwbhvtpehlcfdlifl.supabase.co"
-$env:SUPABASE_SECRET_KEY="YOUR_SUPABASE_SECRET_KEY"
+$env:SUPABASE_SERVICE_ROLE_KEY="YOUR_SUPABASE_SERVICE_ROLE_KEY"
 node scripts/import-projects-to-supabase.mjs
 ```
 
