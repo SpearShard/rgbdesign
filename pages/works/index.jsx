@@ -1,10 +1,4 @@
 import { useEffect } from 'react';
-import {
-    Grid
-} from '@mui/material';
-import Image from 'next/image';
-
-import TextBox from '@/components/TextBox';
 import WorksShowcase from '@/components/WorksShowcase';
 
 import projectsData from '@/public/projects.json';
@@ -45,12 +39,11 @@ export default function Works() {
 
     return (
         <section className={styles.projects_container}>
-            <WorksShowcase data={projectsData} theme={"computational_design"}/>
-            <WorksShowcase data={projectsData} theme={"material_experiments"}/>
-            <WorksShowcase data={projectsData} theme={"interiors"}/>
-            <WorksShowcase data={projectsData} theme={"furniture_design"}/>
-            <WorksShowcase data={projectsData} theme={"installation_design"}/>
-            <WorksShowcase data={projectsData} theme={"competitions"}/>
+            {Object.entries(projectsData)
+                .filter(([, category]) => Array.isArray(category.projects))
+                .map(([theme]) => (
+                    <WorksShowcase key={theme} data={projectsData} theme={theme} />
+                ))}
         </section>
     )
 }

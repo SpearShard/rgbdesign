@@ -75,57 +75,7 @@ export default function WorksShowcase(props) {
         return descriptions[categoryTitle] || `Explore our collection of ${categoryTitle} projects.`;
     };
 
-    const projectItems = useMemo(() => {
-        let projects = [...props.data[props.theme].projects];
-
-        // For Computational Design, only show the first two projects
-        if (props.data[props.theme].title === "Computational Design") {
-            return projects.slice(0, 2);
-        }
-
-        // For Material Experiments, only show the first three projects
-        if (props.data[props.theme].title === "Material Experiments") {
-            return projects.slice(0, 3);
-        }
-
-        // For Interiors, only show the first two projects
-        if (props.data[props.theme].title === "Interiors") {
-            return projects;
-        }
-
-        // For Furniture, only show the first two projects
-        if (props.data[props.theme].title === "Furniture") {
-            return projects.slice(0, 2);
-        }
-
-        // For Furniture Design, show all projects
-        if (props.data[props.theme].title === "Furniture Design") {
-            return projects;
-        }
-
-        // For Installation Design, show all projects
-        if (props.data[props.theme].title === "Installation Design") {
-            return projects;
-        }
-
-        // For Interiors & Furniture Design, only show the first two projects
-        if (props.data[props.theme].title === "Interiors & Furniture Design") {
-            return projects.slice(0, 2);
-        }
-
-        // For Competitions, show all projects
-        if (props.data[props.theme].title === "Competitions") {
-            return projects;
-        }
-
-
-        // For other categories, maintain the original logic
-        while (projects.length < 6) {
-            projects.push(...props.data[props.theme].projects);
-        }
-
-        return projects.slice(0, 6);
-    }, [props.data, props.theme]);
+    const projectItems = props.data[props.theme].projects;
 
     const cycleViewMode = () => {
         const modes = ["staggered", "list", "mosaic"];
