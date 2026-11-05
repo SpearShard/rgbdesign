@@ -4,7 +4,7 @@
  *
  * PowerShell:
  *   $env:NEXT_PUBLIC_SUPABASE_URL="https://YOUR_PROJECT.supabase.co"
- *   $env:SUPABASE_SERVICE_ROLE_KEY="sb_secret_..."
+ *   $env:SUPABASE_SERVICE_ROLE_KEY="<legacy service_role JWT from Supabase API settings>"
  *   node scripts/import-projects-to-supabase.mjs
  *
  * The script is idempotent by slug: it upserts project rows and replaces their gallery rows.
