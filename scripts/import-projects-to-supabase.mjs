@@ -1,10 +1,10 @@
 /**
  * One-time import of the existing public/projects.json into Supabase.
- * Run locally only: SUPABASE_SECRET_KEY must never be committed or exposed to a browser.
+ * Run locally only: SUPABASE_SERVICE_ROLE_KEY must never be committed or exposed to a browser.
  *
  * PowerShell:
  *   $env:NEXT_PUBLIC_SUPABASE_URL="https://YOUR_PROJECT.supabase.co"
- *   $env:SUPABASE_SECRET_KEY="sb_secret_..."
+ *   $env:SUPABASE_SERVICE_ROLE_KEY="sb_secret_..."
  *   node scripts/import-projects-to-supabase.mjs
  *
  * The script is idempotent by slug: it upserts project rows and replaces their gallery rows.
@@ -17,10 +17,10 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const source = JSON.parse(fs.readFileSync(path.join(root, "public/projects.json"), "utf8"));
 const baseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const secret = process.env.SUPABASE_SECRET_KEY;
+const secret = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!baseUrl || !secret) {
-  console.error("Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SECRET_KEY before running.");
+  console.error("Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY before running.");
   process.exit(1);
 }
 
