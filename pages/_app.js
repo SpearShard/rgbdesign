@@ -141,6 +141,11 @@ export default function App({ Component, pageProps }) {
 
   if (!isMounted) return null; // Prevents hydration issues
 
+  // Keep the private CMS outside the public site's layout and smooth-scroll wrappers.
+  if (router.pathname.startsWith("/admin")) {
+    return <Component {...pageProps} />;
+  }
+
   return (
     <SmoothScroll>
       <Layout>
