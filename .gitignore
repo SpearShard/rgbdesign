@@ -4,3 +4,7 @@ node_modules/
 .next/
 
 .vercel
+
+# Local secrets
+.env.local
+.env.*.local
