@@ -62,7 +62,7 @@ for (const [category, group] of Object.entries(source)) {
       dir: item.dir || null,
       cover_url: item.cover || item.images?.[0] || null,
       video_url: item.video || null,
-      description: Array.isArray(item.description) ? item.description.join("\\n\\n") : (item.description || null),
+      description: Array.isArray(item.description) ? item.description.join("\n\n") : (item.description || null),
       description_blocks: Array.isArray(item.description) ? item.description : [],
       metadata: Object.fromEntries(Object.entries(item).filter(([key]) =>
         !["title", "subtitle", "dir", "cover", "video", "images", "description"].includes(key)
