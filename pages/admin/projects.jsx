@@ -227,6 +227,9 @@ export default function CmsProjects() {
                           <span className={project.published ? styles.published : styles.draft}>
                             {project.published ? "Published" : "Draft"}
                           </span>
+                          <span className={styles.imageCount}>
+                            {project.images?.length || 0} {project.images?.length === 1 ? "image" : "images"}
+                          </span>
                         </div>
                         <div className={styles.projectCardInfo}>
                           <div className={styles.projectCardHeading}>
@@ -282,14 +285,40 @@ export default function CmsProjects() {
               <label>Client<input value={form.client || ""} onChange={e=>update("client",e.target.value)} /></label>
               <label>Location<input value={form.location || ""} onChange={e=>update("location",e.target.value)} /></label>
               <label>Legacy folder name<input value={form.dir || ""} onChange={e=>update("dir",e.target.value)} /></label>
-              <label className={styles.fullField}>Cover ImageKit URL<input value={form.cover_url || ""} onChange={e=>update("cover_url",e.target.value)} placeholder="https://ik.imagekit.io/…" /></label>
               <label className={styles.fullField}>Video URL<input value={form.video_url || ""} onChange={e=>update("video_url",e.target.value)} placeholder="Vimeo / YouTube / video URL" /></label>
             </div>
             <label className={styles.blockLabel}>Description paragraphs</label>
             {form.description_blocks.map((paragraph,index)=><div className={styles.paragraphRow} key={index}><textarea value={paragraph} onChange={e=>update("description_blocks",form.description_blocks.map((v,i)=>i===index?e.target.value:v))} /><button type="button" onClick={()=>update("description_blocks",form.description_blocks.filter((_,i)=>i!==index))}>Remove</button></div>)}
             <button type="button" className={styles.addParagraph} onClick={()=>update("description_blocks",[...form.description_blocks,""])}>＋ Add paragraph</button>
-            <div className={styles.uploadBox}><label>Upload gallery images to ImageKit<input type="file" accept="image/*" multiple disabled={busy} onChange={e=>uploadFiles(e.target.files)} /></label><p>Images are uploaded directly to ImageKit. Existing ImageKit URLs remain unchanged.</p></div>
-            <div className={styles.galleryGrid}>{form.images.map((image,index)=><div key={index}><img src={typeof image==="string"?image:image.image_url} alt="" /><button type="button" onClick={()=>update("images",form.images.filter((_,i)=>i!==index))}>Remove</button><button type="button" onClick={()=>update("cover_url",typeof image==="string"?image:image.image_url)}>Set cover</button></div>)}</div>
+            <section className={styles.coverPicker}>
+              <div className={styles.coverPickerHeading}>
+                <div><span className={styles.blockLabel}>Project cover</span><p>Choose the image used on the Works page and project cards.</p></div>
+                {form.cover_url && <button type="button" onClick={()=>update("cover_url","")}>Clear cover</button>}
+              </div>
+              {form.cover_url ? <img className={styles.coverPreview} src={form.cover_url} alt="Selected project cover" /> : <div className={styles.coverPlaceholder}>Your cover preview will appear here</div>}
+              {!form.images.length && <p className={styles.coverHint}>Upload images below, then select any image as the cover.</p>}
+            </section>
+            <div className={styles.uploadBox}>
+              <label>Upload gallery images<input type="file" accept="image/*" multiple disabled={busy} onChange={e=>{uploadFiles(e.target.files);e.target.value="";}} /></label>
+              <p>Images upload directly to ImageKit. They appear below once the upload succeeds.</p>
+            </div>
+            <div className={styles.galleryHeading}><span className={styles.blockLabel}>Gallery ({form.images.length})</span></div>
+            {form.images.length ? (
+              <div className={styles.galleryGrid}>{form.images.map((image,index)=>{
+                const imageUrl = typeof image==="string" ? image : image.image_url;
+                const isCover = form.cover_url === imageUrl;
+                return <div className={styles.galleryItem} key={index}>
+                  <button type="button" className={styles.galleryImageButton} onClick={()=>update("cover_url",imageUrl)} aria-label={isCover ? "Selected cover image" : "Set as cover image"}>
+                    <img src={imageUrl} alt={typeof image==="string" ? "" : image.alt_text || ""} />
+                    {isCover && <span className={styles.coverTag}>COVER</span>}
+                  </button>
+                  <div className={styles.galleryActions}>
+                    <button type="button" onClick={()=>update("cover_url",imageUrl)}>{isCover ? "Cover selected" : "Set as cover"}</button>
+                    <button type="button" onClick={()=>update("images",form.images.filter((_,i)=>i!==index))}>Remove</button>
+                  </div>
+                </div>;
+              })}</div>
+            ) : <div className={styles.galleryEmpty}>No gallery images yet. Choose images above to upload them.</div>}
             <label className={styles.checkbox}><input type="checkbox" checked={!!form.published} onChange={e=>update("published",e.target.checked)} /> Publish immediately after saving</label>
           </div>
           <div className={styles.editorFooter}><button type="button" className={styles.secondaryButton} onClick={()=>setForm(null)}>Cancel</button><button className={styles.primaryButton} disabled={busy}>{busy ? "Saving…" : form.published ? "Save & publish" : "Save draft"}</button></div>
