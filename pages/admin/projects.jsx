@@ -82,30 +82,24 @@ export default function CmsProjects() {
 
   const groupedProjects = useMemo(() => {
     const groups = categories.map(([key, title]) => ({
-      key,
-      title,
-      projects: filtered
-        .filter(project => project.category === key || project.category_title === title)
-        .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0) || a.title.localeCompare(b.title)),
+      key, title,
+      projects: filtered.filter(project => project.category === key || project.category_title === title)
+        .sort((a,b)=>(a.sort_order ?? 0)-(b.sort_order ?? 0) || a.title.localeCompare(b.title)),
     })).filter(group => group.projects.length);
-
-    const known = new Set(categories.map(([key, title]) => ({ key, title })));
     const unassigned = filtered.filter(project =>
-      !categories.some(([key, title]) => project.category === key || project.category_title === title)
+      !categories.some(([key,title]) => project.category === key || project.category_title === title)
     );
     if (unassigned.length) groups.push({
-      key: "other",
-      title: "Other projects",
-      projects: unassigned.sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0) || a.title.localeCompare(b.title)),
+      key:"other",title:"Other projects",
+      projects:unassigned.sort((a,b)=>(a.sort_order ?? 0)-(b.sort_order ?? 0) || a.title.localeCompare(b.title)),
     });
     return groups;
   }, [filtered]);
 
   const [collapsedGroups, setCollapsedGroups] = useState({});
-  function toggleGroup(key) {
-    setCollapsedGroups(current => ({ ...current, [key]: !current[key] }));
-  }
-
+  const [view, setView] = useState("grid");
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  function toggleGroup(key) { setCollapsedGroups(current => ({ ...current, [key]: !current[key] })); }
   function update(field, value) { setForm(current => ({ ...current, [field]: value })); }
 
   function moveGalleryImage(fromIndex, toIndex) {
@@ -246,99 +240,81 @@ export default function CmsProjects() {
     <>
       <Head><title>Projects CMS | RGB Design</title><meta name="robots" content="noindex,nofollow" /></Head>
       <main className={styles.dashboard}>
-        <aside className={styles.sidebar}>
-          <a className={styles.wordmark} href="/">RGB<span>.</span></a>
-          <p className={styles.sideLabel}>WORKSPACE</p>
-          <div className={styles.sideActive}><Icon name="grid" size={15} /><span>Projects</span></div>
-          <div className={styles.sideBottom}>
-            <span>{role?.role === "administrator" ? "Administrator" : "Project editor"}</span>
-            <button className={styles.logout} onClick={logout}>Sign out <Icon name="arrow" size={13} /></button>
+        <aside className={`${styles.sidebar} ${mobileNavOpen ? styles.sidebarOpen : ""}`} aria-label="Workspace navigation">
+          <div className={styles.brandRow}>
+            <a className={styles.wordmark} href="/" aria-label="RGB Design home">RGB<span>.</span></a>
+            <span className={styles.workspaceTag}>Studio</span>
+          </div>
+          <div className={styles.workspaceLabel}>Workspace</div>
+          <nav className={styles.sideNav}>
+            <a className={styles.sideActive} href="/admin/projects" aria-current="page"><Icon name="grid" size={16}/><span>Projects</span><span className={styles.navCount}>{projects.length}</span></a>
+          </nav>
+          <div className={styles.sidebarFoot}>
+            <div className={styles.accountMark}>{(role?.email || session?.user?.email || "R").slice(0,1).toUpperCase()}</div>
+            <div className={styles.accountCopy}><strong>{role?.email || session?.user?.email || "RGB editor"}</strong><span>{role?.role === "administrator" ? "Administrator" : "Project editor"}</span></div>
+            <button className={styles.logout} onClick={logout} aria-label="Sign out"><Icon name="arrow" size={15}/></button>
           </div>
         </aside>
         <section className={styles.content}>
-          <header className={styles.topbar}><span>RGB DESIGN / CONTENT</span><span>{role?.email || session?.user?.email}</span></header>
-          <div className={styles.headingRow}>
-            <div><p className={styles.eyebrow}>PROJECT LIBRARY</p><h1>Projects<span>.</span></h1><p className={styles.muted}>Manage the work displayed on rgbdesign.in.</p></div>
-            <button className={styles.primaryButton} onClick={()=>setForm(emptyProject())}><Icon name="plus" size={15} /> New project</button>
+          <header className={styles.topbar}>
+            <button type="button" className={styles.mobileMenu} onClick={()=>setMobileNavOpen(v=>!v)} aria-expanded={mobileNavOpen} aria-label="Toggle navigation">☰</button>
+            <div className={styles.breadcrumb}><span>Workspace</span><b>/</b><strong>Projects</strong></div>
+            <a className={styles.siteLink} href="/" target="_blank" rel="noreferrer">View website <Icon name="arrow" size={13}/></a>
+          </header>
+          <div className={styles.pageIntro}>
+            <div><h1>Projects</h1><p>Your portfolio, in progress and in public.</p></div>
+            <button type="button" className={styles.primaryButton} onClick={()=>setForm(emptyProject())}><Icon name="plus" size={16}/> Add project</button>
           </div>
-          <div className={styles.statsRow}>
-            <div><strong>{projects.length}</strong><span>Total projects</span></div>
-            <div><strong>{projects.filter(p=>p.published).length}</strong><span>Published</span></div>
-            <div><strong>{projects.filter(p=>!p.published).length}</strong><span>Drafts</span></div>
+
+          <div className={styles.overviewRow} aria-label="Project overview">
+            <div className={styles.overviewLead}><strong>{projects.length}</strong><span>Projects in library</span></div>
+            <div><strong>{projects.filter(p=>p.published).length}</strong><span>Live on website</span></div>
+            <div><strong>{projects.filter(p=>!p.published).length}</strong><span>Saved as drafts</span></div>
           </div>
-          {notice && <p className={styles.notice}>{notice}</p>}
-          {error && <p className={styles.error}>{error}</p>}
-          <div className={styles.toolbar}>
-            <input placeholder="Search projects…" value={query} onChange={e=>setQuery(e.target.value)} />
-            <select value={filter} onChange={e=>setFilter(e.target.value)}><option value="all">All projects</option><option value="published">Published</option><option value="draft">Drafts</option></select>
-          </div>
-          <div className={styles.categoryTree}>
-            {groupedProjects.map(group => (
-              <section className={styles.categoryGroup} key={group.key}>
-                <button
-                  type="button"
-                  className={styles.categoryHeader}
-                  onClick={() => toggleGroup(group.key)}
-                  aria-expanded={!collapsedGroups[group.key]}
-                >
-                  <span className={styles.categoryHeaderMain}>
-                    <span className={styles.categoryChevron}><Icon name="chevron" size={15} /></span>
-                    <span className={styles.categoryName}>{group.title}</span>
-                  </span>
-                  <span className={styles.categoryCount}>{group.projects.length} {group.projects.length === 1 ? "project" : "projects"}</span>
-                </button>
-                {!collapsedGroups[group.key] && (
-                  <div className={styles.projectGrid}>
-                    {group.projects.map(project => (
-                      <article className={styles.projectCard} key={project.id}>
-                        <div className={styles.projectCardImage}>
-                          {project.cover_url ? <img src={project.cover_url} alt={project.title} /> : <span>RGB.</span>}
-                          <span className={project.published ? styles.published : styles.draft}>
-                            {project.published ? "Published" : "Draft"}
-                          </span>
-                          <span className={styles.imageCount}>
-                            {project.images?.length || 0} {project.images?.length === 1 ? "image" : "images"}
-                          </span>
-                        </div>
-                        <div className={styles.projectCardInfo}>
-                          <div className={styles.projectCardHeading}>
-                            <div>
-                              <h3>{project.title}</h3>
-                              <p>{[project.year, project.client].filter(Boolean).join(" · ") || group.title}</p>
-                            </div>
-                            <button
-                              type="button"
-                              className={styles.cardMore}
-                              aria-label={`Edit ${project.title}`}
-                              onClick={() => setForm({
-                                ...project,
-                                description_blocks: project.description_blocks?.length ? project.description_blocks : [""],
-                                images: project.images || [],
-                              })}
-                            ><Icon name="arrow" size={14} /></button>
-                          </div>
-                          <div className={styles.projectCardActions}>
-                            <button className={styles.textButton} onClick={() => setForm({
-                              ...project,
-                              description_blocks: project.description_blocks?.length ? project.description_blocks : [""],
-                              images: project.images || [],
-                            })}>Edit project</button>
-                            <button className={styles.textButton} onClick={() => togglePublish(project)}>
-                              {project.published ? "Unpublish" : "Publish"}
-                            </button>
-                            <button className={styles.deleteButton} onClick={() => handleDelete(project)}>Delete</button>
-                          </div>
-                        </div>
-                      </article>
-                    ))}
+
+          {notice && <p className={styles.notice} role="status">{notice}</p>}
+          {error && <p className={styles.error} role="alert">{error}</p>}
+
+          <section className={styles.librarySection} aria-labelledby="library-title">
+            <div className={styles.libraryHeading}>
+              <div><h2 id="library-title">Your work</h2><p>Browse, edit and publish portfolio projects.</p></div>
+              <div className={styles.libraryCount}>{filtered.length} {filtered.length===1 ? "project" : "projects"}</div>
+            </div>
+            <div className={styles.libraryToolbar}>
+              <label className={styles.searchField}><Icon name="search" size={17}/><span className={styles.srOnly}>Search projects</span><input placeholder="Search by project, client or category" value={query} onChange={e=>setQuery(e.target.value)}/>{query && <button type="button" onClick={()=>setQuery("")} aria-label="Clear search">×</button>}</label>
+              <div className={styles.toolbarControls}>
+                <div className={styles.filterTabs} role="group" aria-label="Filter projects">
+                  {[["all","All"],["published","Published"],["draft","Drafts"]].map(([key,label])=><button type="button" key={key} onClick={()=>setFilter(key)} className={filter===key?styles.filterActive:""} aria-pressed={filter===key}>{label}<span>{key==="all"?projects.length:key==="published"?projects.filter(p=>p.published).length:projects.filter(p=>!p.published).length}</span></button>)}
+                </div>
+                <div className={styles.viewToggle} role="group" aria-label="Project view">
+                  <button type="button" onClick={()=>setView("grid")} className={view==="grid"?styles.viewActive:""} aria-pressed={view==="grid"} aria-label="Grid view"><Icon name="grid" size={16}/></button>
+                  <button type="button" onClick={()=>setView("list")} className={view==="list"?styles.viewActive:""} aria-pressed={view==="list"} aria-label="List view">☷</button>
+                </div>
+              </div>
+            </div>
+
+            <div className={view==="grid"?styles.projectGrid:styles.projectList}>
+              {groupedProjects.flatMap(group=>group.projects).map(project=>(
+                <article className={styles.projectCard} key={project.id}>
+                  <button type="button" className={styles.projectCardMedia} onClick={()=>setForm({...project,description_blocks:project.description_blocks?.length?project.description_blocks:[""],images:project.images||[]})} aria-label={`Edit ${project.title}`}>
+                    {project.cover_url ? <img src={project.cover_url} alt="" loading="lazy"/> : <span className={styles.mediaFallback}>RGB.</span>}
+                    <span className={styles.mediaNumber}>{String(project.sort_order ?? 0).padStart(2,"0")}</span>
+                  </button>
+                  <div className={styles.projectCardBody}>
+                    <div className={styles.projectCardTitleRow}><h3>{project.title}</h3><span className={project.published?styles.statusLive:styles.statusDraft}>{project.published?"Published":"Draft"}</span></div>
+                    <p>{project.subtitle || project.category_title || "Project"}</p>
+                    <div className={styles.projectCardDetails}><span>{project.year || "Year not set"}</span><span>{project.client || "No client"}</span><span>{project.images?.length || 0} images</span></div>
+                    <div className={styles.projectCardActions}>
+                      <button type="button" className={styles.textButton} onClick={()=>setForm({...project,description_blocks:project.description_blocks?.length?project.description_blocks:[""],images:project.images||[]})}>Edit project</button>
+                      <button type="button" className={styles.textButton} onClick={()=>togglePublish(project)}>{project.published?"Unpublish":"Publish"}</button>
+                      <button type="button" className={styles.deleteButton} onClick={()=>handleDelete(project)}>Delete</button>
+                    </div>
                   </div>
-                )}
-              </section>
-            ))}
-            {!groupedProjects.length && (
-              <div className={styles.emptyState}><span>—</span><h3>No projects found</h3><p>Try a different search or filter.</p></div>
-            )}
-          </div>
+                </article>
+              ))}
+              {!groupedProjects.length && <div className={styles.emptyState}><h3>{query?"No matching projects":"Your project library is empty"}</h3><p>{query?"Try a different title, client or category.":"Add a project to start building your portfolio."}</p>{!query&&<button type="button" className={styles.primaryButton} onClick={()=>setForm(emptyProject())}>Add your first project</button>}</div>}
+            </div>
+          </section>
         </section>
       </main>
       {form && <div className={styles.modalBackdrop}>
