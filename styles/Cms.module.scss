@@ -148,5 +148,5 @@
   .loginPanel { padding: 52px 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+  .loginPage *, .loginPage *::before, .loginPage *::after, .dashboard *, .dashboard *::before, .dashboard *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
