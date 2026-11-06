@@ -109,30 +109,77 @@ export default function CmsProjects() {
   function update(field, value) { setForm(current => ({ ...current, [field]: value })); }
 
   async function uploadFiles(files) {
-    if (!session || !files?.length) return;
-    setBusy(true); setError(""); setNotice("Preparing secure ImageKit upload…");
+    if (!session || !files?.length || !form) return;
+    if (!form.title.trim()) {
+      setError("Add a project title before uploading images so the gallery can be saved to the right project.");
+      return;
+    }
+
+    setBusy(true);
+    setError("");
+    setNotice("Preparing secure ImageKit upload…");
+
     try {
       const auth = await getImageKitSignature(session);
       const uploaded = [];
+
       for (const file of Array.from(files)) {
         const body = new FormData();
         body.append("file", file);
         body.append("fileName", file.name);
-        body.append("folder", `/RGB Projects/${slugify(form.title || "new-project")}`);
+        body.append("folder", `/RGB Projects/${slugify(form.title)}`);
         body.append("publicKey", auth.publicKey);
         body.append("token", auth.token);
         body.append("expire", String(auth.expire));
         body.append("signature", auth.signature);
-        const response = await fetch("https://upload.imagekit.io/api/v1/files/upload", { method: "POST", body });
+
+        const response = await fetch("https://upload.imagekit.io/api/v1/files/upload", {
+          method: "POST",
+          body,
+        });
         const result = await response.json();
-        if (!response.ok) throw new Error(result.message || "ImageKit upload failed.");
+        if (!response.ok || !result.url) {
+          throw new Error(result.message || `ImageKit could not upload ${file.name}.`);
+        }
+
         uploaded.push({ image_url: result.url, alt_text: form.title || result.name });
       }
-      setForm(current => ({ ...current, images: [...current.images, ...uploaded], cover_url: current.cover_url || uploaded[0]?.image_url }));
-      setNotice(`${uploaded.length} image(s) uploaded to ImageKit.`);
-      setSelectedFilesLabel(`${uploaded.length} image(s) uploaded successfully`);
-    } catch (err) { setError(err.message); }
-    finally { setBusy(false); }
+
+      // Persist the gallery as part of the upload flow. Previously, uploads only
+      // lived in React state until the user separately saved the whole project.
+      const nextImages = [...(form.images || []), ...uploaded];
+      const nextForm = {
+        ...form,
+        slug: form.slug || slugify(form.title),
+        images: nextImages,
+        cover_url: form.cover_url || uploaded[0]?.image_url || "",
+        published: form.id ? !!form.published : false,
+        description_blocks: (form.description_blocks || []).filter(Boolean),
+        sort_order: Number(form.sort_order || 0),
+        year: form.year ? Number(form.year) : null,
+      };
+
+      const saved = await saveProject(session, nextForm);
+      const rows = await listProjects(session);
+      const savedProject = rows.find(project => project.id === saved.id);
+
+      setProjects(rows);
+      setForm(current => current ? {
+        ...current,
+        id: saved.id,
+        slug: saved.slug || nextForm.slug,
+        images: savedProject?.images || nextImages,
+        cover_url: savedProject?.cover_url || nextForm.cover_url,
+        published: savedProject?.published ?? nextForm.published,
+      } : current);
+      setNotice(`${uploaded.length} image(s) uploaded and saved to the project gallery.`);
+      setSelectedFilesLabel(`${uploaded.length} image(s) uploaded and saved`);
+    } catch (err) {
+      setError(err.message || "Image upload failed. Please try again.");
+      setNotice("");
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function handleSave(event) {
