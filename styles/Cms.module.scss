@@ -164,3 +164,35 @@
 .chooseFilesButton:disabled{opacity:.55;cursor:wait;transform:none}
 .selectedFilesText{overflow-wrap:anywhere;margin:14px 0 5px!important;color:#c1cbd8!important;font-size:10px!important}
 @media(max-width:520px){.uploadControlRow{align-items:flex-start;flex-direction:column}.chooseFilesButton{width:100%}}
+
+/* Visual gallery manager */
+.galleryManager{margin-top:27px}
+.galleryManagerHeader{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:14px}
+.galleryManagerHeader .blockLabel{margin:0 0 6px}
+.galleryManagerHeader p{margin:0;color:#7f8998;font-size:10px;line-height:1.6}
+.galleryAddButton{flex:0 0 auto;min-height:36px;padding:0 14px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.055);color:#e7ebf1;font:10px 'Space Mono',monospace;cursor:pointer;transition:background .2s ease,border-color .2s ease}
+.galleryAddButton:hover{background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.35)}
+.galleryAddButton:disabled{opacity:.5;cursor:wait}
+.galleryManagerGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.galleryManagerItem{min-width:0;padding:7px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(255,255,255,.025);transition:border-color .2s ease,background .2s ease}
+.galleryManagerItem:hover{border-color:rgba(255,255,255,.24);background:rgba(255,255,255,.045)}
+.galleryManagerImage{position:relative;display:block;width:100%;overflow:hidden;padding:0;border:0;border-radius:9px;background:#10151d;cursor:pointer;aspect-ratio:4/3}
+.galleryManagerImage img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
+.galleryManagerImage:hover img{transform:scale(1.035)}
+.galleryIndex{position:absolute;right:7px;bottom:7px;padding:4px 6px;border-radius:5px;background:rgba(5,7,10,.72);color:#e4e9f1;font:8px 'Space Mono',monospace}
+.galleryManagerMeta{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:9px 1px 7px}
+.galleryManagerMeta>span{min-width:0;overflow:hidden;color:#aeb8c6;font:9px 'Space Mono',monospace;text-overflow:ellipsis;white-space:nowrap}
+.galleryManagerControls{display:flex;flex:0 0 auto;gap:3px}
+.galleryManagerControls button{min-width:25px;height:25px;padding:0 5px;border:1px solid rgba(255,255,255,.1);border-radius:6px;background:transparent;color:#b9c3d0;font:10px 'Space Mono',monospace;cursor:pointer}
+.galleryManagerControls button:last-child{padding:0 7px;color:#d58b91;font-size:8px}
+.galleryManagerControls button:hover:not(:disabled){border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.07);color:#fff}
+.galleryManagerControls button:disabled{opacity:.25;cursor:not-allowed}
+.coverSelectedButton,.coverSelectButton{width:100%;min-height:29px;border:1px solid rgba(255,255,255,.16);border-radius:7px;background:#e9edf4;color:#101319;font:9px 'Space Mono',monospace;cursor:pointer}
+.coverSelectButton{background:transparent;color:#aeb8c6}
+.coverSelectButton:hover{border-color:rgba(255,255,255,.4);color:#fff}
+.galleryEmpty{display:grid;justify-items:center;gap:9px;padding:28px 18px;border:1px dashed rgba(255,255,255,.15);border-radius:13px;color:#7f8998;text-align:center}
+.galleryEmpty strong{color:#dce2eb;font:500 14px 'Space Grotesk',sans-serif}
+.galleryEmpty span{max-width:330px;font-size:10px;line-height:1.6}
+.galleryEmpty button{margin-top:4px;padding:9px 14px;border:1px solid rgba(255,255,255,.2);border-radius:999px;background:#eef1f6;color:#101319;font:10px 'Space Mono',monospace;cursor:pointer}
+@media(max-width:520px){.galleryManagerHeader{align-items:flex-start;flex-direction:column}.galleryAddButton{width:100%}.galleryManagerGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.galleryManagerMeta{align-items:flex-start;flex-direction:column}.galleryManagerControls{width:100%}.galleryManagerControls button:last-child{margin-left:auto}}
+@media(prefers-reduced-motion:reduce){.galleryManagerItem,.galleryManagerImage img,.galleryAddButton{transition:none}}
