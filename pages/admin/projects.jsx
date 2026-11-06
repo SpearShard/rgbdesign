@@ -120,10 +120,11 @@ export default function CmsProjects() {
     setNotice("Preparing secure ImageKit upload…");
 
     try {
-      const auth = await getImageKitSignature(session);
       const uploaded = [];
 
       for (const file of Array.from(files)) {
+        // ImageKit requires a fresh, single-use token for every file upload.
+        const auth = await getImageKitSignature(session);
         const body = new FormData();
         body.append("file", file);
         body.append("fileName", file.name);
