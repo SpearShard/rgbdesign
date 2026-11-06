@@ -48,6 +48,7 @@ export default function CmsProjects() {
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
+  const [selectedFilesLabel, setSelectedFilesLabel] = useState("");
 
   async function refresh(activeSession) {
     const rows = await listProjects(activeSession);
@@ -128,6 +129,7 @@ export default function CmsProjects() {
       }
       setForm(current => ({ ...current, images: [...current.images, ...uploaded], cover_url: current.cover_url || uploaded[0]?.image_url }));
       setNotice(`${uploaded.length} image(s) uploaded to ImageKit.`);
+      setSelectedFilesLabel(`${uploaded.length} image(s) uploaded successfully`);
     } catch (err) { setError(err.message); }
     finally { setBusy(false); }
   }
@@ -299,8 +301,15 @@ export default function CmsProjects() {
               {!form.images.length && <p className={styles.coverHint}>Upload images below, then select any image as the cover.</p>}
             </section>
             <div className={styles.uploadBox}>
-              <label>Upload gallery images<input type="file" accept="image/*" multiple disabled={busy} onChange={e=>{uploadFiles(e.target.files);e.target.value="";}} /></label>
-              <p>Images upload directly to ImageKit. They appear below once the upload succeeds.</p>
+              <label>Upload gallery images<input type="file" accept="image/*" multiple disabled={busy} onChange={e=>{
+                const files = Array.from(e.target.files || []);
+                if (!files.length) return;
+                setSelectedFilesLabel(files.map(file=>file.name).join(", "));
+                uploadFiles(files);
+                e.target.value="";
+              }} /></label>
+              <p>{busy ? "Uploading selected images…" : selectedFilesLabel || "No images selected yet."}</p>
+              <p>Images upload directly to ImageKit and appear in the gallery when the upload succeeds.</p>
             </div>
             <div className={styles.galleryHeading}><span className={styles.blockLabel}>Gallery ({form.images.length})</span></div>
             {form.images.length ? (
