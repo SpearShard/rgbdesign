@@ -1,0 +1,4 @@
+/* Tailwind v4 utilities for the private CMS.
+   * Preflight is intentionally omitted to avoid changing the public portfolio UI. */
+@import "tailwindcss/theme";
+@import "tailwindcss/utilities";
