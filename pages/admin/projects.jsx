@@ -21,6 +21,18 @@ const categories = [
   ["monks_of_method", "Monks of Method"],
 ];
 
+function Icon({ name, size = 16, strokeWidth = 1.6 }) {
+  const paths = {
+    grid: <><rect x="3.5" y="3.5" width="7" height="7" rx="1.2" /><rect x="13.5" y="3.5" width="7" height="7" rx="1.2" /><rect x="3.5" y="13.5" width="7" height="7" rx="1.2" /><rect x="13.5" y="13.5" width="7" height="7" rx="1.2" /></>,
+    plus: <><path d="M12 5v14M5 12h14" /></>,
+    arrow: <><path d="M7 17 17 7M7 7h10v10" /></>,
+    chevron: <path d="m6 9 6 6 6-6" />,
+    search: <><circle cx="10.8" cy="10.8" r="6.8" /><path d="m16 16 4.5 4.5" /></>,
+    close: <><path d="m6 6 12 12M18 6 6 18" /></>,
+  };
+  return <svg aria-hidden="true" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">{paths[name]}</svg>;
+}
+
 function slugify(value) {
   return value.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
@@ -168,17 +180,17 @@ export default function CmsProjects() {
         <aside className={styles.sidebar}>
           <a className={styles.wordmark} href="/">RGB<span>.</span></a>
           <p className={styles.sideLabel}>WORKSPACE</p>
-          <div className={styles.sideActive}>▦ <span>Projects</span></div>
+          <div className={styles.sideActive}><Icon name="grid" size={15} /><span>Projects</span></div>
           <div className={styles.sideBottom}>
             <span>{role?.role === "administrator" ? "Administrator" : "Project editor"}</span>
-            <button className={styles.logout} onClick={logout}>Sign out ↗</button>
+            <button className={styles.logout} onClick={logout}>Sign out <Icon name="arrow" size={13} /></button>
           </div>
         </aside>
         <section className={styles.content}>
           <header className={styles.topbar}><span>RGB DESIGN / CONTENT</span><span>{role?.email || session?.user?.email}</span></header>
           <div className={styles.headingRow}>
             <div><p className={styles.eyebrow}>PROJECT LIBRARY</p><h1>Projects<span>.</span></h1><p className={styles.muted}>Manage the work displayed on rgbdesign.in.</p></div>
-            <button className={styles.primaryButton} onClick={()=>setForm(emptyProject())}>＋ New project</button>
+            <button className={styles.primaryButton} onClick={()=>setForm(emptyProject())}><Icon name="plus" size={15} /> New project</button>
           </div>
           <div className={styles.statsRow}>
             <div><strong>{projects.length}</strong><span>Total projects</span></div>
@@ -201,7 +213,7 @@ export default function CmsProjects() {
                   aria-expanded={!collapsedGroups[group.key]}
                 >
                   <span className={styles.categoryHeaderMain}>
-                    <span className={styles.categoryChevron}>{collapsedGroups[group.key] ? "＋" : "−"}</span>
+                    <span className={styles.categoryChevron}><Icon name="chevron" size={15} /></span>
                     <span className={styles.categoryName}>{group.title}</span>
                   </span>
                   <span className={styles.categoryCount}>{group.projects.length} {group.projects.length === 1 ? "project" : "projects"}</span>
@@ -231,7 +243,7 @@ export default function CmsProjects() {
                                 description_blocks: project.description_blocks?.length ? project.description_blocks : [""],
                                 images: project.images || [],
                               })}
-                            >↗</button>
+                            ><Icon name="arrow" size={14} /></button>
                           </div>
                           <div className={styles.projectCardActions}>
                             <button className={styles.textButton} onClick={() => setForm({
@@ -259,7 +271,7 @@ export default function CmsProjects() {
       </main>
       {form && <div className={styles.modalBackdrop}>
         <form className={styles.editor} onSubmit={handleSave}>
-          <div className={styles.editorHeader}><div><p className={styles.eyebrow}>{form.id ? "EDIT PROJECT" : "NEW PROJECT"}</p><h2>{form.title || "Untitled project"}</h2></div><button type="button" className={styles.closeButton} onClick={()=>setForm(null)}>×</button></div>
+          <div className={styles.editorHeader}><div><p className={styles.eyebrow}>{form.id ? "EDIT PROJECT" : "NEW PROJECT"}</p><h2>{form.title || "Untitled project"}</h2></div><button type="button" className={styles.closeButton} aria-label="Close editor" onClick={()=>setForm(null)}><Icon name="close" size={19} /></button></div>
           <div className={styles.editorBody}>
             <div className={styles.fieldGrid}>
               <label>Project title<input value={form.title} onChange={e=>{const title=e.target.value;setForm(c=>({...c,title,slug:c.id?c.slug:slugify(title)}));}} required /></label>
