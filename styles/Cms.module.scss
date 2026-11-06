@@ -304,3 +304,23 @@
   .dashboard *,.dashboard *::before,.dashboard *::after,.loginPage *,.loginPage *::before,.loginPage *::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}
   .projectCardMedia img,.galleryManagerImage img{transform:none!important}
 }
+
+/* Single-destination app shell: top bar, no redundant sidebar */
+.dashboard{grid-template-columns:minmax(0,1fr)}
+.topbar{justify-content:space-between}
+.topbarLeft,.topbarRight{display:flex;min-width:0;align-items:center;gap:20px}
+.topbarLeft .wordmark{font-size:25px}
+.topbarRight{gap:17px}
+.accountBadge{max-width:min(34vw,280px);overflow:hidden;color:var(--color-muted);font-size:11px;text-overflow:ellipsis;white-space:nowrap}
+.topbarRight .logout{display:inline-flex;width:auto;height:34px;flex:0 0 auto;align-items:center;justify-content:center;padding:0 11px;border:1px solid var(--color-rule);border-radius:6px;background:transparent;color:var(--color-ink-soft);font-size:11px}
+.topbarRight .logout:hover{border-color:#68745f;background:var(--color-surface);color:var(--color-ink)}
+@media(max-width:760px){
+  .topbarLeft,.topbarRight{gap:12px}
+  .topbarLeft .wordmark{font-size:23px}
+  .accountBadge{display:none}
+}
+@media(max-width:520px){
+  .topbarRight{gap:8px}
+  .topbarRight .logout{min-height:32px;padding-inline:8px;font-size:10px}
+  .siteLink{font-size:10px}
+}
