@@ -5,6 +5,7 @@
 // import Loader from "@/components/Loader";
 // import Cookies from "js-cookie";
 // import "@/styles/globals.scss";
+import "@/styles/tailwind.css";
 
 // export default function App({ Component, pageProps }) {
 //   const [hasLoaded, setHasLoaded] = useState(null);
