@@ -371,6 +371,8 @@ export default function CmsProjects() {
                 </button>
               </div>
               <p className={styles.selectedFilesText}>{busy ? "Uploading selected images…" : selectedFilesLabel || "No files selected"}</p>
+              {error && <p className={styles.error} role="alert">{error}</p>}
+              {notice && <p className={styles.notice} role="status">{notice}</p>}
               <p>Images upload directly to ImageKit and appear in the gallery when the upload succeeds.</p>
             </div>
             <div className={styles.galleryHeading}><span className={styles.blockLabel}>Gallery ({form.images.length})</span></div>
