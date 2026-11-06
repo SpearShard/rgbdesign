@@ -11,6 +11,104 @@ const emptyProject = () => ({
   sort_order: 0, published: false,
 });
 
+const rgbFavicon = "data:image/x-icon;base64,AAABAAEAICAAAAEAIACoEAAAFgAAACgAAAAgAAAAQAAAAAEAIAAAAAAAABAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAArFZBAKZTPwK3W0Miu1xDRLlcRDCyWUIItltDAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AK9XQQClUz4DvF1Eab9eRd7AX0X4wF9F7b1eRJe1WkMTuFxDAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAvF1EALhb
+Qz2/XkXswV9E/8FfRf/BX0X/wF9F/rxdRHrebU0Ao1E9ALCxsAD8/PwA9/f3
+LPr6+mj19fUQ9fb1AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOvs7ADm5uYD
++fn5VPn5+U3c29sB7e3tAAAAAAAAAAAAAAAAAG08MQDIYkcAvF1Ee8FfRf/B
+X0T/wV9F/8FfRf/BX0X/vl5Evq1WQAmtVkAAsLGwAP///wD6+vpq/f394ff4
+9y34+PgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA7u/vAO7u7gr8/Py4/Pz8
+revr6wbu7u4AAAAAAAAAAAAAAAAAazowAMZiRgC8XUR4wV9E/8FfRP/BX0T/
+wV9E/8FfRf++XkS6q1ZACKxWQAAAAAAA9/f3APX19RH39/ct8vPzBfLz8gAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAADo6OgAZ2ZgAPb29iL29vYf////AOPj
+4wAAAAAAAAAAAAAAAAAAAAAAu11EALhbQzS/XkTjwV9E/8FfRP/BX0T/wF9F
++rxdRGzNZUgAoVA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAACsV0EAjEo8AbpcRFC+XkTHv15E6b9eRNi8XUR7tFpCDLdb
+QwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAACfUT4AbTw0ALVaQhG4XEMot1tDGqtWQAKvV0EAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAABNxmoAS8NoA1DMbjxRzm9/Us5vfVDMbjdJwGQCTMVoAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASsJn
+AHD4jwBRzG9fU89x61PQcf9T0HH/U89x51HMbldd4H0ASL9kAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALCysQD3
+9/cA9fX1FPf39zby8/IH8vPyAAAAAAAAAAAAAAAAAAAAAABPym0AT8lsG1PP
+cdVU0HH/U9Bx/1PQcf9T0HH/Us9wzk7JaxZPyWsAAAAAAAAAAAAAAAAAAAAA
+APLz8gDx8vIJ9/f3OPX29RH39/cAAAAAAAAAAAAAAAAAra+wAP///wD6+vpt
+/f395ff39y74+PgAAAAAAAAAAAAAAAAAAAAAAFHNbwBQzG44U9Bx8lTQcf9T
+0HH/U9Bx/1PQcf9Tz3DtUMttMFDMbQAAAAAAAAAAAAAAAAAAAAAA+Pn5APb3
+9zn9/f3p+vr6X/7//wAAAAAAAAAAAAAAAACtr7AA/Pz8APf4+Cn6+vph9fX1
+D/X29gAAAAAAAAAAAAAAAAAAAAAAUMttAE/LbSVTz3HiVNBx/1PQcf9T0HH/
+U9Bx/1LPcNtPymwfT8psAAAAAAAAAAAAAAAAAAAAAAD29vYA9fX1E/r6+mL3
++Pci+vr6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAABMxWkARrxiA1LNcINT0HH6U9Bx/1PQcf9T0HH4Uc1v
+eDWgSwFKw2YAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAABPym0ATshrDFHNb2ZSz3CxUs9wr1HNb2BNyGoJTspsAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAA1oEgAKZA5AEi/YwVIv2IFCGcUADWgSgAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADZAAEB3wADAugA
+AwHpAAIA5QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAABkY/gAXFv0bGBf9dRgX/aAYF/15Fxb8
+HxkZ/wAQEPYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAFhX8HBkX/rcZGP7/GRj+/xkY/v8YGP7AFhX8HRcW
+/QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAYF/1zGRj+/BkY/v8ZGP7/GRj+/xkY/v8YF/1yGxr/AA0N9AAA
+AAAAAAAAAAAAAADq6+wA3+DhAfn5+T75+fk5jpGUAO7u7wAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAD19fUA9PX1Dvn6+lH39/cc+fn5AAAAAAAAAAAAAAAA
+ABgX/pYZGP7/GRj+/xkY/v8ZGP7/GRj+/xgY/pEgH/8ADg71AAAAAAAAAAAA
+AAAAAO/v8ADu7u8K/Pz8vPz8/LDt7u4G8PDxAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAPn6+gD4+Pg4/f396vr6+mH///8AAAAAAAAAAAAAAAAAGBf+ZhkY
+/vgZGP7/GRj+/xkY/v8ZGP78GBf9ZBoZ/gANDfUAAAAAAAAAAAAAAAAA6uvr
+AN3e3gH3+Pgz+Pj4LwAAAADq6+sAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+9fX1APT09Av5+flD9/f3Fvn5+QAAAAAAAAAAAAAAAAAWFfwRGBf9nBkY/vgZ
+GP7/GRj+9xgY/qEWFf0SFxb9AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABcW/QAWFfwQGBf9WxgX/oQYF/5a
+Fhb9EBcX/QAMDfkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAA/////////wf///4D///+A8f4fgHH+H4Bx/z+
+A////gP///+H////////////////////////////8D////A//8fgH4/H4B+P
+x+Afj//gH///8D////z//////////////////4P///8B////Afj/jwH4f48B
++P+PAf///4P///8=
+";
+
 const categories = [
   ["computational_design", "Computational Design"],
   ["material_experiments", "Material Experiments"],
@@ -244,7 +342,7 @@ export default function CmsProjects() {
         <section className={styles.content}>
           <header className={styles.topbar}>
             <div className={styles.topbarLeft}>
-              <a className={styles.wordmark} href="/" aria-label="RGB Design home">RGB<span>.</span></a>
+              <a className={styles.brandMark} href="/" aria-label="RGB Design home"><img src={rgbFavicon} alt="" /></a>
               <span className={styles.breadcrumb}><b>/</b><strong>Projects</strong></span>
             </div>
             <div className={styles.topbarRight}>
@@ -289,33 +387,46 @@ export default function CmsProjects() {
               <div className={styles.loadingGrid} aria-label="Loading projects">
                 {[0,1,2,3].map(index=><div className={styles.projectSkeleton} key={index}><span/><div><b/><i/></div></div>)}
               </div>
-            ) : <div className={view==="grid"?styles.projectGrid:styles.projectList}>
-              {groupedProjects.flatMap(group=>group.projects).map(project=>(
-                <article className={styles.projectCard} key={project.id}>
-                  <button type="button" className={styles.projectCardMedia} onClick={()=>setForm({...project,description_blocks:project.description_blocks?.length?project.description_blocks:[""],images:project.images||[]})} aria-label={`Edit ${project.title}`}>
-                    {project.cover_url ? <img src={project.cover_url} alt="" loading="lazy"/> : <span className={styles.mediaFallback}>RGB.</span>}
-                    <span className={styles.mediaNumber}>{String(project.sort_order ?? 0).padStart(2,"0")}</span>
-                  </button>
-                  <div className={styles.projectCardBody}>
-                    <div className={styles.projectCardTitleRow}><h3>{project.title}</h3><span className={project.published?styles.statusLive:styles.statusDraft}>{project.published?"Published":"Draft"}</span></div>
-                    <p>{project.subtitle || project.category_title || "Project"}</p>
-                    <div className={styles.projectCardDetails}><span>{project.year || "Year not set"}</span><span>{project.client || "No client"}</span><span>{project.images?.length || 0} images</span></div>
-                    <div className={styles.projectCardActions}>
-                      <button type="button" className={styles.textButton} onClick={()=>setForm({...project,description_blocks:project.description_blocks?.length?project.description_blocks:[""],images:project.images||[]})}>Edit project</button>
-                      <button type="button" className={styles.textButton} onClick={()=>togglePublish(project)}>{project.published?"Unpublish":"Publish"}</button>
-                      <button type="button" className={styles.deleteButton} onClick={()=>handleDelete(project)}>Delete</button>
+            ) : groupedProjects.length ? (
+              <div className={styles.projectCategories}>
+                {groupedProjects.map(group=>(
+                  <section className={styles.projectCategory} key={group.key} aria-labelledby={`category-${group.key}`}>
+                    <header className={styles.projectCategoryHeading}>
+                      <h3 id={`category-${group.key}`}>{group.title}</h3>
+                      <span>{group.projects.length} {group.projects.length===1?"project":"projects"}</span>
+                    </header>
+                    <div className={view==="grid"?styles.projectGrid:styles.projectList}>
+                      {group.projects.map(project=>(
+                        <article className={styles.projectCard} key={project.id}>
+                          <button type="button" className={styles.projectCardMedia} onClick={()=>setForm({...project,description_blocks:project.description_blocks?.length?project.description_blocks:[""],images:project.images||[]})} aria-label={`Edit ${project.title}`}>
+                            {project.cover_url ? <img src={project.cover_url} alt="" loading="lazy"/> : <span className={styles.mediaFallback}>RGB.</span>}
+                            <span className={styles.mediaNumber}>{String(project.sort_order ?? 0).padStart(2,"0")}</span>
+                          </button>
+                          <div className={styles.projectCardBody}>
+                            <div className={styles.projectCardTitleRow}><h4>{project.title}</h4><span className={project.published?styles.statusLive:styles.statusDraft}>{project.published?"Published":"Draft"}</span></div>
+                            <p>{project.subtitle || project.category_title || group.title}</p>
+                            <div className={styles.projectCardDetails}><span>{project.year || "Year not set"}</span><span>{project.client || "No client"}</span><span>{project.images?.length || 0} images</span></div>
+                            <div className={styles.projectCardActions}>
+                              <button type="button" className={styles.textButton} onClick={()=>setForm({...project,description_blocks:project.description_blocks?.length?project.description_blocks:[""],images:project.images||[]})}>Edit project</button>
+                              <button type="button" className={styles.textButton} onClick={()=>togglePublish(project)}>{project.published?"Unpublish":"Publish"}</button>
+                              <button type="button" className={styles.deleteButton} onClick={()=>handleDelete(project)}>Delete</button>
+                            </div>
+                          </div>
+                        </article>
+                      ))}
                     </div>
-                  </div>
-                </article>
-              ))}
-              {!groupedProjects.length && <div className={styles.emptyState}><h3>{query?"No matching projects":"Your project library is empty"}</h3><p>{query?"Try a different title, client or category.":"Add a project to start building your portfolio."}</p>{!query&&<button type="button" className={styles.primaryButton} onClick={()=>setForm(emptyProject())}>Add your first project</button>}</div>}
-            </div>}
+                  </section>
+                ))}
+              </div>
+            ) : (
+              <div className={styles.emptyState}><h3>{query?"No matching projects":"Your project library is empty"}</h3><p>{query?"Try a different title, client or category.":"Add a project to start building your portfolio."}</p>{!query&&<button type="button" className={styles.primaryButton} onClick={()=>setForm(emptyProject())}>Add your first project</button>}</div>
+            )}
           </section>
         </section>
       </main>
       {form && <div className={styles.modalBackdrop}>
         <form className={styles.editor} onSubmit={handleSave}>
-          <div className={styles.editorHeader}><div><p className={styles.eyebrow}>{form.id ? "Edit project" : "New project"}</p><h2>{form.title || "Untitled project"}</h2></div><button type="button" className={styles.closeButton} aria-label="Close editor" onClick={()=>setForm(null)}><Icon name="close" size={19} /></button></div>
+          <div className={styles.editorHeader}><div><p className={styles.eyebrow}>{form.id ? "Edit project" : "New project"}</p><h2 id="project-editor-title">{form.title || "Untitled project"}</h2></div><button type="button" className={styles.closeButton} aria-label="Close editor" onClick={()=>setForm(null)}><Icon name="close" size={19} /></button></div>
           <div className={styles.editorBody}>
             <div className={styles.fieldGrid}>
               <label>Project title<input value={form.title} onChange={e=>{const title=e.target.value;setForm(c=>({...c,title,slug:c.id?c.slug:slugify(title)}));}} required /></label>
