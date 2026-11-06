@@ -108,6 +108,24 @@ export default function CmsProjects() {
 
   function update(field, value) { setForm(current => ({ ...current, [field]: value })); }
 
+  function moveGalleryImage(fromIndex, toIndex) {
+    if (!form || toIndex < 0 || toIndex >= form.images.length || fromIndex === toIndex) return;
+    const images = [...form.images];
+    const [moved] = images.splice(fromIndex, 1);
+    images.splice(toIndex, 0, moved);
+    setForm(current => ({ ...current, images }));
+  }
+
+  function removeGalleryImage(index) {
+    const images = form.images.filter((_, imageIndex) => imageIndex !== index);
+    const removedUrl = typeof form.images[index] === "string" ? form.images[index] : form.images[index]?.image_url;
+    setForm(current => ({
+      ...current,
+      images,
+      cover_url: current.cover_url === removedUrl ? (typeof images[0] === "string" ? images[0] : images[0]?.image_url || "") : current.cover_url,
+    }));
+  }
+
   async function uploadFiles(files) {
     if (!session || !files?.length || !form) return;
     if (!form.title.trim()) {
@@ -376,23 +394,47 @@ export default function CmsProjects() {
               {notice && <p className={styles.notice} role="status">{notice}</p>}
               <p>Images upload directly to ImageKit and appear in the gallery when the upload succeeds.</p>
             </div>
-            <div className={styles.galleryHeading}><span className={styles.blockLabel}>Gallery ({form.images.length})</span></div>
-            {form.images.length ? (
-              <div className={styles.galleryGrid}>{form.images.map((image,index)=>{
-                const imageUrl = typeof image==="string" ? image : image.image_url;
-                const isCover = form.cover_url === imageUrl;
-                return <div className={styles.galleryItem} key={index}>
-                  <button type="button" className={styles.galleryImageButton} onClick={()=>update("cover_url",imageUrl)} aria-label={isCover ? "Selected cover image" : "Set as cover image"}>
-                    <img src={imageUrl} alt={typeof image==="string" ? "" : image.alt_text || ""} />
-                    {isCover && <span className={styles.coverTag}>COVER</span>}
-                  </button>
-                  <div className={styles.galleryActions}>
-                    <button type="button" onClick={()=>update("cover_url",imageUrl)}>{isCover ? "Cover selected" : "Set as cover"}</button>
-                    <button type="button" onClick={()=>update("images",form.images.filter((_,i)=>i!==index))}>Remove</button>
-                  </div>
-                </div>;
-              })}</div>
-            ) : <div className={styles.galleryEmpty}>No gallery images yet. Choose images above to upload them.</div>}
+            <section className={styles.galleryManager} aria-labelledby="gallery-manager-title">
+              <div className={styles.galleryManagerHeader}>
+                <div>
+                  <span className={styles.blockLabel} id="gallery-manager-title">Gallery</span>
+                  <p>{form.images.length} {form.images.length === 1 ? "image" : "images"} · Drag to reorder, or use the arrow controls</p>
+                </div>
+                <button type="button" className={styles.galleryAddButton} onClick={() => galleryFileInput.current?.click()} disabled={busy}>＋ Add images</button>
+              </div>
+              {form.images.length ? (
+                <div className={styles.galleryManagerGrid}>
+                  {form.images.map((image,index)=>{
+                    const imageUrl = typeof image === "string" ? image : image.image_url;
+                    const isCover = form.cover_url === imageUrl;
+                    const imageName = typeof image === "string" ? imageUrl.split("/").pop()?.split("?")[0] : image.alt_text || imageUrl.split("/").pop()?.split("?")[0];
+                    return <article
+                      className={styles.galleryManagerItem}
+                      key={imageUrl || index}
+                      draggable={!busy}
+                      onDragStart={event => { event.dataTransfer.effectAllowed = "move"; event.dataTransfer.setData("text/plain", String(index)); }}
+                      onDragOver={event => event.preventDefault()}
+                      onDrop={event => { event.preventDefault(); const from = Number(event.dataTransfer.getData("text/plain")); if (Number.isInteger(from)) moveGalleryImage(from,index); }}
+                    >
+                      <button type="button" className={styles.galleryManagerImage} onClick={()=>update("cover_url",imageUrl)} aria-label={isCover ? "Current cover image" : `Set ${imageName} as cover`}>
+                        <img src={imageUrl} alt={typeof image === "string" ? "" : image.alt_text || ""} loading="lazy" />
+                        {isCover && <span className={styles.coverTag}>Cover</span>}
+                        <span className={styles.galleryIndex}>{String(index+1).padStart(2,"0")}</span>
+                      </button>
+                      <div className={styles.galleryManagerMeta}>
+                        <span title={imageName}>{imageName}</span>
+                        <div className={styles.galleryManagerControls}>
+                          <button type="button" onClick={()=>moveGalleryImage(index,index-1)} disabled={index===0} aria-label={`Move ${imageName} earlier`}>←</button>
+                          <button type="button" onClick={()=>moveGalleryImage(index,index+1)} disabled={index===form.images.length-1} aria-label={`Move ${imageName} later`}>→</button>
+                          <button type="button" onClick={()=>removeGalleryImage(index)} aria-label={`Remove ${imageName}`}>Remove</button>
+                        </div>
+                      </div>
+                      <button type="button" className={isCover ? styles.coverSelectedButton : styles.coverSelectButton} onClick={()=>update("cover_url",imageUrl)}>{isCover ? "Selected cover" : "Use as cover"}</button>
+                    </article>;
+                  })}
+                </div>
+              ) : <div className={styles.galleryEmpty}><strong>Your gallery is empty</strong><span>Upload project photography to build the visual story. Your first image can become the cover.</span><button type="button" onClick={()=>galleryFileInput.current?.click()} disabled={busy}>Choose images</button></div>}
+            </section>
             <label className={styles.checkbox}><input type="checkbox" checked={!!form.published} onChange={e=>update("published",e.target.checked)} /> Publish immediately after saving</label>
           </div>
           <div className={styles.editorFooter}><button type="button" className={styles.secondaryButton} onClick={()=>setForm(null)}>Cancel</button><button className={styles.primaryButton} disabled={busy}>{busy ? "Saving…" : form.published ? "Save & publish" : "Save draft"}</button></div>
