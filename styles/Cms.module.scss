@@ -465,3 +465,6 @@
 @media(prefers-reduced-motion:reduce){
   .projectCardMedia img,.galleryManagerImage img{transition:none}
 }
+
+.overviewLead strong{font-size:31px}
+.overviewLead span{color:var(--color-ink-soft);font-weight:600}
