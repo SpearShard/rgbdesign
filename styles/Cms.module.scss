@@ -129,3 +129,28 @@
 @media(max-width:1000px){.dashboard{grid-template-columns:205px minmax(0,1fr)}.projectGrid{gap:14px}.content{padding-right:18px;padding-left:18px}.categoryGroup{padding:18px}}
 @media(max-width:700px){.loginPage{grid-template-columns:1fr}.loginAside{display:none}.dashboard{grid-template-columns:1fr;padding:9px;gap:12px}.sidebar{position:relative;top:auto;height:auto;min-height:auto;flex-direction:row;align-items:center;justify-content:space-between;padding:15px 19px;border-radius:21px}.sidebar .sideLabel,.sideActive{display:none}.sideBottom{display:flex;align-items:center;gap:14px;margin:0;padding:0;border:0}.content{padding:0 9px 40px}.topbar{height:57px;font-size:8px;letter-spacing:1px}.headingRow{align-items:flex-start;flex-direction:column;padding:39px 0 28px}.headingRow h1{font-size:76px}.statsRow{gap:8px;margin-bottom:25px}.statsRow div{min-height:75px;display:grid;gap:5px;padding:12px;border-radius:16px}.statsRow strong{font-size:34px}.statsRow span{font-size:8px}.toolbar{flex-wrap:wrap;padding:8px;border-radius:18px}.toolbar input{max-width:none;flex:1;min-width:150px}.toolbar select{max-width:145px}.categoryTree{gap:15px}.categoryGroup{padding:16px 13px 17px;border-radius:21px}.categoryName{font-size:22px}.projectGrid{grid-template-columns:1fr;gap:14px}.projectCard{border-radius:21px}.projectCardActions{opacity:1}.fieldGrid{grid-template-columns:1fr}.fullField{grid-column:auto}.modalBackdrop{padding:6px}.editor{border-radius:22px}.editorHeader,.editorFooter{padding:17px 19px}.editorBody{padding:18px}.galleryGrid{grid-template-columns:repeat(3,1fr)}.loginPanel{padding:52px 0}}
 @media(prefers-reduced-motion:reduce){.dashboard *,.dashboard *:before,.dashboard *:after,.loginPage *,.loginPage *:before,.loginPage *:after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}}
+
+/* Project cover and gallery management */
+.imageCount{position:absolute;z-index:2;right:12px;top:12px;padding:7px 10px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(5,7,10,.68);color:#e0e6ef;font:9px 'Space Mono',monospace;backdrop-filter:blur(14px)}
+.coverPicker{margin-top:28px;padding:18px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:rgba(255,255,255,.025)}
+.coverPickerHeading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.coverPickerHeading .blockLabel{margin:0 0 7px}
+.coverPickerHeading p,.coverHint{margin:0;color:#7f8998;font-size:10px;line-height:1.6}
+.coverPickerHeading>button{flex:0 0 auto;border:0;background:none;color:#9ba8ba;font:9px 'Space Mono',monospace;cursor:pointer}
+.coverPickerHeading>button:hover{color:#fff}
+.coverPreview{display:block;width:100%;max-height:230px;margin-top:16px;border:1px solid rgba(255,255,255,.12);border-radius:13px;background:#111720;object-fit:cover}
+.coverPlaceholder{display:grid;min-height:125px;margin-top:15px;place-items:center;border:1px dashed rgba(255,255,255,.13);border-radius:13px;color:#697585;font-size:11px}
+.coverHint{margin-top:12px}
+.galleryHeading{margin-top:25px}
+.galleryHeading .blockLabel{margin:0}
+.galleryGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:13px 0 20px}
+.galleryItem{min-width:0;overflow:hidden;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:#0a0d12}
+.galleryImageButton{position:relative;display:block;width:100%;padding:0;border:0;background:#111720;cursor:pointer}
+.galleryGrid .galleryImageButton img{display:block;width:100%;height:125px;object-fit:cover;transition:transform .45s ease,opacity .3s ease}
+.galleryImageButton:hover img{transform:scale(1.035);opacity:.88}
+.coverTag{position:absolute;left:8px;top:8px;padding:5px 8px;border-radius:999px;background:#e9edf4;color:#11151c;font:8px 'Space Mono',monospace}
+.galleryActions{display:flex;justify-content:space-between;gap:5px;padding:7px 8px}
+.galleryActions button{border:0;background:none;color:#aab5c5;cursor:pointer;font:8px 'Space Mono',monospace}
+.galleryActions button:hover{color:#fff}
+.galleryEmpty{padding:22px 15px;border:1px dashed rgba(255,255,255,.12);border-radius:13px;color:#778394;text-align:center;font-size:10px}
+@media(max-width:700px){.galleryGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.galleryGrid .galleryImageButton img{height:115px}}
