@@ -175,6 +175,15 @@ export default function CmsProjects() {
     return () => { mounted = false; };
   }, [router]);
 
+  useEffect(() => {
+    if (!form) return undefined;
+    const handleEscape = event => {
+      if (event.key === "Escape" && !busy) setForm(null);
+    };
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [form, busy]);
+
   const filtered = useMemo(() => projects.filter(p =>
     (filter === "all" || (filter === "published" ? p.published : !p.published)) &&
     `${p.title} ${p.category_title || ""} ${p.client || ""}`.toLowerCase().includes(query.toLowerCase())
@@ -428,6 +437,8 @@ export default function CmsProjects() {
         <form className={styles.editor} onSubmit={handleSave}>
           <div className={styles.editorHeader}><div><p className={styles.eyebrow}>{form.id ? "Edit project" : "New project"}</p><h2 id="project-editor-title">{form.title || "Untitled project"}</h2></div><button type="button" className={styles.closeButton} aria-label="Close editor" onClick={()=>setForm(null)}><Icon name="close" size={19} /></button></div>
           <div className={styles.editorBody}>
+            <section className={styles.editorSection}>
+              <div className={styles.editorSectionTitle}><h3>Project details</h3><p>The essentials visitors see on the portfolio.</p></div>
             <div className={styles.fieldGrid}>
               <label>Project title<input value={form.title} onChange={e=>{const title=e.target.value;setForm(c=>({...c,title,slug:c.id?c.slug:slugify(title)}));}} required /></label>
               <label>URL slug<input value={form.slug} onChange={e=>update("slug",slugify(e.target.value))} required /></label>
@@ -439,9 +450,14 @@ export default function CmsProjects() {
               <label>Legacy folder name<input value={form.dir || ""} onChange={e=>update("dir",e.target.value)} /></label>
               <label className={styles.fullField}>Video URL<input value={form.video_url || ""} onChange={e=>update("video_url",e.target.value)} placeholder="Vimeo / YouTube / video URL" /></label>
             </div>
-            <label className={styles.blockLabel}>Description paragraphs</label>
+            </section>
+            <section className={styles.editorSection}>
+            <div className={styles.editorSectionTitle}><h3>Project description</h3><p>Shape the story behind this work.</p></div>
             {form.description_blocks.map((paragraph,index)=><div className={styles.paragraphRow} key={index}><textarea value={paragraph} onChange={e=>update("description_blocks",form.description_blocks.map((v,i)=>i===index?e.target.value:v))} /><button type="button" onClick={()=>update("description_blocks",form.description_blocks.filter((_,i)=>i!==index))}>Remove</button></div>)}
             <button type="button" className={styles.addParagraph} onClick={()=>update("description_blocks",[...form.description_blocks,""])}>＋ Add paragraph</button>
+            </section>
+            <section className={styles.editorSection}>
+            <div className={styles.editorSectionTitle}><h3>Images and gallery</h3><p>Choose the cover and arrange the project photography.</p></div>
             <section className={styles.coverPicker}>
               <div className={styles.coverPickerHeading}>
                 <div><span className={styles.blockLabel}>Project cover</span><p>Choose the image used on the Works page and project cards.</p></div>
@@ -519,6 +535,7 @@ export default function CmsProjects() {
               ) : <div className={styles.galleryEmpty}><strong>Your gallery is empty</strong><span>Upload project photography to build the visual story. Your first image can become the cover.</span><button type="button" onClick={()=>galleryFileInput.current?.click()} disabled={busy}>Choose images</button></div>}
             </section>
             <label className={styles.checkbox}><input type="checkbox" checked={!!form.published} onChange={e=>update("published",e.target.checked)} /> Publish immediately after saving</label>
+            </section>
           </div>
           <div className={styles.editorFooter}><button type="button" className={styles.secondaryButton} onClick={()=>setForm(null)}>Cancel</button><button className={styles.primaryButton} disabled={busy}>{busy ? "Saving…" : form.published ? "Save & publish" : "Save draft"}</button></div>
         </form>
