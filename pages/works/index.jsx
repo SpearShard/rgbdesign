@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import WorksShowcase from '@/components/WorksShowcase';
 
 import projectsData from '@/public/projects.json';
