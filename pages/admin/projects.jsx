@@ -149,6 +149,7 @@ export default function CmsProjects() {
   const [error, setError] = useState("");
   const [selectedFilesLabel, setSelectedFilesLabel] = useState("");
   const galleryFileInput = useRef(null);
+  const editorRef = useRef(null);
 
   async function refresh(activeSession) {
     const rows = await listProjects(activeSession);
@@ -176,12 +177,37 @@ export default function CmsProjects() {
   }, [router]);
 
   useEffect(() => {
-    if (!form) return undefined;
-    const handleEscape = event => {
-      if (event.key === "Escape" && !busy) setForm(null);
+    if (!form || !editorRef.current) return undefined;
+    const previousFocus = document.activeElement;
+    const focusable = () => Array.from(editorRef.current.querySelectorAll(
+      'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href]'
+    )).filter(element => element.offsetParent !== null);
+    focusable()[0]?.focus();
+    const handleDialogKeys = event => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        if (!busy) setForm(null);
+        return;
+      }
+      if (event.key === "Tab") {
+        const items = focusable();
+        if (!items.length) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
     };
-    window.addEventListener("keydown", handleEscape);
-    return () => window.removeEventListener("keydown", handleEscape);
+    window.addEventListener("keydown", handleDialogKeys);
+    return () => {
+      window.removeEventListener("keydown", handleDialogKeys);
+      if (previousFocus && typeof previousFocus.focus === "function") previousFocus.focus();
+    };
   }, [form, busy]);
 
   const filtered = useMemo(() => projects.filter(p =>
@@ -433,8 +459,8 @@ export default function CmsProjects() {
           </section>
         </section>
       </main>
-      {form && <div className={styles.modalBackdrop}>
-        <form className={styles.editor} onSubmit={handleSave}>
+      {form && <div className={styles.modalBackdrop} onMouseDown={event=>{if(event.target===event.currentTarget&&!busy)setForm(null);}}>
+        <form ref={editorRef} className={styles.editor} role="dialog" aria-modal="true" aria-labelledby="project-editor-title" onMouseDown={event=>event.stopPropagation()} onSubmit={handleSave}>
           <div className={styles.editorHeader}><div><p className={styles.eyebrow}>{form.id ? "Edit project" : "New project"}</p><h2 id="project-editor-title">{form.title || "Untitled project"}</h2></div><button type="button" className={styles.closeButton} aria-label="Close editor" onClick={()=>setForm(null)}><Icon name="close" size={19} /></button></div>
           <div className={styles.editorBody}>
             <section className={styles.editorSection}>
