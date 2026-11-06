@@ -127,7 +127,7 @@ export default function CmsProjects() {
         const body = new FormData();
         body.append("file", file);
         body.append("fileName", file.name);
-        body.append("folder", `/RGB Projects/${slugify(form.title)}`);
+        body.append("folder", `/RGB-Projects/${slugify(form.title)}`);
         body.append("publicKey", auth.publicKey);
         body.append("token", auth.token);
         body.append("expire", String(auth.expire));
