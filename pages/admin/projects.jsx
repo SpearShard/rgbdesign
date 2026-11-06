@@ -46,6 +46,7 @@ export default function CmsProjects() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("all");
   const [busy, setBusy] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [selectedFilesLabel, setSelectedFilesLabel] = useState("");
@@ -66,8 +67,9 @@ export default function CmsProjects() {
         if (!currentRole) { clearCmsSession(); router.replace("/admin/login"); return; }
         const rows = await listProjects(active);
         if (!mounted) return;
-        setSession(active); setRole(currentRole); setProjects(rows);
+        setSession(active); setRole(currentRole); setProjects(rows); setLoading(false);
       } catch {
+        setLoading(false);
         clearCmsSession();
         router.replace("/admin/login");
       }
@@ -293,7 +295,11 @@ export default function CmsProjects() {
               </div>
             </div>
 
-            <div className={view==="grid"?styles.projectGrid:styles.projectList}>
+            {loading ? (
+              <div className={styles.loadingGrid} aria-label="Loading projects">
+                {[0,1,2,3].map(index=><div className={styles.projectSkeleton} key={index}><span/><div><b/><i/></div></div>)}
+              </div>
+            ) : <div className={view==="grid"?styles.projectGrid:styles.projectList}>
               {groupedProjects.flatMap(group=>group.projects).map(project=>(
                 <article className={styles.projectCard} key={project.id}>
                   <button type="button" className={styles.projectCardMedia} onClick={()=>setForm({...project,description_blocks:project.description_blocks?.length?project.description_blocks:[""],images:project.images||[]})} aria-label={`Edit ${project.title}`}>
@@ -313,13 +319,13 @@ export default function CmsProjects() {
                 </article>
               ))}
               {!groupedProjects.length && <div className={styles.emptyState}><h3>{query?"No matching projects":"Your project library is empty"}</h3><p>{query?"Try a different title, client or category.":"Add a project to start building your portfolio."}</p>{!query&&<button type="button" className={styles.primaryButton} onClick={()=>setForm(emptyProject())}>Add your first project</button>}</div>}
-            </div>
+            </div>}
           </section>
         </section>
       </main>
       {form && <div className={styles.modalBackdrop}>
         <form className={styles.editor} onSubmit={handleSave}>
-          <div className={styles.editorHeader}><div><p className={styles.eyebrow}>{form.id ? "EDIT PROJECT" : "NEW PROJECT"}</p><h2>{form.title || "Untitled project"}</h2></div><button type="button" className={styles.closeButton} aria-label="Close editor" onClick={()=>setForm(null)}><Icon name="close" size={19} /></button></div>
+          <div className={styles.editorHeader}><div><p className={styles.eyebrow}>{form.id ? "Edit project" : "New project"}</p><h2>{form.title || "Untitled project"}</h2></div><button type="button" className={styles.closeButton} aria-label="Close editor" onClick={()=>setForm(null)}><Icon name="close" size={19} /></button></div>
           <div className={styles.editorBody}>
             <div className={styles.fieldGrid}>
               <label>Project title<input value={form.title} onChange={e=>{const title=e.target.value;setForm(c=>({...c,title,slug:c.id?c.slug:slugify(title)}));}} required /></label>
