@@ -84,7 +84,7 @@ export default function CmsLogin() {
       <main className={styles.loginPage}>
         <div className={styles.loginPanel}>
           <a className={styles.wordmark} href="/">RGB<span>.</span></a>
-          <p className={styles.eyebrow}>PRIVATE WORKSPACE</p>
+          <p className={styles.eyebrow}>Private workspace</p>
           <h1>Welcome back.</h1>
           <p className={styles.muted}>Sign in to manage RGB projects.</p>
 
@@ -137,13 +137,13 @@ export default function CmsLogin() {
             </button>
           </form>
 
-          <a className={styles.backLink} href="/">← Back to RGB Design</a>
+          <a className={styles.backLink} href="/">Back to RGB Design</a>
         </div>
 
         <div className={styles.loginAside}>
           <span>RGB DESIGN / CMS</span>
           <p>Ideas become<br /><i>spaces.</i></p>
-          <small>PROJECT MANAGEMENT</small>
+          <small>Project management</small>
         </div>
       </main>
     </>
