@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { clearCmsSession, deleteProject, getCmsSession, getImageKitSignature, getMyCmsRole, listProjects, saveProject } from "@/lib/cmsClient";
@@ -49,6 +49,7 @@ export default function CmsProjects() {
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [selectedFilesLabel, setSelectedFilesLabel] = useState("");
+  const galleryFileInput = useRef(null);
 
   async function refresh(activeSession) {
     const rows = await listProjects(activeSession);
@@ -301,14 +302,28 @@ export default function CmsProjects() {
               {!form.images.length && <p className={styles.coverHint}>Upload images below, then select any image as the cover.</p>}
             </section>
             <div className={styles.uploadBox}>
-              <label>Upload gallery images<input type="file" accept="image/*" multiple disabled={busy} onChange={e=>{
-                const files = Array.from(e.target.files || []);
-                if (!files.length) return;
-                setSelectedFilesLabel(files.map(file=>file.name).join(", "));
-                uploadFiles(files);
-                e.target.value="";
-              }} /></label>
-              <p>{busy ? "Uploading selected images…" : selectedFilesLabel || "No images selected yet."}</p>
+              <input
+                ref={galleryFileInput}
+                className={styles.hiddenFileInput}
+                type="file"
+                accept="image/*"
+                multiple
+                disabled={busy}
+                onChange={e=>{
+                  const files = Array.from(e.target.files || []);
+                  if (!files.length) return;
+                  setSelectedFilesLabel(files.map(file=>file.name).join(", "));
+                  uploadFiles(files);
+                  e.target.value = "";
+                }}
+              />
+              <div className={styles.uploadControlRow}>
+                <div><strong>Gallery images</strong><p>Choose one or more images to add to this project.</p></div>
+                <button type="button" className={styles.chooseFilesButton} disabled={busy} onClick={()=>galleryFileInput.current?.click()}>
+                  {busy ? "Uploading…" : "Choose files"}
+                </button>
+              </div>
+              <p className={styles.selectedFilesText}>{busy ? "Uploading selected images…" : selectedFilesLabel || "No files selected"}</p>
               <p>Images upload directly to ImageKit and appear in the gallery when the upload succeeds.</p>
             </div>
             <div className={styles.galleryHeading}><span className={styles.blockLabel}>Gallery ({form.images.length})</span></div>
