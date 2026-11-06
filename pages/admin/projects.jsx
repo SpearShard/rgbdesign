@@ -100,7 +100,6 @@ export default function CmsProjects() {
 
   const [collapsedGroups, setCollapsedGroups] = useState({});
   const [view, setView] = useState("grid");
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   function toggleGroup(key) { setCollapsedGroups(current => ({ ...current, [key]: !current[key] })); }
   function update(field, value) { setForm(current => ({ ...current, [field]: value })); }
 
@@ -242,26 +241,17 @@ export default function CmsProjects() {
     <>
       <Head><title>Projects CMS | RGB Design</title><meta name="robots" content="noindex,nofollow" /></Head>
       <main className={styles.dashboard}>
-        <aside className={`${styles.sidebar} ${mobileNavOpen ? styles.sidebarOpen : ""}`} aria-label="Workspace navigation">
-          <div className={styles.brandRow}>
-            <a className={styles.wordmark} href="/" aria-label="RGB Design home">RGB<span>.</span></a>
-            <span className={styles.workspaceTag}>Studio</span>
-          </div>
-          <div className={styles.workspaceLabel}>Workspace</div>
-          <nav className={styles.sideNav}>
-            <a className={styles.sideActive} href="/admin/projects" aria-current="page"><Icon name="grid" size={16}/><span>Projects</span><span className={styles.navCount}>{projects.length}</span></a>
-          </nav>
-          <div className={styles.sidebarFoot}>
-            <div className={styles.accountMark}>{(role?.email || session?.user?.email || "R").slice(0,1).toUpperCase()}</div>
-            <div className={styles.accountCopy}><strong>{role?.email || session?.user?.email || "RGB editor"}</strong><span>{role?.role === "administrator" ? "Administrator" : "Project editor"}</span></div>
-            <button className={styles.logout} onClick={logout} aria-label="Sign out"><Icon name="arrow" size={15}/></button>
-          </div>
-        </aside>
         <section className={styles.content}>
           <header className={styles.topbar}>
-            <button type="button" className={styles.mobileMenu} onClick={()=>setMobileNavOpen(v=>!v)} aria-expanded={mobileNavOpen} aria-label="Toggle navigation">☰</button>
-            <div className={styles.breadcrumb}><span>Workspace</span><b>/</b><strong>Projects</strong></div>
-            <a className={styles.siteLink} href="/" target="_blank" rel="noreferrer">View website <Icon name="arrow" size={13}/></a>
+            <div className={styles.topbarLeft}>
+              <a className={styles.wordmark} href="/" aria-label="RGB Design home">RGB<span>.</span></a>
+              <span className={styles.breadcrumb}><b>/</b><strong>Projects</strong></span>
+            </div>
+            <div className={styles.topbarRight}>
+              <span className={styles.accountBadge} title={role?.email || session?.user?.email}>{role?.email || session?.user?.email || "RGB editor"}</span>
+              <button type="button" className={styles.logout} onClick={logout}>Sign out</button>
+              <a className={styles.siteLink} href="/" target="_blank" rel="noreferrer">View website <Icon name="arrow" size={13}/></a>
+            </div>
           </header>
           <div className={styles.pageIntro}>
             <div><h1>Projects</h1><p>Your portfolio, in progress and in public.</p></div>
