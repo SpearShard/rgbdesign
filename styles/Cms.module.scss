@@ -150,3 +150,51 @@
 @media (prefers-reduced-motion: reduce) {
   .loginPage *, .loginPage *::before, .loginPage *::after, .dashboard *, .dashboard *::before, .dashboard *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+
+/* Category tree and visual portfolio cards */
+.categoryTree { display: grid; gap: 28px; }
+.categoryGroup { min-width: 0; }
+.categoryHeader {
+  display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 18px;
+  padding: 15px 2px; border: 0; border-bottom: 1px solid #dedbd3; background: transparent;
+  color: #302f29; text-align: left; cursor: pointer;
+}
+.categoryHeaderMain { display: flex; align-items: center; gap: 13px; }
+.categoryChevron {
+  display: grid; width: 25px; height: 25px; place-items: center; border: 1px solid #e2ded5;
+  border-radius: 50%; color: #81776e; font-size: 15px; line-height: 1;
+}
+.categoryName { font-family: "Instrument Serif", serif; font-size: 25px; font-weight: 400; letter-spacing: -.3px; }
+.categoryCount { color: #918c81; font-size: 11px; white-space: nowrap; }
+.projectGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 15px; padding-top: 17px; }
+.projectCard { min-width: 0; overflow: hidden; border: 1px solid #e8e5dd; border-radius: 15px; background: #fbfaf7; transition: border-color .2s ease, transform .2s ease; }
+.projectCard:hover { transform: translateY(-2px); border-color: #d4cdc1; }
+.projectCardImage { position: relative; display: grid; aspect-ratio: 1.48 / 1; place-items: center; overflow: hidden; background: #e9e6df; color: #81776e; }
+.projectCardImage img { width: 100%; height: 100%; object-fit: cover; transition: transform .45s cubic-bezier(.2,.7,.2,1); }
+.projectCard:hover .projectCardImage img { transform: scale(1.035); }
+.projectCardImage > span:last-child { position: absolute; top: 11px; left: 11px; padding: 6px 9px; border: 1px solid #ffffffaa; border-radius: 30px; background: #fbfaf0e8; color: #617c68; font-size: 9px; font-weight: 700; }
+.projectCardImage > span:last-child.draft { color: #9a7957; }
+.projectCardInfo { padding: 14px 14px 12px; }
+.projectCardHeading { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.projectCardHeading h3 { margin: 0; color: #302f29; font-size: 13px; font-weight: 600; line-height: 1.4; }
+.projectCardHeading p { margin: 5px 0 0; color: #918c81; font-size: 10px; }
+.cardMore { display: grid; width: 29px; height: 29px; flex: 0 0 29px; place-items: center; border: 1px solid #e6e2da; border-radius: 50%; background: #fff; color: #5f5a51; cursor: pointer; transition: background .2s ease, color .2s ease; }
+.cardMore:hover { background: #292821; color: #fff; }
+.projectCardActions { display: flex; flex-wrap: wrap; gap: 13px; margin-top: 14px; padding-top: 11px; border-top: 1px solid #eeece6; }
+.projectCardActions .textButton, .projectCardActions .deleteButton { font-size: 10px; }
+.toolbar select, .fieldGrid select {
+  appearance: none; padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237d786e' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center; cursor: pointer;
+}
+.toolbar select:hover, .fieldGrid select:hover { border-color: #cfc8bc; }
+.toolbar select option, .fieldGrid select option { background: #fbfaf7; color: #292821; }
+@media (max-width: 1100px) { .projectGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 700px) {
+  .projectGrid { grid-template-columns: 1fr; gap: 11px; }
+  .projectCard { display: grid; grid-template-columns: 116px minmax(0, 1fr); }
+  .projectCardImage { height: 100%; min-height: 132px; aspect-ratio: auto; }
+  .projectCardInfo { padding: 12px; }
+  .projectCardActions { gap: 9px; }
+  .categoryName { font-size: 22px; }
+}
