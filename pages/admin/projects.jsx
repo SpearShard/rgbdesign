@@ -254,7 +254,7 @@ export default function CmsProjects() {
             {!groupedProjects.length && (
               <div className={styles.emptyState}><span>—</span><h3>No projects found</h3><p>Try a different search or filter.</p></div>
             )}
-          </div>>
+          </div>
         </section>
       </main>
       {form && <div className={styles.modalBackdrop}>
