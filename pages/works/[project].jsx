@@ -41,6 +41,10 @@ export default function WorksDetails() {
     }, []);
 
     useEffect(() => {
+        setProjectDetails(undefined);
+        setPrevProject(null);
+        setNextProject(null);
+        setRelatedProjects([]);
         if (project) {
             let currentTheme = "";
             let currentIndex = -1;
