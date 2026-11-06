@@ -198,3 +198,165 @@
   .projectCardActions { gap: 9px; }
   .categoryName { font-size: 22px; }
 }
+
+
+/* ── Art-directed CMS refinement ───────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700&family=Instrument+Serif:ital@0;1&display=swap');
+
+.loginPage, .dashboard {
+  --ink: #24231f;
+  --muted: #77746c;
+  --line: #e5e2da;
+  --paper: #f7f6f2;
+  --surface: #fdfcf9;
+  --accent: #8a7464;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: "DM Sans", sans-serif;
+  letter-spacing: -.012em;
+}
+.dashboard { grid-template-columns: 232px minmax(0, 1fr); }
+.sidebar {
+  position: sticky; top: 0; height: 100vh; min-height: 0;
+  padding: 34px 24px 27px; background: #fbfaf7; border-color: var(--line);
+}
+.wordmark { font-size: 31px; letter-spacing: -2.6px; }
+.wordmark span, .headingRow h1 span { color: var(--accent); }
+.sideLabel, .eyebrow, .topbar {
+  font-size: 9px; letter-spacing: 1.65px; font-weight: 600;
+}
+.sideActive {
+  padding: 13px 13px; border: 1px solid #e7e3db; border-radius: 9px;
+  background: #f1efe9; color: #282720; gap: 12px;
+}
+.sideBottom { color: #77746c; }
+.logout { display: inline-flex; align-items: center; gap: 7px; transition: color .2s ease; }
+.content { padding: 0 clamp(28px, 5.2vw, 88px) 90px; }
+.topbar { height: 68px; color: #8c887f; border-color: var(--line); }
+.headingRow { padding: 66px 0 32px; }
+.headingRow h1 { font-size: clamp(60px, 6vw, 82px); line-height: .98; letter-spacing: -2.5px; }
+.headingRow .muted { font-size: 13px; color: #77746c; }
+.primaryButton {
+  min-height: 46px; gap: 11px; padding: 0 19px; border-radius: 7px;
+  background: #292821; border-color: #292821; font-size: 12px; letter-spacing: .005em;
+  box-shadow: 0 2px 5px #2928210b;
+}
+.primaryButton:hover { background: #51463f; border-color: #51463f; transform: translateY(-2px); box-shadow: 0 7px 18px #29282118; }
+.statsRow { gap: 0; margin: 25px 0 35px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.statsRow div {
+  min-height: 84px; padding: 15px 22px; border: 0; border-radius: 0; background: transparent;
+  border-right: 1px solid var(--line); gap: 5px;
+}
+.statsRow div:first-child { padding-left: 0; }
+.statsRow div:last-child { border-right: 0; }
+.statsRow strong { font-size: 30px; font-weight: 500; letter-spacing: -1.4px; }
+.statsRow span { font-size: 10px; letter-spacing: .015em; }
+.toolbar { gap: 9px; margin-bottom: 30px; }
+.toolbar input, .toolbar select, .fieldGrid input, .fieldGrid select, .paragraphRow textarea {
+  border: 1px solid #e3e0d8; border-radius: 8px; background-color: #fdfcf9;
+  padding: 13px 14px; color: #292821; font-size: 12px;
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.toolbar input { max-width: 500px; }
+.toolbar input::placeholder { color: #a09c92; }
+.toolbar input:focus, .toolbar select:focus, .fieldGrid input:focus, .fieldGrid select:focus, .paragraphRow textarea:focus {
+  border-color: #9b8577; background: #fff; box-shadow: 0 0 0 3px #9b857714;
+}
+.categoryTree { gap: 35px; }
+.categoryHeader {
+  padding: 17px 1px; border-color: #dedbd3;
+  transition: color .2s ease, border-color .2s ease;
+}
+.categoryHeader:hover { color: var(--accent); border-color: #bdb4a8; }
+.categoryHeaderMain { gap: 14px; }
+.categoryChevron {
+  width: 24px; height: 24px; border-color: #e0dcd3; background: #fbfaf7;
+  transition: transform .28s cubic-bezier(.2,.7,.2,1), background .2s ease, color .2s ease;
+}
+.categoryHeader[aria-expanded="true"] .categoryChevron { transform: rotate(180deg); background: #292821; color: white; border-color: #292821; }
+.categoryName { font-size: 27px; letter-spacing: -.35px; }
+.categoryCount { font-size: 10px; letter-spacing: .02em; color: #89857c; }
+.projectGrid { gap: 17px; padding-top: 20px; }
+.projectCard {
+  border: 1px solid #e7e4dc; border-radius: 10px; background: #fbfaf7;
+  transition: transform .35s cubic-bezier(.2,.7,.2,1), border-color .25s ease, box-shadow .35s ease;
+}
+.projectCard:hover { transform: translateY(-4px); border-color: #d4cec3; box-shadow: 0 12px 30px #2928210c; }
+.projectCardImage { aspect-ratio: 1.52 / 1; background: #e9e6df; }
+.projectCardImage img { transition: transform .8s cubic-bezier(.2,.7,.2,1), filter .5s ease; }
+.projectCard:hover .projectCardImage img { transform: scale(1.045); }
+.projectCardImage > span:last-child {
+  top: 12px; left: 12px; padding: 6px 9px; border: 1px solid #ffffffa6;
+  border-radius: 4px; background: #fbfaf0e8; font-size: 8px; letter-spacing: .06em;
+  text-transform: uppercase; backdrop-filter: blur(8px);
+}
+.projectCardInfo { padding: 16px 16px 14px; }
+.projectCardHeading h3 { font-size: 13px; font-weight: 600; letter-spacing: -.025em; }
+.projectCardHeading p { font-size: 10px; letter-spacing: .01em; }
+.cardMore {
+  width: 30px; height: 30px; flex-basis: 30px; border-color: #e5e1d9;
+  background: transparent; transition: transform .25s ease, background .2s ease, color .2s ease;
+}
+.cardMore:hover { transform: rotate(45deg); background: #292821; color: white; }
+.projectCardActions { gap: 16px; margin-top: 15px; padding-top: 12px; border-color: #eeece6; }
+.projectCardActions .textButton, .projectCardActions .deleteButton {
+  font-size: 10px; font-weight: 550; transition: color .18s ease;
+}
+.textButton:hover { color: var(--accent); }
+.deleteButton { color: #a17d75; }
+.notice, .error { border-radius: 7px; font-size: 11px; }
+.modalBackdrop { background: #1e1d19a8; backdrop-filter: blur(8px); animation: cmsFade .22s ease both; }
+.editor {
+  width: min(820px, 100%); border-radius: 0; border-left: 1px solid #e7e4dc;
+  box-shadow: -18px 0 55px #17161216; animation: cmsSlide .38s cubic-bezier(.2,.75,.25,1) both;
+}
+.editorHeader, .editorFooter { padding: 24px 32px; border-color: var(--line); }
+.editorHeader h2 { font-size: 32px; letter-spacing: -.4px; }
+.closeButton {
+  display: grid; width: 36px; height: 36px; place-items: center; border: 1px solid var(--line);
+  border-radius: 50%; transition: transform .2s ease, background .2s ease, color .2s ease;
+}
+.closeButton:hover { transform: rotate(90deg); background: #292821; color: white; }
+.editorBody { padding: 30px 32px; }
+.fieldGrid { gap: 20px; }
+.fieldGrid label, .form label { gap: 8px; color: #555249; font-size: 11px; font-weight: 600; letter-spacing: .01em; }
+.fieldGrid input, .fieldGrid select { min-height: 45px; }
+.blockLabel { margin-top: 32px; font-size: 9px; letter-spacing: 1.4px; }
+.uploadBox { border-radius: 9px; border-color: #cfc8bc; background: #f1efe9; transition: border-color .2s ease, background .2s ease; }
+.uploadBox:hover { border-color: #9b8577; background: #eeece5; }
+.galleryGrid { gap: 12px; }
+.galleryGrid > div { border-radius: 8px; }
+.galleryGrid img { height: 100px; }
+.galleryGrid button { transition: color .18s ease; }
+.galleryGrid button:hover, .paragraphRow button:hover, .addParagraph:hover { color: #292821; }
+.checkbox { font-size: 11px; }
+.editorFooter { background: #fdfcf9; }
+.secondaryButton { font-size: 11px; }
+.form input { min-height: 48px; border-radius: 8px; }
+.form button { border-radius: 8px; }
+.loginAside p { font-family: "Instrument Serif", serif; font-size: clamp(68px, 7vw, 102px); letter-spacing: -2px; line-height: .88; }
+:where(.dashboard, .loginPage) button:focus-visible, :where(.dashboard, .loginPage) a:focus-visible, :where(.dashboard, .loginPage) input:focus-visible, :where(.dashboard, .loginPage) select:focus-visible, :where(.dashboard, .loginPage) textarea:focus-visible {
+  outline: 2px solid #9b8577; outline-offset: 3px;
+}
+@keyframes cmsFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cmsSlide { from { opacity: .6; transform: translateX(24px); } to { opacity: 1; transform: translateX(0); } }
+@media (max-width: 900px) {
+  .dashboard { grid-template-columns: 195px minmax(0, 1fr); }
+  .content { padding-right: 25px; padding-left: 25px; }
+  .statsRow div { padding-right: 14px; padding-left: 14px; }
+}
+@media (max-width: 700px) {
+  .dashboard { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; min-height: auto; }
+  .content { padding: 0 18px 45px; }
+  .headingRow { padding-top: 42px; }
+  .headingRow h1 { font-size: 58px; }
+  .statsRow div:first-child { padding-left: 0; }
+  .categoryName { font-size: 24px; }
+  .editorHeader, .editorFooter { padding: 18px 20px; }
+  .editorBody { padding: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .modalBackdrop, .editor { animation: none !important; }
+  .projectCard, .projectCardImage img, .categoryChevron, .cardMore { transition: none !important; }
+}
