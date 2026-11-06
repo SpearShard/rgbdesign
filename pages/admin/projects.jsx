@@ -63,8 +63,34 @@ export default function CmsProjects() {
 
   const filtered = useMemo(() => projects.filter(p =>
     (filter === "all" || (filter === "published" ? p.published : !p.published)) &&
-    `${p.title} ${p.category_title} ${p.client || ""}`.toLowerCase().includes(query.toLowerCase())
+    `${p.title} ${p.category_title || ""} ${p.client || ""}`.toLowerCase().includes(query.toLowerCase())
   ), [projects, filter, query]);
+
+  const groupedProjects = useMemo(() => {
+    const groups = categories.map(([key, title]) => ({
+      key,
+      title,
+      projects: filtered
+        .filter(project => project.category === key || project.category_title === title)
+        .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0) || a.title.localeCompare(b.title)),
+    })).filter(group => group.projects.length);
+
+    const known = new Set(categories.map(([key, title]) => ({ key, title })));
+    const unassigned = filtered.filter(project =>
+      !categories.some(([key, title]) => project.category === key || project.category_title === title)
+    );
+    if (unassigned.length) groups.push({
+      key: "other",
+      title: "Other projects",
+      projects: unassigned.sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0) || a.title.localeCompare(b.title)),
+    });
+    return groups;
+  }, [filtered]);
+
+  const [collapsedGroups, setCollapsedGroups] = useState({});
+  function toggleGroup(key) {
+    setCollapsedGroups(current => ({ ...current, [key]: !current[key] }));
+  }
 
   function update(field, value) { setForm(current => ({ ...current, [field]: value })); }
 
@@ -165,17 +191,70 @@ export default function CmsProjects() {
             <input placeholder="Search projects…" value={query} onChange={e=>setQuery(e.target.value)} />
             <select value={filter} onChange={e=>setFilter(e.target.value)}><option value="all">All projects</option><option value="published">Published</option><option value="draft">Drafts</option></select>
           </div>
-          <div className={styles.projectList}>
-            {filtered.map(project=><article className={styles.projectRow} key={project.id}>
-              <div className={styles.thumb}>{project.cover_url ? <img src={project.cover_url} alt="" /> : <span>RGB</span>}</div>
-              <div className={styles.projectInfo}><h3>{project.title}</h3><p>{project.category_title || project.category} {project.year ? `· ${project.year}` : ""}</p></div>
-              <span className={project.published ? styles.published : styles.draft}>{project.published ? "Published" : "Draft"}</span>
-              <button className={styles.textButton} onClick={()=>setForm({ ...project, description_blocks: project.description_blocks.length ? project.description_blocks : [""], images: project.images || [] })}>Edit</button>
-              <button className={styles.textButton} onClick={()=>togglePublish(project)}>{project.published ? "Unpublish" : "Publish"}</button>
-              <button className={styles.deleteButton} onClick={()=>handleDelete(project)}>Delete</button>
-            </article>)}
-            {!filtered.length && <div className={styles.emptyState}><span>✳</span><h3>No projects yet</h3><p>Import your existing portfolio or create your first project.</p></div>}
-          </div>
+          <div className={styles.categoryTree}>
+            {groupedProjects.map(group => (
+              <section className={styles.categoryGroup} key={group.key}>
+                <button
+                  type="button"
+                  className={styles.categoryHeader}
+                  onClick={() => toggleGroup(group.key)}
+                  aria-expanded={!collapsedGroups[group.key]}
+                >
+                  <span className={styles.categoryHeaderMain}>
+                    <span className={styles.categoryChevron}>{collapsedGroups[group.key] ? "＋" : "−"}</span>
+                    <span className={styles.categoryName}>{group.title}</span>
+                  </span>
+                  <span className={styles.categoryCount}>{group.projects.length} {group.projects.length === 1 ? "project" : "projects"}</span>
+                </button>
+                {!collapsedGroups[group.key] && (
+                  <div className={styles.projectGrid}>
+                    {group.projects.map(project => (
+                      <article className={styles.projectCard} key={project.id}>
+                        <div className={styles.projectCardImage}>
+                          {project.cover_url ? <img src={project.cover_url} alt={project.title} /> : <span>RGB.</span>}
+                          <span className={project.published ? styles.published : styles.draft}>
+                            {project.published ? "Published" : "Draft"}
+                          </span>
+                        </div>
+                        <div className={styles.projectCardInfo}>
+                          <div className={styles.projectCardHeading}>
+                            <div>
+                              <h3>{project.title}</h3>
+                              <p>{[project.year, project.client].filter(Boolean).join(" · ") || group.title}</p>
+                            </div>
+                            <button
+                              type="button"
+                              className={styles.cardMore}
+                              aria-label={`Edit ${project.title}`}
+                              onClick={() => setForm({
+                                ...project,
+                                description_blocks: project.description_blocks?.length ? project.description_blocks : [""],
+                                images: project.images || [],
+                              })}
+                            >↗</button>
+                          </div>
+                          <div className={styles.projectCardActions}>
+                            <button className={styles.textButton} onClick={() => setForm({
+                              ...project,
+                              description_blocks: project.description_blocks?.length ? project.description_blocks : [""],
+                              images: project.images || [],
+                            })}>Edit project</button>
+                            <button className={styles.textButton} onClick={() => togglePublish(project)}>
+                              {project.published ? "Unpublish" : "Publish"}
+                            </button>
+                            <button className={styles.deleteButton} onClick={() => handleDelete(project)}>Delete</button>
+                          </div>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                )}
+              </section>
+            ))}
+            {!groupedProjects.length && (
+              <div className={styles.emptyState}><span>—</span><h3>No projects found</h3><p>Try a different search or filter.</p></div>
+            )}
+          </div>>
         </section>
       </main>
       {form && <div className={styles.modalBackdrop}>
