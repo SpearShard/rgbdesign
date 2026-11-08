@@ -46,3 +46,14 @@ The importer preserves all existing ImageKit URLs, category ordering, image orde
 - Existing project URLs are title-based (`/works/<title>`). Before switching public pages, preserve these routes and test the legacy title mapping.
 - User/role management UI and administrator-only role changes are not implemented yet. Role assignment is bootstrapped through the SQL Editor for now.
 - Do not merge this branch or deploy until the CMS is configured, imported, and tested.
+
+
+## Concurrent editing protection and activity history
+
+1. Back up the production database before changing the schema.
+2. Review and run `supabase/setup/20261108-cms-concurrency-activity.sql` in the RGB Supabase SQL Editor.
+3. The migration adds a project version counter and an activity log. Saves/deletes run through database RPC functions, so version validation, project fields, gallery replacement, and log entries commit atomically.
+4. Authenticated CMS users can read the activity log. Direct browser writes to project tables are revoked so the CMS cannot bypass version checks.
+5. The CMS includes an Activity history button. A stale save or delete is rejected with a clear conflict warning.
+
+This SQL migration is prepared in GitHub but has **not** been applied to production.
