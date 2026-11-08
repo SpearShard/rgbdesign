@@ -451,7 +451,7 @@ export default function CmsProjects() {
           </div>
 
           {liveNotice && <div className={styles.liveNotice} role="status"><span className={styles.liveNoticeDot} /><span>{liveNotice.message}</span><button type="button" onClick={() => setLiveNotice(null)} aria-label="Dismiss live update">×</button></div>}
-          {notice && <p className={styles.notice} role="status">{notice}</p>
+          {notice && <p className={styles.notice} role="status">{notice}</p>}
           {error && <p className={styles.error} role="alert">{error}</p>}
 
           <section className={styles.librarySection} aria-labelledby="library-title">
