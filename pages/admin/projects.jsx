@@ -51,6 +51,7 @@ export default function CmsProjects() {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [liveNotice, setLiveNotice] = useState(null);
   const seenActivityIds = useRef(new Set());
+  const seenActivityInitialized = useRef(false);
   const presenceTarget = useRef(null);
   const liveNoticeTimer = useRef(null);
   presenceTarget.current = form ? { project_id: form.id || null, project_title: form.id ? (form.title || "Untitled project") : "Creating a project" } : null;
@@ -121,11 +122,13 @@ export default function CmsProjects() {
       busyPolling = true;
       try {
         const rows = await listActivity(session, 15);
-        if (!active || !rows?.length) return;
-        if (!seenActivityIds.current.size) {
-          seenActivityIds.current = new Set(rows.map(item => String(item.id)));
+        if (!active) return;
+        if (!seenActivityInitialized.current) {
+          seenActivityIds.current = new Set((rows || []).map(item => String(item.id)));
+          seenActivityInitialized.current = true;
           return;
         }
+        if (!rows?.length) return;
         const fresh = rows.filter(item => !seenActivityIds.current.has(String(item.id)));
         rows.forEach(item => seenActivityIds.current.add(String(item.id)));
         const otherEvents = fresh.filter(item => item.actor_id !== session.user.id);
