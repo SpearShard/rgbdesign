@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { clearCmsSession, deleteProject, getCmsSession, getImageKitSignature, getMyCmsRole, listActivity, listProjects, saveProject } from "@/lib/cmsClient";
+import { clearCmsSession, deleteProject, getCmsPresence, getCmsSession, getImageKitSignature, getMyCmsRole, listActivity, listProjects, removeCmsPresence, saveProject, upsertCmsPresence } from "@/lib/cmsClient";
 import styles from "@/styles/Cms.module.scss";
 
 const emptyProject = () => ({
@@ -48,6 +48,12 @@ export default function CmsProjects() {
   const [activityOpen, setActivityOpen] = useState(false);
   const [activity, setActivity] = useState([]);
   const [activityLoading, setActivityLoading] = useState(false);
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  const [liveNotice, setLiveNotice] = useState(null);
+  const seenActivityIds = useRef(new Set());
+  const presenceTarget = useRef(null);
+  const liveNoticeTimer = useRef(null);
+  presenceTarget.current = form ? { project_id: form.id || null, project_title: form.id ? (form.title || "Untitled project") : "Creating a project" } : null;
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("all");
   const [busy, setBusy] = useState(false);
@@ -95,6 +101,56 @@ export default function CmsProjects() {
     })();
     return () => { mounted = false; };
   }, [router]);
+
+  // Heartbeat presence and poll the activity feed. Inactive tabs expire after 45 seconds.
+  useEffect(() => {
+    if (!session?.user?.id) return undefined;
+    let active = true;
+    let busyPolling = false;
+    const heartbeat = async () => {
+      try { await upsertCmsPresence(session, presenceTarget.current); } catch (err) { console.warn("CMS presence heartbeat failed:", err); }
+    };
+    const refreshPresence = async () => {
+      try {
+        const rows = await getCmsPresence(session);
+        if (active) setOnlineUsers(rows || []);
+      } catch (err) { console.warn("CMS presence refresh failed:", err); }
+    };
+    const pollActivity = async () => {
+      if (busyPolling) return;
+      busyPolling = true;
+      try {
+        const rows = await listActivity(session, 15);
+        if (!active || !rows?.length) return;
+        if (!seenActivityIds.current.size) {
+          seenActivityIds.current = new Set(rows.map(item => String(item.id)));
+          return;
+        }
+        const fresh = rows.filter(item => !seenActivityIds.current.has(String(item.id)));
+        rows.forEach(item => seenActivityIds.current.add(String(item.id)));
+        const otherEvents = fresh.filter(item => item.actor_id !== session.user.id);
+        if (otherEvents.length) {
+          const latest = otherEvents[0];
+          const verb = latest.action === "project_deleted" ? "deleted" : latest.action === "project_created" ? "created" : latest.action === "project_published" ? "published" : latest.action === "project_unpublished" ? "unpublished" : "updated";
+          setLiveNotice({ id: String(latest.id), message: `${latest.actor_email || "Another editor"} ${verb} “${latest.project_title}”.` });
+          if (liveNoticeTimer.current) clearTimeout(liveNoticeTimer.current);
+          liveNoticeTimer.current = setTimeout(() => setLiveNotice(null), 7000);
+          try { await refresh(session); } catch (err) { console.warn("CMS live refresh failed:", err); }
+        }
+      } catch (err) { console.warn("CMS activity polling failed:", err); }
+      finally { busyPolling = false; }
+    };
+    heartbeat(); refreshPresence(); pollActivity();
+    const heartbeatTimer = setInterval(heartbeat, 12000);
+    const presenceTimer = setInterval(refreshPresence, 5000);
+    const activityTimer = setInterval(pollActivity, 5000);
+    return () => {
+      active = false;
+      clearInterval(heartbeatTimer); clearInterval(presenceTimer); clearInterval(activityTimer);
+      if (liveNoticeTimer.current) clearTimeout(liveNoticeTimer.current);
+      removeCmsPresence(session).catch(() => {});
+    };
+  }, [session]);
 
   const editorOpen = Boolean(form);
 
@@ -354,7 +410,7 @@ export default function CmsProjects() {
     } catch (err) { setError(err.message); }
   }
 
-  function logout() { clearCmsSession(); router.replace("/admin/login"); }
+  async function logout() { try { if (session) await removeCmsPresence(session); } catch {} clearCmsSession(); router.replace("/admin/login"); }
 
   return (
     <>
@@ -368,6 +424,13 @@ export default function CmsProjects() {
             </div>
             <div className={styles.topbarRight}>
               <span className={styles.accountBadge} title={role?.email || session?.user?.email}>{role?.email || session?.user?.email || "RGB editor"}</span>
+              <div className={styles.presenceGroup} aria-label={`${onlineUsers.length} editors online`}>
+                <span className={styles.onlineIndicator}><i />{onlineUsers.length} online</span>
+                <div className={styles.presenceAvatars}>
+                  {onlineUsers.filter(user => user.user_id !== session?.user?.id).slice(0, 3).map(user => <span key={user.user_id} className={styles.presenceAvatar} title={`${user.email} · ${user.project_title || "Browsing projects"}`}>{(user.email || "?").slice(0, 1).toUpperCase()}</span>)}
+                  {onlineUsers.filter(user => user.user_id !== session?.user?.id).length > 3 && <span className={styles.presenceOverflow}>+{onlineUsers.filter(user => user.user_id !== session?.user?.id).length - 3}</span>}
+                </div>
+              </div>
               <button type="button" className={styles.activityButton} onClick={openActivity}>Activity history</button>
               <button type="button" className={styles.logout} onClick={logout}>Sign out</button>
               <a className={styles.siteLink} href="/" target="_blank" rel="noreferrer">View website <Icon name="arrow" size={13}/></a>
@@ -384,7 +447,8 @@ export default function CmsProjects() {
             <div><strong>{projects.filter(p=>!p.published).length}</strong><span>Saved as drafts</span></div>
           </div>
 
-          {notice && <p className={styles.notice} role="status">{notice}</p>}
+          {liveNotice && <div className={styles.liveNotice} role="status"><span className={styles.liveNoticeDot} /><span>{liveNotice.message}</span><button type="button" onClick={() => setLiveNotice(null)} aria-label="Dismiss live update">×</button></div>}
+          {notice && <p className={styles.notice} role="status">{notice}</p>
           {error && <p className={styles.error} role="alert">{error}</p>}
 
           <section className={styles.librarySection} aria-labelledby="library-title">
@@ -427,7 +491,7 @@ export default function CmsProjects() {
                           <div className={styles.projectCardBody}>
                             <div className={styles.projectCardTitleRow}><h4>{project.title}</h4><span className={project.published?styles.statusLive:styles.statusDraft}>{project.published?"Published":"Draft"}</span></div>
                             <p>{project.subtitle || project.category_title || group.title}</p>
-                            <div className={styles.projectCardDetails}><span>{project.year || "Year not set"}</span><span>{project.client || "No client"}</span><span>{project.images?.length || 0} images</span></div>
+                            <div className={styles.projectCardDetails}><span>{project.year || "Year not set"}</span><span>{project.client || "No client"}</span><span>{project.images?.length || 0} images</span>{onlineUsers.filter(user => user.project_id === project.id && user.user_id !== session?.user?.id).map(user => <span key={user.user_id} className={styles.editingBadge}>Editing · {user.email?.split("@")[0] || "Teammate"}</span>)}</div>
                             <div className={styles.projectCardActions}>
                               <button type="button" className={styles.textButton} onClick={()=>setForm({...project,description_blocks:project.description_blocks?.length?project.description_blocks:[""],images:project.images||[]})}>Edit project</button>
                               <button type="button" className={styles.textButton} onClick={()=>togglePublish(project)}>{project.published?"Unpublish":"Publish"}</button>
