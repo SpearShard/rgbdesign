@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { clearCmsSession, deleteProject, getCmsSession, getImageKitSignature, getMyCmsRole, listProjects, saveProject } from "@/lib/cmsClient";
+import { clearCmsSession, deleteProject, getCmsSession, getImageKitSignature, getMyCmsRole, listActivity, listProjects, saveProject } from "@/lib/cmsClient";
 import styles from "@/styles/Cms.module.scss";
 
 const emptyProject = () => ({
@@ -45,6 +45,9 @@ export default function CmsProjects() {
   const [role, setRole] = useState(null);
   const [projects, setProjects] = useState([]);
   const [form, setForm] = useState(null);
+  const [activityOpen, setActivityOpen] = useState(false);
+  const [activity, setActivity] = useState([]);
+  const [activityLoading, setActivityLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("all");
   const [busy, setBusy] = useState(false);
@@ -62,6 +65,15 @@ export default function CmsProjects() {
   async function refresh(activeSession) {
     const rows = await listProjects(activeSession);
     setProjects(rows);
+  }
+
+  async function openActivity() {
+    if (!session) return;
+    setActivityOpen(true);
+    setActivityLoading(true);
+    try { setActivity(await listActivity(session)); }
+    catch (err) { setError(err.message || "Could not load activity history."); setActivityOpen(false); }
+    finally { setActivityLoading(false); }
   }
 
   useEffect(() => {
@@ -241,6 +253,7 @@ export default function CmsProjects() {
         images: savedProject?.images || nextImages,
         cover_url: savedProject?.cover_url || nextForm.cover_url,
         published: savedProject?.published ?? nextForm.published,
+        version: saved.version,
       } : current);
       setNotice(`${uploaded.length} image(s) uploaded and saved to the project gallery.`);
       setSelectedFilesLabel(`${uploaded.length} image(s) uploaded and saved`);
@@ -326,7 +339,7 @@ export default function CmsProjects() {
     if (!session || !window.confirm(`Delete “${project.title}”? This cannot be undone.`)) return;
     setBusy(true); setError(""); setNotice("");
     try {
-      await deleteProject(session, project.id);
+      await deleteProject(session, project.id, project.version);
       await refresh(session);
       setNotice(`“${project.title}” deleted.`);
     } catch (err) { setError(err.message); }
@@ -355,6 +368,7 @@ export default function CmsProjects() {
             </div>
             <div className={styles.topbarRight}>
               <span className={styles.accountBadge} title={role?.email || session?.user?.email}>{role?.email || session?.user?.email || "RGB editor"}</span>
+              <button type="button" className={styles.activityButton} onClick={openActivity}>Activity history</button>
               <button type="button" className={styles.logout} onClick={logout}>Sign out</button>
               <a className={styles.siteLink} href="/" target="_blank" rel="noreferrer">View website <Icon name="arrow" size={13}/></a>
             </div>
@@ -432,6 +446,32 @@ export default function CmsProjects() {
           </section>
         </section>
       </main>
+      {activityOpen && <div className={styles.modalBackdrop} onMouseDown={event=>{if(event.target===event.currentTarget)setActivityOpen(false);}}>
+        <section className={styles.activityDialog} role="dialog" aria-modal="true" aria-labelledby="activity-title">
+          <header className={styles.activityHeader}>
+            <div><p className={styles.eyebrow}>Workspace history</p><h2 id="activity-title">Activity history</h2><p>Recent changes made by your CMS team.</p></div>
+            <button type="button" className={styles.closeButton} aria-label="Close activity history" onClick={()=>setActivityOpen(false)}><Icon name="close" size={19}/></button>
+          </header>
+          <div className={styles.activityBody}>
+            {activityLoading ? <p className={styles.muted}>Loading activity…</p> : activity.length ? activity.map(item=>(
+              <article className={styles.activityItem} key={item.id}>
+                <span className={styles.activityDot} aria-hidden="true"/>
+                <div className={styles.activityCopy}>
+                  <strong>{item.actor_email || "CMS user"}</strong>
+                  <p>{({
+                    project_created:"created", project_updated:"updated", images_added:"added images to",
+                    images_removed:"removed images from", project_published:"published",
+                    project_unpublished:"unpublished", project_deleted:"deleted",
+                  })[item.action] || item.action.replaceAll("_"," ")} <b>{item.project_title || "a project"}</b></p>
+                  {item.details?.summary && <small>{item.details.summary}</small>}
+                  <time dateTime={item.created_at}>{new Date(item.created_at).toLocaleString(undefined,{dateStyle:"medium",timeStyle:"short"})}</time>
+                </div>
+              </article>
+            )) : <p className={styles.muted}>No activity has been recorded yet.</p>}
+          </div>
+          <footer className={styles.activityFooter}><span>Showing the latest {activity.length} events</span><button type="button" className={styles.secondaryButton} onClick={openActivity}>Refresh</button></footer>
+        </section>
+      </div>}
       {form && <div className={styles.modalBackdrop} onMouseDown={event=>{if(event.target===event.currentTarget&&!busy)setForm(null);}}>
         <form ref={editorRef} className={styles.editor} role="dialog" aria-modal="true" aria-labelledby="project-editor-title" onMouseDown={event=>event.stopPropagation()} onSubmit={handleSave}>
           <div className={styles.editorHeader}><div><p className={styles.eyebrow}>{form.id ? "Edit project" : "New project"}</p><h2 id="project-editor-title">{form.title || "Untitled project"}</h2></div><button type="button" className={styles.closeButton} aria-label="Close editor" onClick={()=>setForm(null)}><Icon name="close" size={19} /></button></div>

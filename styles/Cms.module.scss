@@ -595,3 +595,24 @@
 @media(max-width:600px) {
   .editorBody { overscroll-behavior-y: contain; }
 }
+
+
+/* Activity history */
+.activityButton{display:inline-flex;min-height:34px;align-items:center;justify-content:center;padding:0 12px;border:1px solid var(--color-rule);border-radius:6px;background:transparent;color:var(--color-ink-soft);font-size:12px;white-space:nowrap}
+.activityButton:hover{border-color:#68745f;background:var(--color-surface);color:var(--color-ink)}
+.activityDialog{display:flex;width:min(720px,100%);max-height:min(82dvh,820px);flex-direction:column;overflow:hidden;border:1px solid #51594d;border-radius:14px;background:#151915;color:var(--color-ink);box-shadow:0 28px 100px rgba(0,0,0,.48)}
+.activityHeader{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:25px 28px;border-bottom:1px solid var(--color-rule);background:#1b201a}
+.activityHeader h2{margin:0 0 7px;font:600 26px/1.2 'Roboto',Arial,sans-serif;letter-spacing:-.03em}
+.activityHeader p:last-child{margin:0;color:var(--color-muted);font-size:13px}
+.activityBody{min-height:180px;overflow-y:auto;padding:8px 28px}
+.activityItem{display:grid;grid-template-columns:12px minmax(0,1fr);gap:14px;padding:18px 0;border-bottom:1px solid var(--color-rule)}
+.activityItem:last-child{border-bottom:0}
+.activityDot{width:8px;height:8px;margin-top:6px;border-radius:50%;background:#d69b7e;box-shadow:0 0 0 4px rgba(214,155,126,.12)}
+.activityCopy{min-width:0}
+.activityCopy strong{color:var(--color-ink);font-size:13px;font-weight:600}
+.activityCopy p{margin:5px 0;color:var(--color-ink-soft);font-size:14px;line-height:1.5}
+.activityCopy p b{color:var(--color-ink);font-weight:600}
+.activityCopy small,.activityCopy time{display:block;margin-top:5px;color:var(--color-muted);font-size:11px;line-height:1.5}
+.activityFooter{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 28px;border-top:1px solid var(--color-rule);background:#1b201a;color:var(--color-muted);font-size:12px}
+@media(max-width:760px){.activityButton{min-height:32px;padding-inline:8px;font-size:10px}}
+@media(max-width:600px){.activityDialog{width:100%;height:100dvh;max-height:100dvh;border:0;border-radius:0}.activityHeader,.activityFooter{padding-inline:18px}.activityBody{padding-inline:18px}}
