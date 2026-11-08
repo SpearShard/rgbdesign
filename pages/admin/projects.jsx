@@ -52,6 +52,8 @@ export default function CmsProjects() {
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [selectedFilesLabel, setSelectedFilesLabel] = useState("");
+  const [imageUrlInput, setImageUrlInput] = useState("");
+  const [addingImageUrl, setAddingImageUrl] = useState(false);
   const galleryFileInput = useRef(null);
   const editorRef = useRef(null);
   const busyRef = useRef(false);
@@ -233,6 +235,56 @@ export default function CmsProjects() {
       setNotice("");
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function addImageFromUrl(event) {
+    event.preventDefault();
+    const value = imageUrlInput.trim();
+    if (!value || !form) return;
+
+    let parsed;
+    try {
+      parsed = new URL(value);
+      if (!["http:", "https:"].includes(parsed.protocol)) throw new Error("Use an http or https image URL.");
+    } catch (err) {
+      setError(err.message || "Enter a valid image URL.");
+      return;
+    }
+
+    setAddingImageUrl(true);
+    setError("");
+    setNotice("Checking image URL…");
+    try {
+      await new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve();
+        image.onerror = () => reject(new Error("This URL could not be loaded as an image. Check that it is public and points directly to an image."));
+        image.src = parsed.href;
+      });
+
+      const alreadyAdded = (form.images || []).some(item =>
+        (typeof item === "string" ? item : item?.image_url) === parsed.href
+      );
+      if (alreadyAdded) {
+        setError("That image is already in this gallery.");
+        setNotice("");
+        return;
+      }
+
+      const nextImages = [...(form.images || []), { image_url: parsed.href, alt_text: form.title || "Project image" }];
+      setForm(current => ({
+        ...current,
+        images: nextImages,
+        cover_url: current.cover_url || parsed.href,
+      }));
+      setImageUrlInput("");
+      setNotice("Image added to the gallery. Save the project to keep this change.");
+    } catch (err) {
+      setError(err.message || "Could not load that image URL.");
+      setNotice("");
+    } finally {
+      setAddingImageUrl(false);
     }
   }
 
@@ -425,6 +477,24 @@ export default function CmsProjects() {
               {error && <p className={styles.error} role="alert">{error}</p>}
               {notice && <p className={styles.notice} role="status">{notice}</p>}
               <p>Images upload directly to ImageKit and appear in the gallery when the upload succeeds.</p>
+              <div className={styles.imageUrlEntry}>
+                <label htmlFor="gallery-image-url">Or add an image from a URL</label>
+                <div className={styles.imageUrlControls}>
+                  <input
+                    id="gallery-image-url"
+                    type="url"
+                    inputMode="url"
+                    placeholder="https://example.com/project-image.jpg"
+                    value={imageUrlInput}
+                    onChange={event => setImageUrlInput(event.target.value)}
+                    disabled={busy || addingImageUrl}
+                  />
+                  <button type="button" onClick={addImageFromUrl} disabled={busy || addingImageUrl || !imageUrlInput.trim()}>
+                    {addingImageUrl ? "Checking…" : "Add image URL"}
+                  </button>
+                </div>
+                <p>Use a public, direct image link. The image is previewed and added to the gallery; save the project to persist it.</p>
+              </div>
             </div>
             <section className={styles.galleryManager} aria-labelledby="gallery-manager-title">
               <div className={styles.galleryManagerHeader}>
