@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 /* RGB CMS · app screen · restrained graphite, warm signal, portfolio-first */
 .loginPage,.dashboard{
@@ -14,8 +14,8 @@
   --color-accent-ink:#17120f;
   --color-focus:#f1bd7e;
   --color-error:#ec8178;
-  --font-body:'Plus Jakarta Sans',sans-serif;
-  --font-display:'Space Grotesk',sans-serif;
+  --font-body:'Inter',sans-serif;
+  --font-display:'Inter',sans-serif;
   --space-2xs:4px;--space-xs:8px;--space-sm:12px;--space-md:16px;--space-lg:24px;--space-xl:36px;--space-2xl:56px;
   --radius-control:8px;--radius-panel:13px;
   --dur-micro:120ms;--dur-short:220ms;--dur-long:420ms;
