@@ -5,6 +5,7 @@
 // import Loader from "@/components/Loader";
 // import Cookies from "js-cookie";
 // import "@/styles/globals.scss";
+import "@/styles/tailwind.css";
 
 // export default function App({ Component, pageProps }) {
 //   const [hasLoaded, setHasLoaded] = useState(null);
@@ -140,6 +141,11 @@ export default function App({ Component, pageProps }) {
   }, [router.pathname, router.events]);
 
   if (!isMounted) return null; // Prevents hydration issues
+
+  // Keep the private CMS outside the public site's layout and smooth-scroll wrappers.
+  if (router.pathname.startsWith("/admin")) {
+    return <Component {...pageProps} />;
+  }
 
   return (
     <SmoothScroll>

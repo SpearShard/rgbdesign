@@ -1,11 +1,22 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import WorksShowcase from '@/components/WorksShowcase';
 
 import projectsData from '@/public/projects.json';
+import { getPublishedProjectData } from '@/lib/publicProjects';
 
 import styles from '@/styles/Works.module.scss';
 
 export default function Works() {
+    const [liveProjects, setLiveProjects] = useState(projectsData);
+
+    useEffect(() => {
+        let mounted = true;
+        getPublishedProjectData().then((data) => {
+            if (mounted && data) setLiveProjects(data);
+        });
+        return () => { mounted = false; };
+    }, []);
+
     // Add useEffect to handle scrollbar visibility
     useEffect(() => {
         // Function to check if device is mobile
@@ -39,10 +50,10 @@ export default function Works() {
 
     return (
         <section className={styles.projects_container}>
-            {Object.entries(projectsData)
-                .filter(([, category]) => Array.isArray(category.projects))
+            {Object.entries(liveProjects)
+                .filter(([, category]) => Array.isArray(category.projects) && category.projects.length > 0)
                 .map(([theme]) => (
-                    <WorksShowcase key={theme} data={projectsData} theme={theme} />
+                    <WorksShowcase key={theme} data={liveProjects} theme={theme} />
                 ))}
         </section>
     )

@@ -12,12 +12,14 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import LaunchIcon from '@mui/icons-material/Launch';
 
 import projectsData from "public/projects.json";
+import { getPublishedProjectData } from "@/lib/publicProjects";
 import styles from "styles/WorksDetails.module.scss";
 
 export default function WorksDetails() {
     const router = useRouter();
     const { project } = useRouter().query;
     const [projectDetails, setProjectDetails] = useState(undefined);
+    const [projectsDataLive, setProjectsDataLive] = useState(projectsData);
     const [relatedProjects, setRelatedProjects] = useState([]);
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [lightboxIndex, setLightboxIndex] = useState(0);
@@ -31,13 +33,25 @@ export default function WorksDetails() {
     const y = useTransform(scrollYProgress, [0, 0.2], [0, -50]);
 
     useEffect(() => {
+        let mounted = true;
+        getPublishedProjectData().then((data) => {
+            if (mounted && data) setProjectsDataLive(data);
+        });
+        return () => { mounted = false; };
+    }, []);
+
+    useEffect(() => {
+        setProjectDetails(undefined);
+        setPrevProject(null);
+        setNextProject(null);
+        setRelatedProjects([]);
         if (project) {
             let currentTheme = "";
             let currentIndex = -1;
             let themeProjects = [];
 
             // Find current project and its theme
-            for (const [theme, data] of Object.entries(projectsData)) {
+            for (const [theme, data] of Object.entries(projectsDataLive)) {
                 if (theme === "projects_list") continue;
 
                 const projectIndex = data.projects.findIndex(p => p.title === project);
@@ -62,7 +76,7 @@ export default function WorksDetails() {
 
                 // Find related projects (different theme or not adjacent)
                 const related = [];
-                for (const [theme, data] of Object.entries(projectsData)) {
+                for (const [theme, data] of Object.entries(projectsDataLive)) {
                     if (theme === "projects_list" || theme === currentTheme) continue;
 
                     // Get up to 2 random projects from other themes
@@ -77,7 +91,7 @@ export default function WorksDetails() {
                 setRelatedProjects(related.slice(0, 3));
             }
         }
-    }, [project]);
+    }, [project, projectsDataLive]);
 
     function openLightbox(index) {
         setLightboxIndex(index);

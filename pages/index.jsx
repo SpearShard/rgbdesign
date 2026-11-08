@@ -14,6 +14,7 @@ import styles from "@/styles/Home.module.scss";
 import ProjectBox from "@/components/ProjectBox";
 
 import project_json from "../public/projects.json";
+import { getPublishedProjectData } from "@/lib/publicProjects";
 
 export default function Home() {
     const [projects, setProjects] = useState([]);
@@ -22,11 +23,29 @@ export default function Home() {
     const [hoverColor, setHoverColor] = useState('red'); // Default color
 
     useEffect(() => {
+        let mounted = true;
         setProjects(project_json.projects_list);
 
+        getPublishedProjectData().then((publishedData) => {
+            if (!mounted || !publishedData) return;
+            const dynamicCategories = Object.entries(publishedData).map(([theme, category]) => {
+                const firstProject = category.projects?.[0];
+                const fallback = project_json.projects_list.find((item) => item.theme === theme);
+                return {
+                    title: category.title,
+                    theme,
+                    img_src: firstProject?.cover || fallback?.img_src || "",
+                };
+            }).filter((item) => item.img_src);
+            if (dynamicCategories.length) setProjects(dynamicCategories);
+        }).catch(() => {});
+
         setTimeout(() => {
-            setLoading(false);
+            if (mounted) setLoading(false);
         }, 20);
+
+        // A failed request leaves the existing portfolio JSON in place.
+        return () => { mounted = false; };
 
         // ✅ Initialize AOS only once
         AOS.init({
