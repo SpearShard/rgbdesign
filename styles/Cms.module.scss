@@ -616,3 +616,20 @@
 .activityFooter{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 28px;border-top:1px solid var(--color-rule);background:#1b201a;color:var(--color-muted);font-size:12px}
 @media(max-width:760px){.activityButton{min-height:32px;padding-inline:8px;font-size:10px}}
 @media(max-width:600px){.activityDialog{width:100%;height:100dvh;max-height:100dvh;border:0;border-radius:0}.activityHeader,.activityFooter{padding-inline:18px}.activityBody{padding-inline:18px}}
+
+
+/* Team presence and live collaboration */
+.presenceGroup{display:flex;align-items:center;gap:9px;white-space:nowrap}
+.onlineIndicator{display:inline-flex;align-items:center;gap:7px;color:var(--color-ink-soft);font-size:11px}
+.onlineIndicator i,.liveNoticeDot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#91b985;box-shadow:0 0 0 3px rgba(145,185,133,.13)}
+.presenceAvatars{display:flex;align-items:center;padding-left:3px}
+.presenceAvatar,.presenceOverflow{display:grid;width:25px;height:25px;margin-left:-4px;place-items:center;border:2px solid #151915;border-radius:50%;background:#3b4937;color:#e7eee2;font-size:9px;font-weight:700}
+.presenceAvatar:nth-child(2n){background:#594437}
+.presenceOverflow{background:#30372e;color:#d4ddce}
+.liveNotice{position:fixed;right:24px;top:82px;z-index:1200;display:flex;max-width:min(440px,calc(100vw - 32px));align-items:center;gap:12px;padding:13px 15px;border:1px solid #58664f;border-radius:9px;background:#20291e;color:#e5ecdf;box-shadow:0 12px 35px rgba(0,0,0,.35);font-size:13px;line-height:1.5;animation:liveNoticeIn .22s ease-out}
+.liveNoticeDot{flex:0 0 7px}
+.liveNotice button{margin-left:4px;border:0;background:transparent;color:#c8d1c1;font-size:19px;line-height:1}
+.editingBadge{color:#e4b18d!important;font-weight:600}
+@keyframes liveNoticeIn{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:760px){.presenceAvatars{display:none}.presenceGroup{gap:5px}.onlineIndicator{font-size:10px}.liveNotice{right:12px;top:65px}}
+@media(max-width:520px){.presenceGroup{display:none}}
