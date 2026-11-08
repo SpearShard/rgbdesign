@@ -85,6 +85,20 @@ export default function CmsProjects() {
   }, [router]);
 
   const editorOpen = Boolean(form);
+
+  // Keep the page behind the editor completely still while the dialog is open.
+  useEffect(() => {
+    if (!editorOpen) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    const previousOverscroll = document.body.style.overscrollBehavior;
+    document.body.style.overflow = "hidden";
+    document.body.style.overscrollBehavior = "none";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.body.style.overscrollBehavior = previousOverscroll;
+    };
+  }, [editorOpen]);
+
   useEffect(() => {
     if (!editorOpen || !editorRef.current) return undefined;
     const previousFocus = document.activeElement;
@@ -433,7 +447,7 @@ export default function CmsProjects() {
               <label>Client<input value={form.client || ""} onChange={e=>update("client",e.target.value)} /></label>
               <label>Location<input value={form.location || ""} onChange={e=>update("location",e.target.value)} /></label>
               <label>Legacy folder name<input value={form.dir || ""} onChange={e=>update("dir",e.target.value)} /></label>
-              <label className={styles.fullField}>Video URL<input value={form.video_url || ""} onChange={e=>update("video_url",e.target.value)} placeholder="Vimeo / YouTube / video URL" /></label>
+              <label className={styles.fullField}>Main project video <span className={styles.optionalLabel}>Optional</span><input type="url" inputMode="url" value={form.video_url || ""} onChange={e=>update("video_url",e.target.value)} placeholder="Paste a YouTube, Vimeo, Google Drive or direct MP4 URL" /><small className={styles.fieldHelp}>This is the featured video for the project detail page. Leave it empty if the project is image-only.</small>{form.video_url && <a className={styles.videoUrlPreview} href={form.video_url} target="_blank" rel="noreferrer">Open current video URL ↗</a>}</label>
             </div>
             </section>
             <section className={styles.editorSection}>
