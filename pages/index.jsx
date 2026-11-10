@@ -46,14 +46,20 @@ export default function Home() {
 
         // A failed request leaves the existing portfolio JSON in place.
         return () => { mounted = false; };
+    }, []);
 
-        // ✅ Initialize AOS only once
+    // Initialize scroll-reveal animations after the homepage content is rendered.
+    // The page is initially behind a loader, so initializing in the data-loading
+    // effect would run before the [data-aos] elements exist in the DOM.
+    useEffect(() => {
+        if (loading) return;
+
         AOS.init({
             duration: 400,
             once: true,
             easing: "ease-out",
         });
-    }, []);
+    }, [loading]);
 
     // Animation variants for project cards
     const projectCardVariants = {
