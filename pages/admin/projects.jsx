@@ -591,7 +591,7 @@ export default function CmsProjects() {
           <footer className={styles.activityFooter}><span>Showing the latest {activity.length} events</span><button type="button" className={styles.secondaryButton} onClick={openActivity}>Refresh</button></footer>
         </section>
       </div>}
-      {pendingImageRemoval && form && <div className={styles.modalBackdrop} onMouseDown={event=>{if(event.target===event.currentTarget&&!busy)setPendingImageRemoval(null);}}>
+      {pendingImageRemoval && form && <div className={`${styles.modalBackdrop} ${styles.imageDeleteBackdrop}`} onMouseDown={event=>{if(event.target===event.currentTarget&&!busy)setPendingImageRemoval(null);}}>
         <section className={styles.imageDeleteDialog} role="dialog" aria-modal="true" aria-labelledby="image-delete-title" aria-describedby="image-delete-description">
           <div className={styles.imageDeleteIcon} aria-hidden="true"><Icon name="image" size={25}/></div>
           <button type="button" className={styles.imageDeleteClose} aria-label="Close image removal dialog" onClick={()=>setPendingImageRemoval(null)} disabled={busy}><Icon name="close" size={18}/></button>
