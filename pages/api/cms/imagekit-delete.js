@@ -42,8 +42,8 @@ export default async function handler(req, res) {
     );
     if (!refsResponse.ok) return res.status(503).json({ error: "Could not verify image references. Nothing was deleted." });
     const refs = await refsResponse.json();
-    if (refs.some(row => row.project_id !== projectId)) {
-      return res.status(409).json({ error: "This image is used by another project, so it cannot be permanently deleted." });
+    if (refs.length) {
+      return res.status(409).json({ error: "This image is still referenced by a project gallery. Remove all gallery references before permanently deleting it." });
     }
 
     const deleteResponse = await fetch(`https://api.imagekit.io/v1/files/${encodeURIComponent(fileId)}`, {
