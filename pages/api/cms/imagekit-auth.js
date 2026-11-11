@@ -1,6 +1,10 @@
 import crypto from "crypto";
 
 export default async function handler(req, res) {
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
+
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
   const token = (req.headers.authorization || "").replace(/^Bearer\s+/i, "");
@@ -22,12 +26,20 @@ export default async function handler(req, res) {
       `${url}/rest/v1/cms_admins?select=role&user_id=eq.${encodeURIComponent(user.id)}&limit=1`,
       { headers: { apikey: key, Authorization: `Bearer ${token}` } }
     );
-    const roles = roleResponse.ok ? await roleResponse.json() : [];
+    if (!roleResponse.ok) {
+      console.error("ImageKit auth: CMS role lookup failed", roleResponse.status);
+      return res.status(503).json({ error: "Could not verify CMS upload permission. Please try again." });
+    }
+    const roles = await roleResponse.json();
     if (!roles?.length) return res.status(403).json({ error: "You do not have CMS upload permission." });
 
-    const expire = Math.floor(Date.now() / 1000) + 60 * 10;
+    // Generate a new single-use ImageKit token for each upload. Keep it short-lived.
+    const expire = Math.floor(Date.now() / 1000) + 60 * 30;
     const uploadToken = crypto.randomUUID();
     const signature = crypto.createHmac("sha1", privateKey).update(uploadToken + expire).digest("hex");
+    if (!Number.isFinite(expire) || expire <= Math.floor(Date.now() / 1000)) {
+      return res.status(500).json({ error: "Could not generate valid upload credentials. Please retry." });
+    }
     return res.status(200).json({
       token: uploadToken,
       expire,
