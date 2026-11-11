@@ -678,3 +678,14 @@
 .inlinePermanentButton small{color:#c59b89}
 .inlineKeepFileButton:disabled,.inlinePermanentButton:disabled{opacity:.45;cursor:not-allowed}
 .inlineRemovalNote{color:#b9a38e;font-size:10px;line-height:1.5}
+
+.imageRemovalInPlace{display:flex;align-items:center;justify-content:center;aspect-ratio:4/3;white-space:normal;text-align:left;border-color:#755747;background:radial-gradient(ellipse at 50% 0%,#393027 0%,#22251f 72%);cursor:default}
+.inPlaceRemovalContent{display:grid;width:100%;gap:7px;padding:clamp(10px,3%,18px);white-space:normal}
+.inPlaceRemovalEyebrow{color:#d6a17f;font-size:9px;font-weight:700;letter-spacing:.13em;text-transform:uppercase}
+.inPlaceRemovalContent>strong{color:#f2e9df;font-size:clamp(12px,1.2vw,15px);line-height:1.2}
+.inPlaceRemovalContent>p{margin:0 0 2px;color:#b9b6a9;font-size:10px;line-height:1.4}
+.imageRemovalInPlace .inlineKeepFileButton,.imageRemovalInPlace .inlinePermanentButton{gap:3px;padding:7px 9px}
+.imageRemovalInPlace .inlineKeepFileButton span,.imageRemovalInPlace .inlinePermanentButton span{font-size:10px}
+.imageRemovalInPlace .inlineKeepFileButton small,.imageRemovalInPlace .inlinePermanentButton small{font-size:9px}
+.inPlaceCancel{justify-self:start;min-height:25px;padding:2px 0;border:0;background:transparent;color:#c7c8bc;font-size:10px;text-decoration:underline;text-underline-offset:3px}
+.inPlaceCancel:hover{color:#fff}
