@@ -591,29 +591,6 @@ export default function CmsProjects() {
           <footer className={styles.activityFooter}><span>Showing the latest {activity.length} events</span><button type="button" className={styles.secondaryButton} onClick={openActivity}>Refresh</button></footer>
         </section>
       </div>}
-      {pendingImageRemoval && form && <div className={`${styles.modalBackdrop} ${styles.imageDeleteBackdrop}`} onMouseDown={event=>{if(event.target===event.currentTarget&&!busy)setPendingImageRemoval(null);}}>
-        <section className={styles.imageDeleteDialog} role="dialog" aria-modal="true" aria-labelledby="image-delete-title" aria-describedby="image-delete-description">
-          <div className={styles.imageDeleteIcon} aria-hidden="true"><Icon name="image" size={25}/></div>
-          <button type="button" className={styles.imageDeleteClose} aria-label="Close image removal dialog" onClick={()=>setPendingImageRemoval(null)} disabled={busy}><Icon name="close" size={18}/></button>
-          <p className={styles.eyebrow}>Gallery management</p>
-          <h2 id="image-delete-title">Remove this image?</h2>
-          <p id="image-delete-description" className={styles.imageDeleteDescription}>Choose whether to remove this image from <strong>{form.title || "this project"}</strong> only, or permanently delete the original file from ImageKit too.</p>
-          <div className={styles.imageDeletePreview}>
-            <img src={pendingImageRemoval.imageUrl} alt="" />
-            <div><strong>{pendingImageRemoval.imageName || "Project image"}</strong><span>{pendingImageRemoval.image?.file_id ? "ImageKit file · permanent deletion available" : "External or legacy image · no stored ImageKit file ID"}</span></div>
-          </div>
-          <div className={styles.imageDeleteChoices}>
-            <button type="button" className={styles.imageKeepFileButton} disabled={busy} onClick={()=>removeGalleryImage(pendingImageRemoval.index,false)}>
-              <span>Remove from project</span><small>Keep the original image safely in ImageKit.</small>
-            </button>
-            <button type="button" className={styles.imagePermanentButton} disabled={busy || !(typeof pendingImageRemoval.image !== "string" && pendingImageRemoval.image?.file_id)} onClick={()=>removeGalleryImage(pendingImageRemoval.index,true)}>
-              <span>Delete permanently</span><small>Remove it from this project and delete the original ImageKit file.</small>
-            </button>
-          </div>
-          {!pendingImageRemoval.image?.file_id && <p className={styles.imageDeleteNote}>Permanent deletion is unavailable for this image because it was added by URL or before ImageKit file IDs were tracked. You can still remove it from this gallery.</p>}
-          <button type="button" className={styles.imageDeleteCancel} onClick={()=>setPendingImageRemoval(null)} disabled={busy}>Cancel</button>
-        </section>
-      </div>}
       {form && <div className={styles.modalBackdrop} onMouseDown={event=>{if(event.target===event.currentTarget&&!busy)setForm(null);}}>
         <form ref={editorRef} className={styles.editor} role="dialog" aria-modal="true" aria-labelledby="project-editor-title" onMouseDown={event=>event.stopPropagation()} onSubmit={handleSave}>
           <div className={styles.editorHeader}><div><p className={styles.eyebrow}>{form.id ? "Edit project" : "New project"}</p><h2 id="project-editor-title">{form.title || "Untitled project"}</h2></div><button type="button" className={styles.closeButton} aria-label="Close editor" onClick={()=>setForm(null)}><Icon name="close" size={19} /></button></div>
@@ -728,6 +705,20 @@ export default function CmsProjects() {
                         </div>
                       </div>
                       <button type="button" className={isCover ? styles.coverSelectedButton : styles.coverSelectButton} onClick={()=>update("cover_url",imageUrl)}>{isCover ? "Selected cover" : "Use as cover"}</button>
+                      {pendingImageRemoval?.index === index && <div className={styles.inlineImageRemoval} role="group" aria-label={`Remove ${imageName}`}>
+                        <div className={styles.inlineImageRemovalHeading}>
+                          <strong>Remove this image?</strong>
+                          <button type="button" onClick={()=>setPendingImageRemoval(null)} disabled={busy} aria-label="Close removal options"><Icon name="close" size={16}/></button>
+                        </div>
+                        <p>Choose what happens to the original file.</p>
+                        <button type="button" className={styles.inlineKeepFileButton} disabled={busy} onClick={()=>removeGalleryImage(index,false)}>
+                          <span>Remove from project</span><small>Keep the original in ImageKit.</small>
+                        </button>
+                        <button type="button" className={styles.inlinePermanentButton} disabled={busy || !(typeof image !== "string" && image?.file_id)} onClick={()=>removeGalleryImage(index,true)}>
+                          <span>Delete permanently</span><small>Also delete the original ImageKit file.</small>
+                        </button>
+                        {!(typeof image !== "string" && image?.file_id) && <small className={styles.inlineRemovalNote}>Permanent deletion is unavailable for URL or legacy images without a stored ImageKit file ID.</small>}
+                      </div>}
                     </article>;
                   })}
                 </div>
