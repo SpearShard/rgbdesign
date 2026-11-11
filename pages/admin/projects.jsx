@@ -691,11 +691,29 @@ export default function CmsProjects() {
                       onDragOver={event => event.preventDefault()}
                       onDrop={event => { event.preventDefault(); const from = Number(event.dataTransfer.getData("text/plain")); if (Number.isInteger(from)) moveGalleryImage(from,index); }}
                     >
-                      <button type="button" className={styles.galleryManagerImage} onClick={()=>update("cover_url",imageUrl)} aria-label={isCover ? "Current cover image" : `Set ${imageName} as cover`}>
-                        <img src={imageUrl} alt={typeof image === "string" ? "" : image.alt_text || ""} loading="lazy" />
-                        {isCover && <span className={styles.coverTag}>Cover</span>}
-                        <span className={styles.galleryIndex}>{String(index+1).padStart(2,"0")}</span>
-                      </button>
+                      {pendingImageRemoval?.index === index ? (
+                        <div className={`${styles.galleryManagerImage} ${styles.imageRemovalInPlace}`} role="group" aria-label={`Remove ${imageName}`}>
+                          <div className={styles.inPlaceRemovalContent}>
+                            <span className={styles.inPlaceRemovalEyebrow}>Gallery action</span>
+                            <strong>Remove this image?</strong>
+                            <p>What should happen to the original file?</p>
+                            <button type="button" className={styles.inlineKeepFileButton} disabled={busy} onClick={()=>removeGalleryImage(index,false)}>
+                              <span>Remove from project</span><small>Keep original in ImageKit</small>
+                            </button>
+                            <button type="button" className={styles.inlinePermanentButton} disabled={busy || !(typeof image !== "string" && image?.file_id)} onClick={()=>removeGalleryImage(index,true)}>
+                              <span>Delete permanently</span><small>Also delete original from ImageKit</small>
+                            </button>
+                            {!(typeof image !== "string" && image?.file_id) && <small className={styles.inlineRemovalNote}>Permanent deletion unavailable for URL or legacy images.</small>}
+                            <button type="button" className={styles.inPlaceCancel} onClick={()=>setPendingImageRemoval(null)} disabled={busy}>Keep image</button>
+                          </div>
+                        </div>
+                      ) : (
+                        <button type="button" className={styles.galleryManagerImage} onClick={()=>update("cover_url",imageUrl)} aria-label={isCover ? "Current cover image" : `Set ${imageName} as cover`}>
+                          <img src={imageUrl} alt={typeof image === "string" ? "" : image.alt_text || ""} loading="lazy" />
+                          {isCover && <span className={styles.coverTag}>Cover</span>}
+                          <span className={styles.galleryIndex}>{String(index+1).padStart(2,"0")}</span>
+                        </button>
+                      )}
                       <div className={styles.galleryManagerMeta}>
                         <span title={imageName}>{imageName}</span>
                         <div className={styles.galleryManagerControls}>
@@ -705,20 +723,7 @@ export default function CmsProjects() {
                         </div>
                       </div>
                       <button type="button" className={isCover ? styles.coverSelectedButton : styles.coverSelectButton} onClick={()=>update("cover_url",imageUrl)}>{isCover ? "Selected cover" : "Use as cover"}</button>
-                      {pendingImageRemoval?.index === index && <div className={styles.inlineImageRemoval} role="group" aria-label={`Remove ${imageName}`}>
-                        <div className={styles.inlineImageRemovalHeading}>
-                          <strong>Remove this image?</strong>
-                          <button type="button" onClick={()=>setPendingImageRemoval(null)} disabled={busy} aria-label="Close removal options"><Icon name="close" size={16}/></button>
-                        </div>
-                        <p>Choose what happens to the original file.</p>
-                        <button type="button" className={styles.inlineKeepFileButton} disabled={busy} onClick={()=>removeGalleryImage(index,false)}>
-                          <span>Remove from project</span><small>Keep the original in ImageKit.</small>
-                        </button>
-                        <button type="button" className={styles.inlinePermanentButton} disabled={busy || !(typeof image !== "string" && image?.file_id)} onClick={()=>removeGalleryImage(index,true)}>
-                          <span>Delete permanently</span><small>Also delete the original ImageKit file.</small>
-                        </button>
-                        {!(typeof image !== "string" && image?.file_id) && <small className={styles.inlineRemovalNote}>Permanent deletion is unavailable for URL or legacy images without a stored ImageKit file ID.</small>}
-                      </div>}
+
                     </article>;
                   })}
                 </div>
