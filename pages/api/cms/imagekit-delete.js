@@ -59,7 +59,19 @@ export default async function handler(req, res) {
     if (!deleteResponse.ok && deleteResponse.status !== 404) {
       const detail = await deleteResponse.text();
       console.error("ImageKit file deletion failed:", deleteResponse.status, detail.slice(0, 500));
-      return res.status(502).json({ error: "ImageKit could not delete this file. The gallery change is saved; you can retry permanent deletion." });
+      let imageKitMessage = "";
+      try {
+        const parsed = JSON.parse(detail);
+        imageKitMessage = parsed.message || parsed.help || parsed.error || "";
+      } catch {
+        imageKitMessage = detail.slice(0, 180);
+      }
+      const reason = deleteResponse.status === 401 || deleteResponse.status === 403
+        ? "ImageKit rejected the server API credentials. Check IMAGEKIT_PRIVATE_KEY in the Vercel Preview environment."
+        : imageKitMessage
+          ? `ImageKit error: ${imageKitMessage}`
+          : "ImageKit could not delete this file.";
+      return res.status(502).json({ error: `${reason} The gallery change is saved; you can retry permanent deletion.` });
     }
     return res.status(200).json({ deleted: true });
   } catch (error) {
