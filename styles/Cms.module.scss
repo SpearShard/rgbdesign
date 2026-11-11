@@ -633,3 +633,33 @@
 @keyframes liveNoticeIn{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:760px){.presenceAvatars{display:none}.presenceGroup{gap:5px}.onlineIndicator{font-size:10px}.liveNotice{right:12px;top:65px}}
 @media(max-width:520px){.presenceGroup{display:none}}
+
+
+/* Custom gallery image removal dialog */
+.imageDeleteDialog{position:relative;width:min(520px,100%);padding:34px;border:1px solid #51594d;border-radius:18px;background:linear-gradient(155deg,#20261e 0%,#151915 68%);color:var(--color-ink);box-shadow:0 30px 100px rgba(0,0,0,.58);animation:imageDeleteIn .2s ease-out}
+.imageDeleteIcon{display:grid;width:52px;height:52px;margin-bottom:23px;place-items:center;border:1px solid rgba(214,155,126,.35);border-radius:15px;background:rgba(214,155,126,.1);color:#e5ad91}
+.imageDeleteClose{position:absolute;top:20px;right:20px;display:grid;width:36px;height:36px;place-items:center;border:1px solid var(--color-rule);border-radius:50%;background:transparent;color:var(--color-ink-soft)}
+.imageDeleteDialog>.eyebrow{margin:0 0 9px;color:#c99a7d;font-size:10px;letter-spacing:.14em;text-transform:uppercase}
+.imageDeleteDialog h2{margin:0;font:600 27px/1.15 'Roboto',Arial,sans-serif;letter-spacing:-.035em}
+.imageDeleteDescription{margin:12px 0 21px;color:var(--color-ink-soft);font-size:14px;line-height:1.65}
+.imageDeleteDescription strong{color:var(--color-ink)}
+.imageDeletePreview{display:flex;min-width:0;align-items:center;gap:13px;margin-bottom:20px;padding:10px;border:1px solid var(--color-rule);border-radius:11px;background:#111510}
+.imageDeletePreview img{width:62px;height:62px;flex:0 0 62px;border-radius:7px;object-fit:cover;background:#252b23}
+.imageDeletePreview>div{display:grid;min-width:0;gap:6px}
+.imageDeletePreview strong{overflow:hidden;color:var(--color-ink);font-size:13px;text-overflow:ellipsis;white-space:nowrap}
+.imageDeletePreview span{color:var(--color-muted);font-size:11px;line-height:1.45}
+.imageDeleteChoices{display:grid;gap:10px}
+.imageKeepFileButton,.imagePermanentButton{display:grid;gap:5px;width:100%;padding:15px 16px;border:1px solid #56604e;border-radius:10px;background:#252e22;color:#e9eee4;text-align:left;transition:background .18s,border-color .18s,transform .18s}
+.imageKeepFileButton:hover:not(:disabled){border-color:#8a9a7b;background:#2d3929;transform:translateY(-1px)}
+.imagePermanentButton{border-color:#70483f;background:rgba(91,48,39,.28)}
+.imagePermanentButton:hover:not(:disabled){border-color:#c17d69;background:rgba(116,54,43,.36);transform:translateY(-1px)}
+.imageKeepFileButton span,.imagePermanentButton span{font-size:13px;font-weight:650}
+.imageKeepFileButton small,.imagePermanentButton small{color:#aeb8a5;font-size:11px;line-height:1.5}
+.imagePermanentButton small{color:#c5a69b}
+.imageKeepFileButton:disabled,.imagePermanentButton:disabled,.imageDeleteClose:disabled,.imageDeleteCancel:disabled{opacity:.45;cursor:not-allowed}
+.imageDeleteNote{margin:13px 0 0;padding:11px 12px;border-left:2px solid #9a8863;background:rgba(154,136,99,.08);color:#c4b99e;font-size:11px;line-height:1.55}
+.imageDeleteCancel{width:100%;min-height:42px;margin-top:13px;border:1px solid var(--color-rule);border-radius:8px;background:transparent;color:var(--color-ink-soft);font-size:12px}
+.imageDeleteCancel:hover:not(:disabled){background:rgba(255,255,255,.04);color:var(--color-ink)}
+@keyframes imageDeleteIn{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:600px){.imageDeleteDialog{width:100%;padding:26px 20px;border-radius:16px}.imageDeleteDialog h2{font-size:24px}}
+@media(prefers-reduced-motion:reduce){.imageDeleteDialog{animation:none}.imageKeepFileButton,.imagePermanentButton{transition:none}}
