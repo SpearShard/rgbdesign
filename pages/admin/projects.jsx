@@ -48,6 +48,8 @@ export default function CmsProjects() {
   const [form, setForm] = useState(null);
   const [activityOpen, setActivityOpen] = useState(false);
   const [pendingImageRemoval, setPendingImageRemoval] = useState(null);
+  const pendingImageRemovalRef = useRef(null);
+  pendingImageRemovalRef.current = pendingImageRemoval;
   const [activity, setActivity] = useState([]);
   const [activityLoading, setActivityLoading] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState([]);
@@ -182,7 +184,12 @@ export default function CmsProjects() {
     const handleDialogKeys = event => {
       if (event.key === "Escape") {
         event.preventDefault();
-        if (!busyRef.current) setForm(null);
+        if (busyRef.current) return;
+        if (pendingImageRemovalRef.current) {
+          setPendingImageRemoval(null);
+          return;
+        }
+        setForm(null);
         return;
       }
       if (event.key === "Tab") {
@@ -692,7 +699,7 @@ export default function CmsProjects() {
                       onDrop={event => { event.preventDefault(); const from = Number(event.dataTransfer.getData("text/plain")); if (Number.isInteger(from)) moveGalleryImage(from,index); }}
                     >
                       {pendingImageRemoval?.index === index ? (
-                        <div className={`${styles.galleryManagerImage} ${styles.imageRemovalInPlace}`} role="group" aria-label={`Remove ${imageName}`}>
+                        <div className={`${styles.galleryManagerImage} ${styles.imageRemovalInPlace}`} style={{ aspectRatio: "auto", minHeight: 360, height: "auto", overflow: "visible", boxSizing: "border-box" }} role="group" aria-label={`Remove ${imageName}`}>
                           <div className={styles.inPlaceRemovalContent}>
                             <div className={styles.inPlaceRemovalTop}>
                               <span className={styles.inPlaceRemovalEyebrow}>Gallery action</span>
