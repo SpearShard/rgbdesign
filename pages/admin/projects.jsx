@@ -263,26 +263,39 @@ export default function CmsProjects() {
       const uploaded = [];
 
       for (const file of Array.from(files)) {
-        // ImageKit requires a fresh, single-use token for every file upload.
-        const auth = await getImageKitSignature(session);
-        const body = new FormData();
-        body.append("file", file);
-        body.append("fileName", file.name);
-        body.append("folder", `/RGB-Projects/${slugify(form.title)}`);
-        body.append("publicKey", auth.publicKey);
-        body.append("token", auth.token);
-        body.append("expire", String(auth.expire));
-        body.append("signature", auth.signature);
+        // Each attempt receives a fresh, single-use ImageKit token.
+        // Retry once only when ImageKit reports an authentication/expiry failure.
+        let result = null;
+        for (let attempt = 0; attempt < 2; attempt += 1) {
+          const auth = await getImageKitSignature(session);
+          const body = new FormData();
+          body.append("file", file);
+          body.append("fileName", file.name);
+          body.append("folder", `/RGB-Projects/${slugify(form.title)}`);
+          body.append("publicKey", auth.publicKey);
+          body.append("token", auth.token);
+          body.append("expire", String(auth.expire));
+          body.append("signature", auth.signature);
 
-        const response = await fetch("https://upload.imagekit.io/api/v1/files/upload", {
-          method: "POST",
-          body,
-        });
-        const result = await response.json();
-        if (!response.ok || !result.url) {
-          throw new Error(result.message || `ImageKit could not upload ${file.name}.`);
+          const response = await fetch("https://upload.imagekit.io/api/v1/files/upload", {
+            method: "POST",
+            body,
+          });
+          const responseBody = await response.json().catch(() => ({}));
+          if (response.ok && responseBody.url) {
+            result = responseBody;
+            break;
+          }
+
+          const message = responseBody.message || responseBody.help || "";
+          const authFailure = response.status === 401 ||
+            /jwt|token|signature|authenticat|expir/i.test(message);
+          if (attempt === 0 && authFailure) continue;
+
+          throw new Error(message || `ImageKit could not upload ${file.name} (HTTP ${response.status}).`);
         }
 
+        if (!result?.url) throw new Error(`ImageKit could not upload ${file.name}.`);
         uploaded.push({ image_url: result.url, alt_text: form.title || result.name });
       }
 
