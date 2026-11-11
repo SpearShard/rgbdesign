@@ -694,7 +694,10 @@ export default function CmsProjects() {
                       {pendingImageRemoval?.index === index ? (
                         <div className={`${styles.galleryManagerImage} ${styles.imageRemovalInPlace}`} role="group" aria-label={`Remove ${imageName}`}>
                           <div className={styles.inPlaceRemovalContent}>
-                            <span className={styles.inPlaceRemovalEyebrow}>Gallery action</span>
+                            <div className={styles.inPlaceRemovalTop}>
+                              <span className={styles.inPlaceRemovalEyebrow}>Gallery action</span>
+                              <button type="button" className={styles.inPlaceRemovalClose} onClick={()=>setPendingImageRemoval(null)} disabled={busy} aria-label="Close removal options"><Icon name="close" size={15}/></button>
+                            </div>
                             <strong>Remove this image?</strong>
                             <p>What should happen to the original file?</p>
                             <button type="button" className={styles.inlineKeepFileButton} disabled={busy} onClick={()=>removeGalleryImage(index,false)}>
@@ -703,7 +706,7 @@ export default function CmsProjects() {
                             <button type="button" className={styles.inlinePermanentButton} disabled={busy || !(typeof image !== "string" && image?.file_id)} onClick={()=>removeGalleryImage(index,true)}>
                               <span>Delete permanently</span><small>Also delete original from ImageKit</small>
                             </button>
-                            {!(typeof image !== "string" && image?.file_id) && <small className={styles.inlineRemovalNote}>Permanent deletion unavailable for URL or legacy images.</small>}
+                            {!(typeof image !== "string" && image?.file_id) && <small className={styles.inlineRemovalNote}>No ImageKit file ID is saved for this image. Run the SQL migration, then re-upload it to enable permanent deletion.</small>}
                             <button type="button" className={styles.inPlaceCancel} onClick={()=>setPendingImageRemoval(null)} disabled={busy}>Keep image</button>
                           </div>
                         </div>
