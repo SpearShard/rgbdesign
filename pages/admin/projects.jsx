@@ -273,7 +273,7 @@ export default function CmsProjects() {
       } : current);
       if (permanent) {
         try {
-          await deleteImageKitFile(session, fileId, form.id);
+          await deleteImageKitFile(session, fileId, form.id, imageUrl);
           setNotice("Image removed from the gallery and permanently deleted from ImageKit.");
         } catch (deleteError) {
           setNotice("");
