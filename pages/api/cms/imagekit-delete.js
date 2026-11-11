@@ -3,12 +3,12 @@ export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
   const token = (req.headers.authorization || "").replace(/^Bearer\\s+/i, "");
-  const { fileId, projectId } = req.body || {};
+  const { fileId, projectId, imageUrl } = req.body || {};
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   const privateKey = process.env.IMAGEKIT_PRIVATE_KEY;
 
-  if (!token || !fileId || !projectId || !supabaseUrl || !supabaseKey || !privateKey) {
+  if (!token || !fileId || !projectId || !imageUrl || !supabaseUrl || !supabaseKey || !privateKey) {
     return res.status(400).json({ error: "Missing authentication or image details." });
   }
   if (typeof fileId !== "string" || fileId.length > 200 || !/^[A-Za-z0-9_-]+$/.test(fileId)) {
@@ -42,8 +42,14 @@ export default async function handler(req, res) {
     );
     if (!refsResponse.ok) return res.status(503).json({ error: "Could not verify image references. Nothing was deleted." });
     const refs = await refsResponse.json();
-    if (refs.length) {
-      return res.status(409).json({ error: "This image is still referenced by a project gallery. Remove all gallery references before permanently deleting it." });
+    const coverResponse = await fetch(
+      `${supabaseUrl}/rest/v1/projects?select=id&cover_url=eq.${encodeURIComponent(imageUrl)}`,
+      { headers }
+    );
+    if (!coverResponse.ok) return res.status(503).json({ error: "Could not verify project cover references. Nothing was deleted." });
+    const coverRefs = await coverResponse.json();
+    if (refs.length || coverRefs.length) {
+      return res.status(409).json({ error: "This image is still referenced by a project gallery or cover. Remove all references before permanently deleting it." });
     }
 
     const deleteResponse = await fetch(`https://api.imagekit.io/v1/files/${encodeURIComponent(fileId)}`, {
