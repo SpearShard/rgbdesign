@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { clearCmsSession, deleteProject, getCmsPresence, getCmsSession, getImageKitSignature, getMyCmsRole, listActivity, listProjects, removeCmsPresence, saveProject, upsertCmsPresence } from "@/lib/cmsClient";
+import { clearCmsSession, deleteImageKitFile, deleteProject, getCmsPresence, getCmsSession, getImageKitSignature, getMyCmsRole, listActivity, listProjects, removeCmsPresence, saveProject, upsertCmsPresence } from "@/lib/cmsClient";
 import styles from "@/styles/Cms.module.scss";
 
 const emptyProject = () => ({
@@ -238,14 +238,56 @@ export default function CmsProjects() {
     setForm(current => ({ ...current, images }));
   }
 
-  function removeGalleryImage(index) {
-    const images = form.images.filter((_, imageIndex) => imageIndex !== index);
-    const removedUrl = typeof form.images[index] === "string" ? form.images[index] : form.images[index]?.image_url;
-    setForm(current => ({
-      ...current,
-      images,
-      cover_url: current.cover_url === removedUrl ? (typeof images[0] === "string" ? images[0] : images[0]?.image_url || "") : current.cover_url,
-    }));
+  async function removeGalleryImage(index) {
+    const image = form?.images?.[index];
+    if (!image || busy) return;
+    const imageUrl = typeof image === "string" ? image : image.image_url;
+    const fileId = typeof image === "string" ? null : image.file_id;
+    const nextImages = form.images.filter((_, imageIndex) => imageIndex !== index);
+    const nextCover = form.cover_url === imageUrl
+      ? (typeof nextImages[0] === "string" ? nextImages[0] : nextImages[0]?.image_url || "")
+      : form.cover_url;
+    const permanent = fileId && window.confirm(
+      "Permanently delete this ImageKit file? Choose Cancel to remove it only from this project. Permanent deletion cannot be undone."
+    );
+
+    if (!window.confirm(permanent
+      ? "Confirm permanent deletion of this image from ImageKit?"
+      : "Remove this image from the project gallery? The original file will remain in ImageKit."
+    )) return;
+
+    setBusy(true); setError(""); setNotice("Saving gallery changes…");
+    const nextForm = { ...form, images: nextImages, cover_url: nextCover };
+    try {
+      const saved = await saveProject(session, {
+        ...nextForm,
+        slug: nextForm.slug || slugify(nextForm.title),
+        description_blocks: (nextForm.description_blocks || []).filter(Boolean),
+        sort_order: Number(nextForm.sort_order || 0),
+        year: nextForm.year ? Number(nextForm.year) : null,
+      });
+      const rows = await listProjects(session);
+      setProjects(rows);
+      setForm(current => current ? {
+        ...current, images: nextImages, cover_url: nextCover, version: saved.version,
+      } : current);
+      if (permanent) {
+        try {
+          await deleteImageKitFile(session, fileId, form.id);
+          setNotice("Image removed from the gallery and permanently deleted from ImageKit.");
+        } catch (deleteError) {
+          setNotice("");
+          setError(deleteError.message || "Image was removed from the gallery, but permanent deletion failed.");
+        }
+      } else {
+        setNotice("Image removed from this project. The original file remains in ImageKit.");
+      }
+    } catch (err) {
+      setNotice("");
+      setError(err.message || "Could not remove this image.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function uploadFiles(files) {
@@ -296,7 +338,7 @@ export default function CmsProjects() {
         }
 
         if (!result?.url) throw new Error(`ImageKit could not upload ${file.name}.`);
-        uploaded.push({ image_url: result.url, alt_text: form.title || result.name });
+        uploaded.push({ image_url: result.url, file_id: result.fileId || null, alt_text: form.title || result.name });
       }
 
       // Persist the gallery as part of the upload flow. Previously, uploads only
@@ -662,7 +704,7 @@ export default function CmsProjects() {
                         <div className={styles.galleryManagerControls}>
                           <button type="button" onClick={()=>moveGalleryImage(index,index-1)} disabled={index===0} aria-label={`Move ${imageName} earlier`}>←</button>
                           <button type="button" onClick={()=>moveGalleryImage(index,index+1)} disabled={index===form.images.length-1} aria-label={`Move ${imageName} later`}>→</button>
-                          <button type="button" onClick={()=>removeGalleryImage(index)} aria-label={`Remove ${imageName}`}>Remove</button>
+                          <button type="button" onClick={()=>removeGalleryImage(index)} disabled={busy} aria-label={`Remove ${imageName}`}>Remove</button>
                         </div>
                       </div>
                       <button type="button" className={isCover ? styles.coverSelectedButton : styles.coverSelectButton} onClick={()=>update("cover_url",imageUrl)}>{isCover ? "Selected cover" : "Use as cover"}</button>
