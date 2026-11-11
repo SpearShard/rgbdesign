@@ -689,3 +689,16 @@
 .imageRemovalInPlace .inlineKeepFileButton small,.imageRemovalInPlace .inlinePermanentButton small{font-size:9px}
 .inPlaceCancel{justify-self:start;min-height:25px;padding:2px 0;border:0;background:transparent;color:#c7c8bc;font-size:10px;text-decoration:underline;text-underline-offset:3px}
 .inPlaceCancel:hover{color:#fff}
+
+/* Tighter CMS navigation and gallery confirmation spacing */
+.filterTabs{gap:2px}
+.filterTabs button{padding-inline:8px}
+.toolbarControls{gap:8px}
+.editorSection{padding-bottom:23px;margin-bottom:22px}
+.editorSectionTitle{gap:12px;margin-bottom:16px}
+.galleryManagerGrid{gap:11px}
+.galleryManagerItem{padding-bottom:8px}
+.galleryManagerMeta{gap:5px;padding-top:7px}
+.inPlaceRemovalTop{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.inPlaceRemovalClose{display:grid;width:27px;height:27px;flex:0 0 27px;place-items:center;border:1px solid #665448;border-radius:6px;background:rgba(10,12,10,.3);color:#e8d9cc}
+.inPlaceRemovalClose:hover:not(:disabled){border-color:#c18c70;background:#3a2b24;color:#fff}
