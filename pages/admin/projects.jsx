@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { clearCmsSession, deleteProject, getCmsPresence, getCmsSession, getImageKitSignature, getMyCmsRole, listActivity, listProjects, removeCmsPresence, saveProject, upsertCmsPresence } from "@/lib/cmsClient";
+import { clearCmsSession, deleteImageKitFile, deleteProject, getCmsPresence, getCmsSession, getImageKitSignature, importImageKitUrl, getMyCmsRole, listActivity, listProjects, removeCmsPresence, saveProject, upsertCmsPresence } from "@/lib/cmsClient";
 import styles from "@/styles/Cms.module.scss";
 
 const emptyProject = () => ({
@@ -31,6 +31,7 @@ function Icon({ name, size = 16, strokeWidth = 1.6 }) {
     chevron: <path d="m6 9 6 6 6-6" />,
     search: <><circle cx="10.8" cy="10.8" r="6.8" /><path d="m16 16 4.5 4.5" /></>,
     close: <><path d="m6 6 12 12M18 6 6 18" /></>,
+    image: <><rect x="3" y="4" width="18" height="16" rx="2" /><circle cx="8.5" cy="9" r="1.5" /><path d="m21 15-5-5L5 20" /></>,
   };
   return <svg aria-hidden="true" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">{paths[name]}</svg>;
 }
@@ -46,6 +47,9 @@ export default function CmsProjects() {
   const [projects, setProjects] = useState([]);
   const [form, setForm] = useState(null);
   const [activityOpen, setActivityOpen] = useState(false);
+  const [pendingImageRemoval, setPendingImageRemoval] = useState(null);
+  const pendingImageRemovalRef = useRef(null);
+  pendingImageRemovalRef.current = pendingImageRemoval;
   const [activity, setActivity] = useState([]);
   const [activityLoading, setActivityLoading] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState([]);
@@ -180,7 +184,12 @@ export default function CmsProjects() {
     const handleDialogKeys = event => {
       if (event.key === "Escape") {
         event.preventDefault();
-        if (!busyRef.current) setForm(null);
+        if (busyRef.current) return;
+        if (pendingImageRemovalRef.current) {
+          setPendingImageRemoval(null);
+          return;
+        }
+        setForm(null);
         return;
       }
       if (event.key === "Tab") {
@@ -238,14 +247,51 @@ export default function CmsProjects() {
     setForm(current => ({ ...current, images }));
   }
 
-  function removeGalleryImage(index) {
-    const images = form.images.filter((_, imageIndex) => imageIndex !== index);
-    const removedUrl = typeof form.images[index] === "string" ? form.images[index] : form.images[index]?.image_url;
-    setForm(current => ({
-      ...current,
-      images,
-      cover_url: current.cover_url === removedUrl ? (typeof images[0] === "string" ? images[0] : images[0]?.image_url || "") : current.cover_url,
-    }));
+  async function removeGalleryImage(index, permanentlyDelete = false) {
+    const image = form?.images?.[index];
+    if (!image || busy) return;
+    const imageUrl = typeof image === "string" ? image : image.image_url;
+    const fileId = typeof image === "string" ? null : image.file_id;
+    const nextImages = form.images.filter((_, imageIndex) => imageIndex !== index);
+    const nextCover = form.cover_url === imageUrl
+      ? (typeof nextImages[0] === "string" ? nextImages[0] : nextImages[0]?.image_url || "")
+      : form.cover_url;
+
+    setPendingImageRemoval(null);
+    setBusy(true); setError(""); setNotice("Updating project gallery…");
+    const nextForm = { ...form, images: nextImages, cover_url: nextCover };
+    try {
+      const saved = await saveProject(session, {
+        ...nextForm,
+        slug: nextForm.slug || slugify(nextForm.title),
+        description_blocks: (nextForm.description_blocks || []).filter(Boolean),
+        sort_order: Number(nextForm.sort_order || 0),
+        year: nextForm.year ? Number(nextForm.year) : null,
+      });
+      const rows = await listProjects(session);
+      setProjects(rows);
+      setForm(current => current ? {
+        ...current, images: nextImages, cover_url: nextCover, version: saved.version,
+      } : current);
+
+      if (permanentlyDelete && fileId) {
+        setNotice("Gallery updated. Deleting the original ImageKit file…");
+        try {
+          await deleteImageKitFile(session, fileId, form.id, imageUrl);
+          setNotice("Image removed from the project and permanently deleted from ImageKit.");
+        } catch (deleteError) {
+          setNotice("");
+          setError(deleteError.message || "The image was removed from the gallery, but ImageKit could not delete the original file.");
+        }
+      } else {
+        setNotice("Image removed from this project. The original file remains in ImageKit.");
+      }
+    } catch (err) {
+      setNotice("");
+      setError(err.message || "Could not remove this image.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function uploadFiles(files) {
@@ -263,27 +309,40 @@ export default function CmsProjects() {
       const uploaded = [];
 
       for (const file of Array.from(files)) {
-        // ImageKit requires a fresh, single-use token for every file upload.
-        const auth = await getImageKitSignature(session);
-        const body = new FormData();
-        body.append("file", file);
-        body.append("fileName", file.name);
-        body.append("folder", `/RGB-Projects/${slugify(form.title)}`);
-        body.append("publicKey", auth.publicKey);
-        body.append("token", auth.token);
-        body.append("expire", String(auth.expire));
-        body.append("signature", auth.signature);
+        // Each attempt receives a fresh, single-use ImageKit token.
+        // Retry once only when ImageKit reports an authentication/expiry failure.
+        let result = null;
+        for (let attempt = 0; attempt < 2; attempt += 1) {
+          const auth = await getImageKitSignature(session);
+          const body = new FormData();
+          body.append("file", file);
+          body.append("fileName", file.name);
+          body.append("folder", `/RGB-Projects/${slugify(form.title)}`);
+          body.append("publicKey", auth.publicKey);
+          body.append("token", auth.token);
+          body.append("expire", String(auth.expire));
+          body.append("signature", auth.signature);
 
-        const response = await fetch("https://upload.imagekit.io/api/v1/files/upload", {
-          method: "POST",
-          body,
-        });
-        const result = await response.json();
-        if (!response.ok || !result.url) {
-          throw new Error(result.message || `ImageKit could not upload ${file.name}.`);
+          const response = await fetch("https://upload.imagekit.io/api/v1/files/upload", {
+            method: "POST",
+            body,
+          });
+          const responseBody = await response.json().catch(() => ({}));
+          if (response.ok && responseBody.url) {
+            result = responseBody;
+            break;
+          }
+
+          const message = responseBody.message || responseBody.help || "";
+          const authFailure = response.status === 401 ||
+            /jwt|token|signature|authenticat|expir/i.test(message);
+          if (attempt === 0 && authFailure) continue;
+
+          throw new Error(message || `ImageKit could not upload ${file.name} (HTTP ${response.status}).`);
         }
 
-        uploaded.push({ image_url: result.url, alt_text: form.title || result.name });
+        if (!result?.url) throw new Error(`ImageKit could not upload ${file.name}.`);
+        uploaded.push({ image_url: result.url, file_id: result.fileId || null, alt_text: form.title || result.name });
       }
 
       // Persist the gallery as part of the upload flow. Previously, uploads only
@@ -328,6 +387,10 @@ export default function CmsProjects() {
     event.preventDefault();
     const value = imageUrlInput.trim();
     if (!value || !form) return;
+    if (!form.title.trim()) {
+      setError("Add a project title before importing an image so it can be saved to the right project.");
+      return;
+    }
 
     let parsed;
     try {
@@ -338,36 +401,57 @@ export default function CmsProjects() {
       return;
     }
 
+    const alreadyAdded = (form.images || []).some(item =>
+      (typeof item === "string" ? item : item?.image_url) === parsed.href
+    );
+    if (alreadyAdded) {
+      setError("That image is already in this gallery.");
+      setNotice("");
+      return;
+    }
+
     setAddingImageUrl(true);
     setError("");
-    setNotice("Checking image URL…");
+    setNotice("Importing image to ImageKit…");
     try {
-      await new Promise((resolve, reject) => {
-        const image = new Image();
-        image.onload = () => resolve();
-        image.onerror = () => reject(new Error("This URL could not be loaded as an image. Check that it is public and points directly to an image."));
-        image.src = parsed.href;
-      });
-
-      const alreadyAdded = (form.images || []).some(item =>
-        (typeof item === "string" ? item : item?.image_url) === parsed.href
-      );
-      if (alreadyAdded) {
-        setError("That image is already in this gallery.");
-        setNotice("");
-        return;
+      const imported = await importImageKitUrl(session, parsed.href, form.title);
+      if (!imported?.url || !imported?.fileId) {
+        throw new Error("ImageKit did not return a file ID. The image was not added to the gallery.");
       }
 
-      const nextImages = [...(form.images || []), { image_url: parsed.href, alt_text: form.title || "Project image" }];
-      setForm(current => ({
-        ...current,
+      const nextImages = [...(form.images || []), {
+        image_url: imported.url,
+        file_id: imported.fileId,
+        alt_text: form.title || "Project image",
+      }];
+      const nextForm = {
+        ...form,
+        slug: form.slug || slugify(form.title),
         images: nextImages,
-        cover_url: current.cover_url || parsed.href,
-      }));
+        cover_url: form.cover_url || imported.url,
+        published: form.id ? !!form.published : false,
+        description_blocks: (form.description_blocks || []).filter(Boolean),
+        sort_order: Number(form.sort_order || 0),
+        year: form.year ? Number(form.year) : null,
+      };
+
+      const saved = await saveProject(session, nextForm);
+      const rows = await listProjects(session);
+      const savedProject = rows.find(project => project.id === saved.id);
+      setProjects(rows);
+      setForm(current => current ? {
+        ...current,
+        id: saved.id,
+        slug: saved.slug || nextForm.slug,
+        images: savedProject?.images || nextImages,
+        cover_url: savedProject?.cover_url || nextForm.cover_url,
+        published: savedProject?.published ?? nextForm.published,
+        version: saved.version,
+      } : current);
       setImageUrlInput("");
-      setNotice("Image added to the gallery. Save the project to keep this change.");
+      setNotice("Image imported to ImageKit and saved to the project gallery. Permanent deletion is enabled.");
     } catch (err) {
-      setError(err.message || "Could not load that image URL.");
+      setError(err.message || "Could not import that image into ImageKit.");
       setNotice("");
     } finally {
       setAddingImageUrl(false);
@@ -639,20 +723,42 @@ export default function CmsProjects() {
                       onDragOver={event => event.preventDefault()}
                       onDrop={event => { event.preventDefault(); const from = Number(event.dataTransfer.getData("text/plain")); if (Number.isInteger(from)) moveGalleryImage(from,index); }}
                     >
-                      <button type="button" className={styles.galleryManagerImage} onClick={()=>update("cover_url",imageUrl)} aria-label={isCover ? "Current cover image" : `Set ${imageName} as cover`}>
-                        <img src={imageUrl} alt={typeof image === "string" ? "" : image.alt_text || ""} loading="lazy" />
-                        {isCover && <span className={styles.coverTag}>Cover</span>}
-                        <span className={styles.galleryIndex}>{String(index+1).padStart(2,"0")}</span>
-                      </button>
+                      {pendingImageRemoval?.index === index ? (
+                        <div className={`${styles.galleryManagerImage} ${styles.imageRemovalInPlace}`} style={{ aspectRatio: "auto", minHeight: 360, height: "auto", overflow: "visible", boxSizing: "border-box" }} role="group" aria-label={`Remove ${imageName}`}>
+                          <div className={styles.inPlaceRemovalContent}>
+                            <div className={styles.inPlaceRemovalTop}>
+                              <span className={styles.inPlaceRemovalEyebrow}>Gallery action</span>
+                              <button type="button" className={styles.inPlaceRemovalClose} onClick={()=>setPendingImageRemoval(null)} disabled={busy} aria-label="Close removal options"><Icon name="close" size={15}/></button>
+                            </div>
+                            <strong>Remove this image?</strong>
+                            <p>What should happen to the original file?</p>
+                            <button type="button" className={styles.inlineKeepFileButton} disabled={busy} onClick={()=>removeGalleryImage(index,false)}>
+                              <span>Remove from project</span><small>Keep original in ImageKit</small>
+                            </button>
+                            <button type="button" className={styles.inlinePermanentButton} disabled={busy || !(typeof image !== "string" && image?.file_id)} onClick={()=>removeGalleryImage(index,true)}>
+                              <span>Delete permanently</span><small>Also delete original from ImageKit</small>
+                            </button>
+                            {!(typeof image !== "string" && image?.file_id) && <small className={styles.inlineRemovalNote}>No ImageKit file ID is saved for this image. Run the SQL migration, then re-upload it to enable permanent deletion.</small>}
+                            <button type="button" className={styles.inPlaceCancel} onClick={()=>setPendingImageRemoval(null)} disabled={busy}>Keep image</button>
+                          </div>
+                        </div>
+                      ) : (
+                        <button type="button" className={styles.galleryManagerImage} onClick={()=>update("cover_url",imageUrl)} aria-label={isCover ? "Current cover image" : `Set ${imageName} as cover`}>
+                          <img src={imageUrl} alt={typeof image === "string" ? "" : image.alt_text || ""} loading="lazy" />
+                          {isCover && <span className={styles.coverTag}>Cover</span>}
+                          <span className={styles.galleryIndex}>{String(index+1).padStart(2,"0")}</span>
+                        </button>
+                      )}
                       <div className={styles.galleryManagerMeta}>
                         <span title={imageName}>{imageName}</span>
                         <div className={styles.galleryManagerControls}>
                           <button type="button" onClick={()=>moveGalleryImage(index,index-1)} disabled={index===0} aria-label={`Move ${imageName} earlier`}>←</button>
                           <button type="button" onClick={()=>moveGalleryImage(index,index+1)} disabled={index===form.images.length-1} aria-label={`Move ${imageName} later`}>→</button>
-                          <button type="button" onClick={()=>removeGalleryImage(index)} aria-label={`Remove ${imageName}`}>Remove</button>
+                          <button type="button" onClick={()=>setPendingImageRemoval({ index, image, imageUrl, imageName })} disabled={busy} aria-label={`Remove ${imageName}`}>Remove</button>
                         </div>
                       </div>
                       <button type="button" className={isCover ? styles.coverSelectedButton : styles.coverSelectButton} onClick={()=>update("cover_url",imageUrl)}>{isCover ? "Selected cover" : "Use as cover"}</button>
+
                     </article>;
                   })}
                 </div>

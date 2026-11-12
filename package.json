@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "backfill:imagekit-file-ids": "node --env-file-if-exists=.env.local scripts/backfill-imagekit-file-ids.mjs"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
