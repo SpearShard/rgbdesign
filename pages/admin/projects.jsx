@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { clearCmsSession, deleteImageKitFile, deleteProject, getCmsPresence, getCmsSession, getImageKitSignature, getMyCmsRole, listActivity, listProjects, removeCmsPresence, saveProject, upsertCmsPresence } from "@/lib/cmsClient";
+import { clearCmsSession, deleteImageKitFile, deleteProject, getCmsPresence, getCmsSession, getImageKitSignature, importImageKitUrl, getMyCmsRole, listActivity, listProjects, removeCmsPresence, saveProject, upsertCmsPresence } from "@/lib/cmsClient";
 import styles from "@/styles/Cms.module.scss";
 
 const emptyProject = () => ({
@@ -387,6 +387,10 @@ export default function CmsProjects() {
     event.preventDefault();
     const value = imageUrlInput.trim();
     if (!value || !form) return;
+    if (!form.title.trim()) {
+      setError("Add a project title before importing an image so it can be saved to the right project.");
+      return;
+    }
 
     let parsed;
     try {
@@ -397,36 +401,57 @@ export default function CmsProjects() {
       return;
     }
 
+    const alreadyAdded = (form.images || []).some(item =>
+      (typeof item === "string" ? item : item?.image_url) === parsed.href
+    );
+    if (alreadyAdded) {
+      setError("That image is already in this gallery.");
+      setNotice("");
+      return;
+    }
+
     setAddingImageUrl(true);
     setError("");
-    setNotice("Checking image URL…");
+    setNotice("Importing image to ImageKit…");
     try {
-      await new Promise((resolve, reject) => {
-        const image = new Image();
-        image.onload = () => resolve();
-        image.onerror = () => reject(new Error("This URL could not be loaded as an image. Check that it is public and points directly to an image."));
-        image.src = parsed.href;
-      });
-
-      const alreadyAdded = (form.images || []).some(item =>
-        (typeof item === "string" ? item : item?.image_url) === parsed.href
-      );
-      if (alreadyAdded) {
-        setError("That image is already in this gallery.");
-        setNotice("");
-        return;
+      const imported = await importImageKitUrl(session, parsed.href, form.title);
+      if (!imported?.url || !imported?.fileId) {
+        throw new Error("ImageKit did not return a file ID. The image was not added to the gallery.");
       }
 
-      const nextImages = [...(form.images || []), { image_url: parsed.href, alt_text: form.title || "Project image" }];
-      setForm(current => ({
-        ...current,
+      const nextImages = [...(form.images || []), {
+        image_url: imported.url,
+        file_id: imported.fileId,
+        alt_text: form.title || "Project image",
+      }];
+      const nextForm = {
+        ...form,
+        slug: form.slug || slugify(form.title),
         images: nextImages,
-        cover_url: current.cover_url || parsed.href,
-      }));
+        cover_url: form.cover_url || imported.url,
+        published: form.id ? !!form.published : false,
+        description_blocks: (form.description_blocks || []).filter(Boolean),
+        sort_order: Number(form.sort_order || 0),
+        year: form.year ? Number(form.year) : null,
+      };
+
+      const saved = await saveProject(session, nextForm);
+      const rows = await listProjects(session);
+      const savedProject = rows.find(project => project.id === saved.id);
+      setProjects(rows);
+      setForm(current => current ? {
+        ...current,
+        id: saved.id,
+        slug: saved.slug || nextForm.slug,
+        images: savedProject?.images || nextImages,
+        cover_url: savedProject?.cover_url || nextForm.cover_url,
+        published: savedProject?.published ?? nextForm.published,
+        version: saved.version,
+      } : current);
       setImageUrlInput("");
-      setNotice("Image added to the gallery. Save the project to keep this change.");
+      setNotice("Image imported to ImageKit and saved to the project gallery. Permanent deletion is enabled.");
     } catch (err) {
-      setError(err.message || "Could not load that image URL.");
+      setError(err.message || "Could not import that image into ImageKit.");
       setNotice("");
     } finally {
       setAddingImageUrl(false);
