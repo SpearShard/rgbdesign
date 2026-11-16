@@ -40,9 +40,16 @@ function ScrollPlaybackEmbed({ src, title, platform, className, style }) {
         observer.observe(iframe);
         return () => { observer.disconnect(); sendPlayerCommand(platform === 'youtube' ? 'pauseVideo' : 'pause'); };
     }, [platform]);
-    return <iframe ref={iframeRef} title={title} src={src} className={className} style={style}
+    return <iframe
+        ref={iframeRef}
+        title={title}
+        src={src}
+        className={className}
+        style={{ ...style, pointerEvents: 'none' }}
         allow="autoplay; encrypted-media; picture-in-picture"
-        referrerPolicy="strict-origin-when-cross-origin" frameBorder="0" />;
+        referrerPolicy="strict-origin-when-cross-origin"
+        frameBorder="0"
+    />;
 }
 export default function WorksDetails() {
     const router = useRouter();
@@ -645,6 +652,9 @@ const getYouTubeEmbedUrl = (rawUrl) => {
         embedUrl.searchParams.set('controls', '0');
         embedUrl.searchParams.set('disablekb', '1');
         embedUrl.searchParams.set('fs', '0');
+        embedUrl.searchParams.set('modestbranding', '1');
+        embedUrl.searchParams.set('iv_load_policy', '3');
+        embedUrl.searchParams.set('rel', '0');
         embedUrl.searchParams.set('enablejsapi', '1');
         embedUrl.searchParams.set('origin', typeof window !== 'undefined' ? window.location.origin : '');
         return embedUrl.toString();
