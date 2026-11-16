@@ -15,6 +15,35 @@ import projectsData from "public/projects.json";
 import { getPublishedProjectData } from "@/lib/publicProjects";
 import styles from "styles/WorksDetails.module.scss";
 
+
+// Embedded players only play while their video is visible on screen.
+function ScrollPlaybackEmbed({ src, title, platform, className, style }) {
+    const iframeRef = useRef(null);
+    useEffect(() => {
+        const iframe = iframeRef.current;
+        if (!iframe || typeof IntersectionObserver === 'undefined') return;
+        const sendPlayerCommand = (command) => {
+            if (!iframe.contentWindow) return;
+            if (platform === 'youtube') {
+                iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: command, args: [] }), 'https://www.youtube-nocookie.com');
+            } else {
+                iframe.contentWindow.postMessage(JSON.stringify({ method: command }), 'https://player.vimeo.com');
+            }
+        };
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+                sendPlayerCommand(platform === 'youtube' ? 'playVideo' : 'play');
+            } else {
+                sendPlayerCommand(platform === 'youtube' ? 'pauseVideo' : 'pause');
+            }
+        }, { threshold: [0, 0.5] });
+        observer.observe(iframe);
+        return () => { observer.disconnect(); sendPlayerCommand(platform === 'youtube' ? 'pauseVideo' : 'pause'); };
+    }, [platform]);
+    return <iframe ref={iframeRef} title={title} src={src} className={className} style={style}
+        allow="autoplay; encrypted-media; picture-in-picture"
+        referrerPolicy="strict-origin-when-cross-origin" frameBorder="0" />;
+}
 export default function WorksDetails() {
     const router = useRouter();
     const { project } = useRouter().query;
@@ -279,49 +308,28 @@ export default function WorksDetails() {
                             >
                                 <h3 className={styles.videoTitle}>Project Video</h3>
                                 <div className={styles.videoWrapper}>
-                                    {project.title === "Orb[i]s" && project.video.includes('vimeo.com') ? (
-                                        // Special orbis view for Vimeo videos
-                                        <iframe 
-                                            title="vimeo-player" 
-                                            src="https://player.vimeo.com/video/400959787?h=3d0a824e3c" 
-                                            width="640" 
-                                            height="360" 
-                                            frameBorder="0" 
-                                            referrerPolicy="strict-origin-when-cross-origin" 
-                                            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"   
-                                            allowFullScreen
+                                    {project.video.includes('vimeo.com') ? (
+                                        <ScrollPlaybackEmbed
+                                            platform="vimeo"
+                                            title={`${project.title} video`}
+                                            src={getVimeoEmbedUrl(project.video)}
                                             className={styles.projectVideo}
                                             style={{ width: '100%', height: '100%', minHeight: '500px' }}
                                         />
                                     ) : project.video.includes('youtube.com') || project.video.includes('youtu.be') ? (
-                                        // For YouTube videos
-                                        <iframe
-                                            className={styles.projectVideo}
+                                        <ScrollPlaybackEmbed
+                                            platform="youtube"
                                             title={`${project.title} video`}
                                             src={getYouTubeEmbedUrl(project.video)}
-                                            allow="autoplay; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                            allowFullScreen
-                                            frameBorder="0"
+                                            className={styles.projectVideo}
                                         />
                                     ) : project.video.includes('drive.google.com') ? (
-                                        // For Google Drive videos
-                                        <iframe
-                                            className={styles.projectVideo}
-                                            src={project.video}
-                                            allow="autoplay"
-                                            allowFullScreen
-                                            frameBorder="0"
-                                        />
+                                        <iframe className={styles.projectVideo} title={`${project.title} video`}
+                                            src={project.video} allow="autoplay; encrypted-media" allowFullScreen frameBorder="0" />
                                     ) : (
-                                        // For direct video files
-                                        <video
-                                            controls
-                                            className={styles.projectVideo}
+                                        <video controls className={styles.projectVideo}
                                             src={isUrl(project.video) ? project.video : `/images/projects/${theme}/${project.dir ? project.dir + '/' : ''}${project.video}`}
-                                            style={{
-                                                objectFit: 'contain'
-                                            }}
-                                        />
+                                            style={{ objectFit: 'contain' }} />
                                     )}
                                 </div>
                             </motion.div>
@@ -588,6 +596,28 @@ const SlideUpImage = ({ src, alt, onClick }) => {
     );
 };
 
+
+const getVimeoEmbedUrl = (rawUrl) => {
+    try {
+        const url = new URL(rawUrl.trim());
+        const host = url.hostname.replace(/^www\./, '').toLowerCase();
+        if (!['vimeo.com', 'player.vimeo.com'].includes(host)) return rawUrl;
+        const parts = url.pathname.split('/').filter(Boolean);
+        const videoId = parts.find((part) => /^\d+$/.test(part));
+        if (!videoId) return rawUrl;
+        const embedUrl = new URL(`https://player.vimeo.com/video/${videoId}`);
+        const hash = url.searchParams.get('h');
+        if (hash) embedUrl.searchParams.set('h', hash);
+        embedUrl.searchParams.set('background', '1');
+        embedUrl.searchParams.set('autoplay', '1');
+        embedUrl.searchParams.set('muted', '1');
+        embedUrl.searchParams.set('loop', '1');
+        embedUrl.searchParams.set('controls', '0');
+        embedUrl.searchParams.set('playsinline', '1');
+        embedUrl.searchParams.set('api', '1');
+        return embedUrl.toString();
+    } catch { return rawUrl; }
+};
 // Convert common YouTube share links into the embed URL required by an iframe.
 const getYouTubeEmbedUrl = (rawUrl) => {
     try {
@@ -612,6 +642,11 @@ const getYouTubeEmbedUrl = (rawUrl) => {
         embedUrl.searchParams.set('autoplay', '1');
         embedUrl.searchParams.set('mute', '1');
         embedUrl.searchParams.set('playsinline', '1');
+        embedUrl.searchParams.set('controls', '0');
+        embedUrl.searchParams.set('disablekb', '1');
+        embedUrl.searchParams.set('fs', '0');
+        embedUrl.searchParams.set('enablejsapi', '1');
+        embedUrl.searchParams.set('origin', typeof window !== 'undefined' ? window.location.origin : '');
         return embedUrl.toString();
     } catch {
         return rawUrl;
