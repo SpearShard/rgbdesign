@@ -297,7 +297,7 @@ export default function WorksDetails() {
                                         // For YouTube videos
                                         <iframe
                                             className={styles.projectVideo}
-                                            src={project.video}
+                                            src={getYouTubeEmbedUrl(project.video)}
                                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                             allowFullScreen
                                             frameBorder="0"
@@ -306,7 +306,7 @@ export default function WorksDetails() {
                                         // For Google Drive videos
                                         <iframe
                                             className={styles.projectVideo}
-                                            src={project.video}
+                                            src={getYouTubeEmbedUrl(project.video)}
                                             allow="autoplay"
                                             allowFullScreen
                                             frameBorder="0"
@@ -380,7 +380,7 @@ export default function WorksDetails() {
                                         // For YouTube videos
                                         <iframe
                                             className={styles.projectVideo}
-                                            src={project.video}
+                                            src={getYouTubeEmbedUrl(project.video)}
                                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                             allowFullScreen
                                             frameBorder="0"
@@ -389,7 +389,7 @@ export default function WorksDetails() {
                                         // For Google Drive videos
                                         <iframe
                                             className={styles.projectVideo}
-                                            src={project.video}
+                                            src={getYouTubeEmbedUrl(project.video)}
                                             allow="autoplay"
                                             allowFullScreen
                                             frameBorder="0"
@@ -626,6 +626,32 @@ const SlideUpImage = ({ src, alt, onClick }) => {
             />
         </motion.div>
     );
+};
+
+// Convert common YouTube share links into the embed URL required by an iframe.
+const getYouTubeEmbedUrl = (rawUrl) => {
+    try {
+        const url = new URL(rawUrl.trim());
+        const host = url.hostname.replace(/^www\\./, '').toLowerCase();
+        let videoId = null;
+
+        if (host === 'youtu.be') {
+            videoId = url.pathname.split('/').filter(Boolean)[0] || null;
+        } else if (['youtube.com', 'm.youtube.com', 'youtube-nocookie.com'].includes(host)) {
+            if (url.pathname === '/watch') {
+                videoId = url.searchParams.get('v');
+            } else {
+                const match = url.pathname.match(/^\\/(?:embed|shorts|live)\\/([^/?]+)/);
+                videoId = match?.[1] || null;
+            }
+        }
+
+        return videoId && /^[a-zA-Z0-9_-]{11}$/.test(videoId)
+            ? `https://www.youtube-nocookie.com/embed/${videoId}`
+            : rawUrl;
+    } catch {
+        return rawUrl;
+    }
 };
 
 // Helper function to determine if a string is a URL
