@@ -334,9 +334,17 @@ export default function WorksDetails() {
                                         <iframe className={styles.projectVideo} title={`${project.title} video`}
                                             src={project.video} allow="autoplay; encrypted-media" allowFullScreen frameBorder="0" />
                                     ) : (
-                                        <video controls className={styles.projectVideo}
+                                        <video
+                                            autoPlay
+                                            muted
+                                            loop
+                                            playsInline
+                                            controls
+                                            preload="auto"
+                                            className={styles.projectVideo}
                                             src={isUrl(project.video) ? project.video : `/images/projects/${theme}/${project.dir ? project.dir + '/' : ''}${project.video}`}
-                                            style={{ objectFit: 'contain' }} />
+                                            style={{ objectFit: 'contain' }}
+                                        />
                                     )}
                                 </div>
                             </motion.div>
