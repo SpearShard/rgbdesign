@@ -52,8 +52,8 @@ export default function WorksShowcase(props) {
     // Get category-specific elements
     const getCategoryColor = () => {
         const categoryTitle = props.data[props.theme].title;
-        if (categoryTitle === "Material Experiments") return "#ff3333";
-        if (categoryTitle === "Interiors") return "#3333ff";
+        if (categoryTitle === "Product Design") return "#ff3333";
+        if (categoryTitle === "Interior Design") return "#3333ff";
         if (categoryTitle === "Furniture Design") return "#9966cc";
         if (categoryTitle === "Installation Design") return "#33cccc"; // Added color for Installation Design
         if (categoryTitle === "Computational Design") return "#33ff33";
@@ -63,8 +63,8 @@ export default function WorksShowcase(props) {
     const getCategoryDescription = () => {
         const categoryTitle = props.data[props.theme].title;
         const descriptions = {
-            "Material Experiments": "Pushing boundaries through innovative material explorations and techniques.",
-            "Interiors": "Creating functional interior spaces that enhance human experience.",
+            "Product Design": "Pushing boundaries through innovative material explorations and techniques.",
+            "Interior Design": "Creating functional interior spaces that enhance human experience.",
             "Furniture": "Designing innovative and functional furniture pieces.",
             "Furniture Design": "Crafting unique furniture that balances form, function, and sustainability.",
             "Installation Design": "Creating immersive spatial experiences through interactive and responsive installations.", // Added description
