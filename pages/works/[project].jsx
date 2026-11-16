@@ -269,7 +269,7 @@ export default function WorksDetails() {
                         )}
 
                         {/* Project Video */}
-                        {project.video && project.title !== "Library at Head Start Educational Academy" && (
+                        {project.video && (
                             <motion.div
                                 className={styles.videoSection}
                                 initial={{ opacity: 0, y: 50 }}
@@ -297,8 +297,9 @@ export default function WorksDetails() {
                                         // For YouTube videos
                                         <iframe
                                             className={styles.projectVideo}
+                                            title={`${project.title} video`}
                                             src={getYouTubeEmbedUrl(project.video)}
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allow="autoplay; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                             allowFullScreen
                                             frameBorder="0"
                                         />
@@ -306,7 +307,7 @@ export default function WorksDetails() {
                                         // For Google Drive videos
                                         <iframe
                                             className={styles.projectVideo}
-                                            src={getYouTubeEmbedUrl(project.video)}
+                                            src={project.video}
                                             allow="autoplay"
                                             allowFullScreen
                                             frameBorder="0"
@@ -362,47 +363,6 @@ export default function WorksDetails() {
                                         );
                                     })}
                                 </Grid>
-                            </motion.div>
-                        )}
-
-                        {/* Project Video - Special placement for Library at Head Start Educational Academy */}
-                        {project.video && project.title === "Library at Head Start Educational Academy" && (
-                            <motion.div
-                                className={styles.videoSection}
-                                initial={{ opacity: 0, y: 50 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.8 }}
-                            >
-                                <h3 className={styles.videoTitle}>Project Video</h3>
-                                <div className={styles.videoWrapper}>
-                                    {project.video.includes('youtube.com') || project.video.includes('youtu.be') ? (
-                                        // For YouTube videos
-                                        <iframe
-                                            className={styles.projectVideo}
-                                            src={getYouTubeEmbedUrl(project.video)}
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                            allowFullScreen
-                                            frameBorder="0"
-                                        />
-                                    ) : project.video.includes('drive.google.com') ? (
-                                        // For Google Drive videos
-                                        <iframe
-                                            className={styles.projectVideo}
-                                            src={getYouTubeEmbedUrl(project.video)}
-                                            allow="autoplay"
-                                            allowFullScreen
-                                            frameBorder="0"
-                                        />
-                                    ) : (
-                                        // For direct video files
-                                        <video
-                                            controls
-                                            className={styles.projectVideo}
-                                            src={isUrl(project.video) ? project.video : `/images/projects/${theme}/${project.dir ? project.dir + '/' : ''}${project.video}`}
-                                        />
-                                    )}
-                                </div>
                             </motion.div>
                         )}
 
@@ -646,9 +606,13 @@ const getYouTubeEmbedUrl = (rawUrl) => {
             }
         }
 
-        return videoId && /^[a-zA-Z0-9_-]{11}$/.test(videoId)
-            ? `https://www.youtube-nocookie.com/embed/${videoId}`
-            : rawUrl;
+        if (!videoId || !/^[a-zA-Z0-9_-]{11}$/.test(videoId)) return rawUrl;
+
+        const embedUrl = new URL(`https://www.youtube-nocookie.com/embed/${videoId}`);
+        embedUrl.searchParams.set('autoplay', '1');
+        embedUrl.searchParams.set('mute', '1');
+        embedUrl.searchParams.set('playsinline', '1');
+        return embedUrl.toString();
     } catch {
         return rawUrl;
     }
