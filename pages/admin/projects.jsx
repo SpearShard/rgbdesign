@@ -5,7 +5,7 @@ import { clearCmsSession, deleteImageKitFile, deleteProject, getCmsPresence, get
 import styles from "@/styles/Cms.module.scss";
 
 const emptyProject = () => ({
-  title: "", slug: "", subtitle: "", category: "interiors", category_title: "Interiors",
+  title: "", slug: "", subtitle: "", category: "interiors", category_title: "Interior Design",
   dir: "", cover_url: "", video_url: "", description_blocks: [""],
   metadata: {}, images: [], year: new Date().getFullYear(), client: "", location: "",
   sort_order: 0, published: false,
@@ -15,10 +15,10 @@ const rgbFavicon = "https://raw.githubusercontent.com/SpearShard/RevampRGB/maste
 
 const categories = [
   ["computational_design", "Computational Design"],
-  ["material_experiments", "Material Experiments"],
+  ["material_experiments", "Product Design"],
   ["furniture_design", "Furniture Design"],
   ["installation_design", "Installation Design"],
-  ["interiors", "Interiors"],
+  ["interiors", "Interior Design"],
   ["competitions", "Competitions"],
   ["monks_of_method", "Monks of Method"],
 ];
