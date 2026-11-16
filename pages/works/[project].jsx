@@ -632,7 +632,7 @@ const SlideUpImage = ({ src, alt, onClick }) => {
 const getYouTubeEmbedUrl = (rawUrl) => {
     try {
         const url = new URL(rawUrl.trim());
-        const host = url.hostname.replace(/^www\\./, '').toLowerCase();
+        const host = url.hostname.replace(/^www\./, '').toLowerCase();
         let videoId = null;
 
         if (host === 'youtu.be') {
@@ -641,7 +641,7 @@ const getYouTubeEmbedUrl = (rawUrl) => {
             if (url.pathname === '/watch') {
                 videoId = url.searchParams.get('v');
             } else {
-                const match = url.pathname.match(/^\\/(?:embed|shorts|live)\\/([^/?]+)/);
+                const match = url.pathname.match(/^\/(?:embed|shorts|live)\/([^/?]+)/);
                 videoId = match?.[1] || null;
             }
         }
