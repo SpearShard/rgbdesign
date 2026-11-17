@@ -76,6 +76,43 @@
   }
 }
 
+.intro {
+  position: relative;
+  z-index: 2;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 50px clamp(8px, 3vw, 40px) 30px;
+  color: rgba(255, 255, 255, 0.86);
+
+  .intro_lead {
+    max-width: 1000px;
+    margin: 0 0 34px;
+    color: #fff;
+    font-size: clamp(1.8rem, 3.6vw, 3.2rem);
+    line-height: 1.2;
+    font-weight: 600;
+    letter-spacing: -0.035em;
+  }
+
+  .intro_text {
+    max-width: 940px;
+    margin: 0 0 24px auto;
+    font-size: clamp(1rem, 1.35vw, 1.2rem);
+    line-height: 1.85;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.76);
+  }
+
+  .intro_closing {
+    max-width: 940px;
+    margin: 36px 0 0 auto;
+    color: variables.$primary_green_text;
+    font-size: clamp(1.25rem, 2vw, 1.8rem);
+    line-height: 1.5;
+    font-weight: 600;
+  }
+}
+
 .works_container {
   width: 100%;
   min-width: 100vw;
