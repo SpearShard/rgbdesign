@@ -235,13 +235,13 @@ export default function Home() {
                         <SDFAnimation className={`${styles.sdf_animation} sdf_animation`} />
                         <div className={styles.hero_overlay}>
                             <h1 className={styles.big_title}>
-                                INNOVATION.
+                                DESIGN.
                             </h1>
                             <h1 className={styles.big_title}>
                                 RESEARCH.
                             </h1>
                             <h1 className={styles.big_title}>
-                                DESIGN.
+                                INTERSECTIONS.
                             </h1>
                         </div>
                     </section>
