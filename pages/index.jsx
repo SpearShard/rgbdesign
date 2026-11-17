@@ -251,7 +251,7 @@ export default function Home() {
                             <Grid item xs={12} md={6} className={styles.info_container}>
                                 <h3 data-aos="fade-up">RGB DESIGN</h3>
                                 <h2 data-aos="fade-up">
-                                    WHERE DESIGN, TECH, AND NATURE CONVERGE. INNOVATING SUSTAINABLE, STRIKING FUTURES.
+                                    QUESTION → COMPUTE → ITERATE → DESIGN
                                 </h2>
                                 <IconButton size="large" edge="start" color="inherit" aria-label="menu">
                                     <Link href="/about" style={{ color: "#ffffff" }}>
@@ -261,21 +261,18 @@ export default function Home() {
                             </Grid>
                             <Grid item xs={12} md={6} className={`${styles.info_container} ${styles.para}`}>
                                 <p data-aos="fade-up">
-                                    At RGB Design, we merge Design and Technology with <br />
-                                    Natural Intelligence and Computational innovation to <br />
-                                    creatively tackle design challenges.
+                                    We explore ideas through research, computation and material experimentation - testing,
+                                    refining and rethinking until they evolve into tangible form.
                                 </p>
-                                <p data-aos="fade-up">
-                                    <span className="highlight_green">
-                                        <b>Our mission:</b> to blend form and function, delivering sustainable,
-                                        technologically forward, and visually striking design solutions.
-                                    </span>
-                                    We're driven to inspire change and progress, crafting designs that impact both
-                                    society and the environment positively.
-                                </p>
-                                <p data-aos="fade-up">Welcome to the future of design!</p>
                             </Grid>
                         </Grid>
+                    </section>
+
+                    <section className={styles.statement_section}>
+                        <p data-aos="fade-up">
+                            From installations to urban systems, our work bridges architecture, material intelligence,
+                            and computational thinking - shaping solutions that respond to people, place and climate.
+                        </p>
                     </section>
 
                     <section className={styles.work_section}>
