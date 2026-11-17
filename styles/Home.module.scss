@@ -128,7 +128,7 @@
 
       .big_title:nth-child(1) {
         --index: 1;
-        color: variables.$primary_blue_text;
+        color: variables.$primary_red_text;
       }
 
       .big_title:nth-child(2) {
@@ -138,7 +138,7 @@
 
       .big_title:nth-child(3) {
         --index: 3;
-        color: variables.$primary_red_text;
+        color: variables.$primary_blue_text;
       }
     }
 
